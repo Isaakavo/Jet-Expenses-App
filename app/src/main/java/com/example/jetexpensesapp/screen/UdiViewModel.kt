@@ -1,7 +1,10 @@
 package com.example.jetexpensesapp.screen
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetexpensesapp.data.DataOrException
@@ -14,37 +17,45 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
 class UdiViewModel @Inject constructor(private val repository: UdiRepository) : ViewModel() {
-//    var dataFromDb: MutableState<DataOrException<ArrayList<RetirementPlan>, Boolean, Exception>> =
-//        mutableStateOf(DataOrException(null, true, Exception("")))
 
     private val _dataFromDb = MutableStateFlow<List<RetirementPlan>>(emptyList())
     val dataFromDb = _dataFromDb.asStateFlow()
 
-    var udiFromApi:  MutableState<DataOrException<UdiItem, Boolean, Exception>> =
-        mutableStateOf(DataOrException(null, true, Exception("")))
+    var udiFromApi by mutableStateOf<DataOrException<UdiItem, Boolean, Exception>>(
+        DataOrException(
+            null,
+            false,
+            Exception("")
+        )
+    )
 
     init {
-        getUdiForToday()
+        getUdiForToday(LocalDateTime.now())
         viewModelScope.launch(Dispatchers.IO) {
             _dataFromDb.value = RetirementData().load()
         }
     }
 
-    private fun getUdiForToday() {
+    fun getUdiForToday(date: LocalDateTime) {
         viewModelScope.launch {
-            udiFromApi.value.loading = true
-            udiFromApi.value = repository.getUdiForToday()
-            if (udiFromApi.value.data.toString().isNotEmpty()) {
-                udiFromApi.value.loading = false
+            Log.d("viewmodel", "Calling api")
+            udiFromApi = udiFromApi.copy(loading = true)
+            udiFromApi = repository.getUdiForToday(date)
+
+            if (udiFromApi.data.toString().isNotEmpty()) {
+                Log.d("viewmodel", "Result from api: $udiFromApi")
+                //udiFromApi.loading = false
+                udiFromApi = udiFromApi.copy(loading = false)
             }
         }
     }
 
-    private fun getRetirementObjFromDb(){
+    private fun getRetirementObjFromDb() {
 
     }
 }
