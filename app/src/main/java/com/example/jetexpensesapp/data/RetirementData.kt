@@ -1,6 +1,7 @@
 package com.example.jetexpensesapp.data
 
 import com.example.jetexpensesapp.model.RetirementPlan
+import java.time.LocalDateTime
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -9,7 +10,7 @@ class RetirementData {
         return arrayListOf(
             RetirementPlan(
                 1,
-                Date(1663373675179),
+                LocalDateTime.now(),
                 3453.05,
                 7.45,
                 463.21,
@@ -20,7 +21,7 @@ class RetirementData {
             ),
             RetirementPlan(
                 2,
-                Date(1663373675179),
+                LocalDateTime.now(),
                 3474.27,
                 7.501214,
                 463.16,

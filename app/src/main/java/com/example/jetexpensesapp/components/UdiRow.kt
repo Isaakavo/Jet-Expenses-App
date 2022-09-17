@@ -35,7 +35,7 @@ fun UdiRow(
             Text(text = "Total comprado:  ${retirementPlan.purchaseTotal}", style = MaterialTheme.typography.subtitle2)
             Text(text = "Valor de la udi ${retirementPlan.udiValue}", style = MaterialTheme.typography.subtitle2)
             Text(
-                text = formatDate(retirementPlan.dateOfPurchase.time),
+                text = formatDate(retirementPlan.dateOfPurchase),
                 style = MaterialTheme.typography.caption
             )
         }

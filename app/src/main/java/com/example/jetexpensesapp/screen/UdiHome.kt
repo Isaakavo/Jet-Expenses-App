@@ -17,8 +17,6 @@ import com.example.jetexpensesapp.components.UdisList
 @Composable
 fun UdiHome(viewModel: UdiViewModel = hiltViewModel()) {
     Column {
-
         UdisList(viewModel)
-
     }
 }
