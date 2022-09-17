@@ -16,6 +16,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -37,7 +39,13 @@ class UdiViewModel @Inject constructor(private val repository: UdiRepository) : 
     init {
         getUdiForToday(LocalDateTime.now())
         viewModelScope.launch(Dispatchers.IO) {
-            _dataFromDb.value = RetirementData().load()
+            repository.getAllUdis().distinctUntilChanged().collect { udis ->
+                if (udis.isEmpty()) {
+                    Log.d("Empty", "Empty list")
+                } else {
+                    _dataFromDb.value = udis
+                }
+            }
         }
     }
 
@@ -55,7 +63,6 @@ class UdiViewModel @Inject constructor(private val repository: UdiRepository) : 
         }
     }
 
-    private fun getRetirementObjFromDb() {
-
-    }
+    fun addUdi(retirementPlan: RetirementPlan) =
+        viewModelScope.launch { repository.addUdi(retirementPlan) }
 }

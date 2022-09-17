@@ -85,6 +85,7 @@ fun AddRetirementEntry(viewModel: UdiViewModel = hiltViewModel()) {
                     RetirementButton(text = "Agregar", onClick = {
                         if (amount.isNotEmpty() && amount != "0") {
                             // add to viewmodel
+                            viewModel.addUdi(retirement)
                         }
                     })
                 }
