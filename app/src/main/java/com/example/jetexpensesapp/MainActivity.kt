@@ -4,11 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.jetexpensesapp.screen.UdiHome
 import com.example.jetexpensesapp.ui.theme.JetExpensesAppTheme
@@ -25,7 +27,28 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    UdiHome()
+                    Scaffold(
+                        topBar = {
+                            TopAppBar(title = {
+                                Text(text = stringResource(id = R.string.app_name))
+                            }, actions = {
+                                Icon(
+                                    imageVector = Icons.Rounded.Notifications,
+                                    contentDescription = "Icon"
+                                )
+                            })
+                        },
+                        floatingActionButton = {
+                            FloatingActionButton(onClick = { /*TODO*/ }) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = "Crear nota"
+                                )
+                            }
+                        }
+                    ) {
+                        UdiHome()
+                    }
                 }
             }
         }
