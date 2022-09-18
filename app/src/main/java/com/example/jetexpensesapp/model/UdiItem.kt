@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class UdiItem(
     @SerializedName("dato")
-    val data: String,
+    val udiValue: String,
     @SerializedName("fecha")
     val date: String
 )

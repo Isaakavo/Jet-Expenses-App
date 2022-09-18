@@ -48,8 +48,8 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     ) {
-                        UdiHome()
-                        //AddRetirementEntry()
+                        //UdiHome()
+                        AddRetirementEntry()
                     }
                 }
             }
