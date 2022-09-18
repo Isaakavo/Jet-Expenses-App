@@ -21,3 +21,7 @@ fun formatStringToDate(str: String): LocalDate {
     val format = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.getDefault())
     return LocalDate.parse(str, format)
 }
+
+fun checkNegativeNumber(quantity: Double): Double {
+    return if (quantity < 0) 0.0 else quantity
+}
