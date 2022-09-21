@@ -28,6 +28,7 @@ class UdiRepository @Inject constructor(
             dataOrException.data = api.getUdiForToday(formatted, formatted).bmx.series[0].datos[0]
             if (dataOrException.data.toString().isNotEmpty()) dataOrException.loading = false
         } catch (e: Exception) {
+            dataOrException.e = e
             Log.d("Repository", "getUdiForToday ${e.localizedMessage}")
         }
         return dataOrException

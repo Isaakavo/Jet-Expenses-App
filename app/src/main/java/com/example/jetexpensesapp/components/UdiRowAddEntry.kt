@@ -24,22 +24,32 @@ fun UdiRowAddEntry(
     content: String,
     fontSize: TextUnit = 18.sp
 ) {
-    Surface(
-        Modifier
-            .padding(top = 4.dp)
-            .clip(RoundedCornerShape(6.dp))
-            .fillMaxWidth(),
-        elevation = 12.dp
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .padding(start = 16.dp, end = 16.dp)
+            .fillMaxWidth()
     ) {
+        Surface(
+            Modifier
+                .padding(top = 4.dp)
+                .clip(RoundedCornerShape(6.dp))
+                .fillMaxWidth(),
+            elevation = 12.dp
+        ) {
+
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.body1,
                     fontSize = fontSize,
                     modifier = Modifier
-                        .padding(start = 4.dp).fillMaxWidth(0.5f)
+                        .padding(start = 4.dp)
+                        .fillMaxWidth(0.5f)
                 )
                 Text(
                     text = content,
@@ -49,6 +59,7 @@ fun UdiRowAddEntry(
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
+        }
     }
 }
 

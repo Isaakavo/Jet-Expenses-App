@@ -1,13 +1,21 @@
 package com.example.jetexpensesapp.screen
 
+import android.app.DatePickerDialog
 import android.util.Log
+import android.widget.DatePicker
 import android.widget.Toast
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +36,7 @@ import com.example.jetexpensesapp.utils.checkNegativeNumber
 import com.example.jetexpensesapp.utils.formatDateForRequest
 import com.example.jetexpensesapp.utils.formatStringToDate
 import java.time.LocalDateTime
+import java.util.*
 
 @Composable
 fun AddRetirementEntry(viewModel: UdiViewModel = hiltViewModel()) {
@@ -63,9 +72,51 @@ fun AddRetirementEntry(viewModel: UdiViewModel = hiltViewModel()) {
         udiValueInMoneyCommission = checkNegativeNumber(udiValueInMoneyCommission)
     )
 
-    Column(Modifier.padding(40.dp)) {
+    // Initializing a Calendar
+    val mCalendar = Calendar.getInstance()
+
+    // Fetching current year, month and day
+    val mYear = mCalendar.get(Calendar.YEAR)
+    val mMonth = mCalendar.get(Calendar.MONTH)
+    val mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
+
+    mCalendar.time = Date()
+
+    val mDatePickerDialog = DatePickerDialog(
+        context,
+        { _: DatePicker, year: Int, month: Int, mDayOfMonth: Int ->
+            var monthTemp = "${month + 1}"
+            var dayTemp = "$mDayOfMonth"
+            if (!monthTemp.matches(Regex("(0[1-9]|[12][0-9]|3[01])"))) {
+                monthTemp = "0${month + 1}"
+            }
+            if (!dayTemp.matches(Regex("(0[1-9]|[12][0-9]|3[01])"))) {
+                dayTemp = "0$dayTemp"
+            }
+            date = "$year-${monthTemp}-$dayTemp"
+            viewModel.getUdiForToday(formatStringToDate(date).atStartOfDay())
+        }, mYear, mMonth, mDay
+    )
+    //mDatePickerDialog.datePicker.maxDate = mDay.plus(5L)
+
+    if (viewModel.udiFromApi.loading == true) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            CircularProgressIndicator()
+        }
+        Log.d("Loading", "loading...")
+    } else if (viewModel.udiFromApi.e != null) {
+        Card() {
+            Text(text = "Something went wrong!!")
+        }
+    } else {
         Surface(
-            modifier = Modifier.padding(4.dp),
+            modifier = Modifier.padding(top = 15.dp, start = 25.dp, end = 25.dp),
             shape = RoundedCornerShape(10.dp),
             elevation = 5.dp
         ) {
@@ -73,7 +124,8 @@ fun AddRetirementEntry(viewModel: UdiViewModel = hiltViewModel()) {
                 Modifier
                     .padding(14.dp)
                     .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
                 RetirementInputText(
                     text = amount,
@@ -83,9 +135,10 @@ fun AddRetirementEntry(viewModel: UdiViewModel = hiltViewModel()) {
                         amount = if (amount == "0") "" else it
                     })
                 RetirementInputText(
-                    text = dateSupp,
+                    text = date,
                     label = "Fecha del cargo",
-                    modifier = Modifier.padding(top = 6.dp),
+                    modifier = Modifier
+                        .padding(top = 6.dp),
                     onTextChange = {
                         if (it.length == 10) {
                             date = it
@@ -93,44 +146,45 @@ fun AddRetirementEntry(viewModel: UdiViewModel = hiltViewModel()) {
                             viewModel.getUdiForToday(formatStringToDate(it).atStartOfDay())
                         } else {
                             if (it.length <= 10 && dateSupp.length <= 10) {
-                                dateSupp = it
+                                date = it
                             }
                         }
-                    })
+                    },
+                    interactionSource = remember { MutableInteractionSource() }
+                        .also { interactionSource ->
+                            LaunchedEffect(interactionSource) {
+                                interactionSource.interactions.collect {
+                                    if (it is PressInteraction.Release) {
+                                        // works like onClick
+                                        mDatePickerDialog.show()
+                                    }
+                                }
+                            }
+                        }
+                )
+
+                UdiEntryDetails(
+                    retirementPlan = retirement
+                )
+
+                RetirementButton(text = "Agregar", onClick = {
+                    if (amount.isNotEmpty() && amount != "0") {
+                        // add to viewmodel
+                        viewModel.addUdi(retirement)
+                        Toast.makeText(context, "UDI Added!", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Por favor, agregue un total",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                })
             }
-        }
-        Column(
-            Modifier
-                .padding(top = 16.dp)
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Surface(
-                modifier = Modifier.padding(4.dp),
-                shape = RoundedCornerShape(10.dp),
-                elevation = 5.dp
-            ) {
-                if (viewModel.udiFromApi.loading == true) {
-                    CircularProgressIndicator()
-                    Log.d("Loading", "loading...")
-                } else {
-                    UdiEntryDetails(
-                        retirementPlan = retirement
-                    )
-                }
-            }
-            RetirementButton(text = "Agregar", onClick = {
-                if (amount.isNotEmpty() && amount != "0") {
-                    // add to viewmodel
-                    viewModel.addUdi(retirement)
-                    Toast.makeText(context, "UDI Added!", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(context, "Por favor, agregue un total", Toast.LENGTH_LONG).show()
-                }
-            })
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

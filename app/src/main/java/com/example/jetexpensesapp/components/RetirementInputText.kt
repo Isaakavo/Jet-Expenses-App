@@ -1,7 +1,9 @@
 package com.example.jetexpensesapp.components
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
@@ -19,6 +21,7 @@ fun RetirementInputText(
     text: String,
     label: String,
     maxLine: Int = 1,
+    enabled: Boolean = true,
     keyboardType: KeyboardType = KeyboardType.Text,
     visualTransformation: VisualTransformation = VisualTransformation { transform ->
         TransformedText(
@@ -26,16 +29,18 @@ fun RetirementInputText(
             OffsetMapping.Identity
         )
     },
+    interactionSource: MutableInteractionSource = MutableInteractionSource() ,
     onTextChange: (String) -> Unit,
     onImeAction: () -> Unit = {}
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    TextField(
+    OutlinedTextField(
         value = text,
         onValueChange = onTextChange,
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = Color.Transparent
         ),
+        enabled = enabled,
         maxLines = maxLine,
         label = { Text(text = label) },
         keyboardOptions = KeyboardOptions.Default.copy(
@@ -47,7 +52,8 @@ fun RetirementInputText(
             keyboardController?.hide()
         },
         modifier = modifier,
-        visualTransformation = visualTransformation
+        visualTransformation = visualTransformation,
+        interactionSource = interactionSource
 
     )
 }
