@@ -3,16 +3,15 @@ package com.example.jetexpensesapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.jetexpensesapp.navigation.ExpensesNavigation
-import com.example.jetexpensesapp.screen.udis.AddRetirementEntryScreen
 import com.example.jetexpensesapp.ui.theme.JetExpensesAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,25 +22,32 @@ class MainActivity : ComponentActivity() {
         setContent {
             JetExpensesAppTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    Scaffold {
-//                        //UdiHome()
-//                        AddRetirementEntryScreen()
-                        ExpensesNavigation()
-                    }
-                }
+                ExpensesApp()
             }
         }
     }
 }
 
+@Composable
+fun ExpensesApp() {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colors.background
+    ) {
+        Column(
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            ExpensesNavigation()
+        }
+    }
+}
 
-//@Preview(showBackground = true)
+
+@Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     JetExpensesAppTheme {
+        ExpensesApp()
     }
 }
