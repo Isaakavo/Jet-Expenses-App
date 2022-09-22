@@ -11,7 +11,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.jetexpensesapp.components.RetirementButton
 import com.example.jetexpensesapp.components.UdisList
-import com.example.jetexpensesapp.navigation.ExpensesScreens
+import com.example.jetexpensesapp.navigation.Screen
 
 @Composable
 fun UdiHomeScreen(navController: NavController, viewModel: UdiViewModel = hiltViewModel()) {
@@ -19,7 +19,7 @@ fun UdiHomeScreen(navController: NavController, viewModel: UdiViewModel = hiltVi
         RetirementButton(text = "Agregar entrada",
             modifier = Modifier.clip(RoundedCornerShape(35.dp)),
             onClick = {
-            navController.navigate(ExpensesScreens.AddRetirementEntryScreen.name)
+            navController.navigate(Screen.AddRetirementEntryScreen.route)
         })
 
         UdisList(viewModel)

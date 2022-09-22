@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">JetExpensesApp</string>
+    <string name="udi_home">UdiHomeScreen</string>
+    <string name="add_retirement_entry">AddRetirementEntry</string>
 </resources>
