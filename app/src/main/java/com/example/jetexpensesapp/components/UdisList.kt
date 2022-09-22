@@ -4,7 +4,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import com.example.jetexpensesapp.screen.UdiViewModel
+import com.example.jetexpensesapp.screen.udis.UdiViewModel
 
 @Composable
 fun UdisList(viewModel: UdiViewModel) {

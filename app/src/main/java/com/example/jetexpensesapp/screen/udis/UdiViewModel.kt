@@ -1,14 +1,12 @@
-package com.example.jetexpensesapp.screen
+package com.example.jetexpensesapp.screen.udis
 
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetexpensesapp.data.DataOrException
-import com.example.jetexpensesapp.data.RetirementData
 import com.example.jetexpensesapp.model.RetirementPlan
 import com.example.jetexpensesapp.model.UdiItem
 import com.example.jetexpensesapp.repository.UdiRepository
@@ -16,7 +14,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
