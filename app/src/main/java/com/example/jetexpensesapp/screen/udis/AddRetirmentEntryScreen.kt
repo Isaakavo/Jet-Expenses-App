@@ -17,6 +17,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.jetexpensesapp.components.RetirementButton
 import com.example.jetexpensesapp.components.RetirementInputText
 import com.example.jetexpensesapp.components.UdiEntryDetails
@@ -29,7 +30,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Composable
-fun AddRetirementEntry(viewModel: UdiViewModel = hiltViewModel()) {
+fun AddRetirementEntryScreen(navController: NavController, viewModel: UdiViewModel = hiltViewModel()) {
 
     var amount by remember {
         mutableStateOf("")
@@ -162,6 +163,7 @@ fun AddRetirementEntry(viewModel: UdiViewModel = hiltViewModel()) {
                         // add to viewmodel
                         viewModel.addUdi(retirement)
                         Toast.makeText(context, "UDI Added!", Toast.LENGTH_SHORT).show()
+                        navController.popBackStack()
                     } else {
                         Toast.makeText(
                             context,
@@ -173,11 +175,4 @@ fun AddRetirementEntry(viewModel: UdiViewModel = hiltViewModel()) {
             }
         }
     }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun AddRetirementEntryPreview() {
-    AddRetirementEntry()
 }

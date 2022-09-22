@@ -11,7 +11,8 @@ import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.example.jetexpensesapp.screen.udis.AddRetirementEntry
+import com.example.jetexpensesapp.navigation.ExpensesNavigation
+import com.example.jetexpensesapp.screen.udis.AddRetirementEntryScreen
 import com.example.jetexpensesapp.ui.theme.JetExpensesAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,28 +27,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Scaffold(
-                        topBar = {
-                            TopAppBar(title = {
-                                Text(text = stringResource(id = R.string.app_name))
-                            }, actions = {
-                                Icon(
-                                    imageVector = Icons.Rounded.Notifications,
-                                    contentDescription = "Icon"
-                                )
-                            })
-                        },
-                        floatingActionButton = {
-                            FloatingActionButton(onClick = { /*TODO*/ }) {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = "Crear nota"
-                                )
-                            }
-                        }
-                    ) {
-                        //UdiHome()
-                        AddRetirementEntry()
+                    Scaffold {
+//                        //UdiHome()
+//                        AddRetirementEntryScreen()
+                        ExpensesNavigation()
                     }
                 }
             }
