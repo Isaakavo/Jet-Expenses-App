@@ -25,3 +25,7 @@ fun formatStringToDate(str: String): LocalDate {
 fun checkNegativeNumber(quantity: Double): Double {
     return if (quantity < 0) 0.0 else quantity
 }
+
+fun formatNumber(number: Double?): String {
+    return if (number != null) String.format("%.2f", number) else ""
+}

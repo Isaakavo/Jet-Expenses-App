@@ -22,15 +22,14 @@ import androidx.compose.ui.unit.dp
 import com.example.jetexpensesapp.data.RetirementData
 import com.example.jetexpensesapp.model.RetirementPlan
 import com.example.jetexpensesapp.utils.formatDate
+import com.example.jetexpensesapp.utils.formatNumber
 
 @Composable
 fun GenericRow(
     retirementPlan: RetirementPlan? = null,
     modifier: Modifier = Modifier.fillMaxWidth(),
     shape: Shape = RectangleShape,
-    elevation: Dp = 12.dp,
-    icon: ImageVector = Icons.Filled.ShowChart,
-    rightIcon: @Composable () -> Unit
+    elevation: Dp = 6.dp
 ) {
     Surface(
         modifier,
@@ -53,52 +52,43 @@ fun GenericRow(
                 )
             }
             Row(
-                modifier = modifier,
-                horizontalArrangement = Arrangement.SpaceAround
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start
             ) {
-                Box(
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = icon, contentDescription = null,
-                    )
-                }
                 Column(
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
                     Row(
+                        modifier = modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         Text(
                             text = "Cobro $${retirementPlan?.purchaseTotal}",
-                            modifier = Modifier
-                                .fillMaxWidth(0.5f)
+                            Modifier
+                                .fillMaxWidth(0.3f)
                         )
                         Text(
-                            text = "Udis ${retirementPlan?.udiValue}",
+                            text = "Valor UDI ${retirementPlan?.udiValue}",
+                            modifier = Modifier
+                                .fillMaxWidth(0.3f)
+                        )
+                        Text(
+                            text = "Total UDIS ${formatNumber(retirementPlan?.totalOfUdi)}",
                             modifier = Modifier
                                 .fillMaxWidth(0.5f)
-                                .wrapContentHeight()
                         )
                     }
                 }
-                Box(
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                    contentAlignment = Alignment.Center
-                ) {
-                    rightIcon()
-                }
             }
         }
-        Divider(
-            startIndent = 8.dp,
-            color = Color.LightGray,
-            modifier = Modifier.fillMaxWidth().padding(bottom = 45.dp),
-            thickness = 1.dp
-        )
     }
+//    Divider(
+//        color = Color.LightGray,
+//        startIndent = 16.dp,
+//        modifier = Modifier.padding(end = 16.dp)
+//    )
 }
 
 @Preview(showBackground = true)
@@ -106,7 +96,5 @@ fun GenericRow(
 fun GenericRowPreview() {
     GenericRow(
         retirementPlan = RetirementData().load()[0]
-    ) {
-        Icon(imageVector = Icons.Filled.ArrowRight, contentDescription = null)
-    }
+    )
 }

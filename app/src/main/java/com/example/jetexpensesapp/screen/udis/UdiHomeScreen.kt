@@ -1,6 +1,8 @@
 package com.example.jetexpensesapp.screen.udis
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,12 +18,19 @@ import com.example.jetexpensesapp.navigation.Screen
 @Composable
 fun UdiHomeScreen(navController: NavController, viewModel: UdiViewModel = hiltViewModel()) {
     Column(horizontalAlignment = Alignment.End) {
-        RetirementButton(text = "Agregar entrada",
-            modifier = Modifier.clip(RoundedCornerShape(35.dp)),
-            onClick = {
-            navController.navigate(Screen.AddRetirementEntryScreen.route)
-        })
-
         UdisList(viewModel)
+
+        Row(
+            modifier = Modifier
+                .align(Alignment.End)
+                .padding(top = 15.dp)
+        ) {
+            RetirementButton(text = "Agregar entrada",
+                modifier = Modifier.clip(RoundedCornerShape(35.dp)),
+                onClick = {
+                    navController.navigate(Screen.AddRetirementEntryScreen.route)
+                })
+        }
+
     }
 }
