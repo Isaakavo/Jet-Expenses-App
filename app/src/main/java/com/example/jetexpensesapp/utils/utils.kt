@@ -8,7 +8,7 @@ import java.util.*
 
 fun formatDate(time: LocalDateTime): String {
     //val date = Date(time)
-    val format = DateTimeFormatter.ofPattern("dd-MM-yyyy", Locale.getDefault())
+    val format = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.getDefault())
     return time.format(format)
 }
 

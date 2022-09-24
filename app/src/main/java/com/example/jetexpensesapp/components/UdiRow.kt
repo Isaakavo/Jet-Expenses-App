@@ -68,6 +68,5 @@ fun UdiRow(
                 style = MaterialTheme.typography.subtitle1
             )
         }
-
     }
 }
