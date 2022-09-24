@@ -26,6 +26,7 @@ import com.example.jetexpensesapp.utils.formatNumber
 
 @Composable
 fun GenericRow(
+
     retirementPlan: RetirementPlan? = null,
     modifier: Modifier = Modifier.fillMaxWidth(),
     shape: Shape = RectangleShape,

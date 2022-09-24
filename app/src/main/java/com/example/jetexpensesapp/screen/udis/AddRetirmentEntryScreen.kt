@@ -30,7 +30,10 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Composable
-fun AddRetirementEntryScreen(navController: NavController, viewModel: UdiViewModel = hiltViewModel()) {
+fun AddRetirementEntryScreen(
+    navController: NavController,
+    viewModel: UdiViewModel = hiltViewModel()
+) {
 
     var amount by remember {
         mutableStateOf("")
@@ -106,73 +109,74 @@ fun AddRetirementEntryScreen(navController: NavController, viewModel: UdiViewMod
             Text(text = "Something went wrong!!")
         }
     } else {
-        Surface(
-            modifier = Modifier.padding(top = 15.dp, start = 25.dp, end = 25.dp),
-            shape = RoundedCornerShape(10.dp),
-            elevation = 5.dp
-        ) {
-            Column(
-                Modifier
-                    .padding(14.dp)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+        Column() {
+            Surface(
+                modifier = Modifier.padding(top = 15.dp, start = 25.dp, end = 25.dp),
+                shape = RoundedCornerShape(10.dp),
+                elevation = 5.dp
             ) {
-                RetirementInputText(
-                    text = amount,
-                    label = "Total comprado",
-                    keyboardType = KeyboardType.Number,
-                    onTextChange = {
-                        amount = if (amount == "0") "" else it
-                    })
-                RetirementInputText(
-                    text = date,
-                    label = "Fecha del cargo",
-                    modifier = Modifier
-                        .padding(top = 6.dp),
-                    onTextChange = {
-                        if (it.length == 10) {
-                            date = it
-                            dateSupp = it
-                            viewModel.getUdiForToday(formatStringToDate(it).atStartOfDay())
-                        } else {
-                            if (it.length <= 10 && dateSupp.length <= 10) {
+                Column(
+                    Modifier
+                        .padding(14.dp)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    RetirementInputText(
+                        text = amount,
+                        label = "Total comprado",
+                        keyboardType = KeyboardType.Number,
+                        onTextChange = {
+                            amount = if (amount == "0") "" else it
+                        })
+                    RetirementInputText(
+                        text = date,
+                        label = "Fecha del cargo",
+                        modifier = Modifier
+                            .padding(top = 6.dp),
+                        onTextChange = {
+                            if (it.length == 10) {
                                 date = it
+                                dateSupp = it
+                                viewModel.getUdiForToday(formatStringToDate(it).atStartOfDay())
+                            } else {
+                                if (it.length <= 10 && dateSupp.length <= 10) {
+                                    date = it
+                                }
                             }
-                        }
-                    },
-                    interactionSource = remember { MutableInteractionSource() }
-                        .also { interactionSource ->
-                            LaunchedEffect(interactionSource) {
-                                interactionSource.interactions.collect {
-                                    if (it is PressInteraction.Release) {
-                                        // works like onClick
-                                        mDatePickerDialog.show()
+                        },
+                        interactionSource = remember { MutableInteractionSource() }
+                            .also { interactionSource ->
+                                LaunchedEffect(interactionSource) {
+                                    interactionSource.interactions.collect {
+                                        if (it is PressInteraction.Release) {
+                                            // works like onClick
+                                            mDatePickerDialog.show()
+                                        }
                                     }
                                 }
                             }
+                    )
+
+                    RetirementButton(text = "Agregar", onClick = {
+                        if (amount.isNotEmpty() && amount != "0") {
+                            // add to viewmodel
+                            viewModel.addUdi(retirement)
+                            Toast.makeText(context, "UDI Added!", Toast.LENGTH_SHORT).show()
+                            navController.popBackStack()
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Por favor, agregue un total",
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
-                )
-
-                UdiEntryDetails(
-                    retirementPlan = retirement
-                )
-
-                RetirementButton(text = "Agregar", onClick = {
-                    if (amount.isNotEmpty() && amount != "0") {
-                        // add to viewmodel
-                        viewModel.addUdi(retirement)
-                        Toast.makeText(context, "UDI Added!", Toast.LENGTH_SHORT).show()
-                        navController.popBackStack()
-                    } else {
-                        Toast.makeText(
-                            context,
-                            "Por favor, agregue un total",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                })
+                    })
+                }
             }
+            UdiEntryDetails(
+                retirementPlan = retirement
+            )
         }
     }
 }
