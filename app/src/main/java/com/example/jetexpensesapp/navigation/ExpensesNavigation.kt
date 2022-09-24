@@ -1,15 +1,11 @@
 package com.example.jetexpensesapp.navigation
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -25,7 +21,8 @@ import com.example.jetexpensesapp.screen.udis.UdiViewModel
 fun ExpensesNavigation() {
     val navController = rememberNavController()
     val items = listOf(
-        Screen.UdiHomeScreen
+        Screen.UdiHomeScreen,
+//        Screen.AddRetirementEntryScreen
     )
     Scaffold(
         bottomBar = {
@@ -34,7 +31,8 @@ fun ExpensesNavigation() {
                 val currentDestination = navBackStackEntry?.destination
                 items.forEach { screen ->
                     BottomNavigationItem(
-                        icon = { Icon(Icons.Filled.AccountBox, contentDescription = null) },
+                        icon = { screen.icon?.let { Icon(it, contentDescription = null) } },
+                        label = { Text(text = stringResource(id = screen.resourceId)) },
                         selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                         onClick = {
                             navController.navigate(screen.route) {
