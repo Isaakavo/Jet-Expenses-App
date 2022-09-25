@@ -9,13 +9,11 @@ import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.jetexpensesapp.components.RetirementButton
 import com.example.jetexpensesapp.components.UdiListModalSheet
-import com.example.jetexpensesapp.navigation.Screen
+import com.example.jetexpensesapp.components.shared.GlobalDetail
 
 @Composable
 fun UdiHomeScreen(navController: NavController, viewModel: UdiViewModel = hiltViewModel()) {
@@ -25,14 +23,9 @@ fun UdiHomeScreen(navController: NavController, viewModel: UdiViewModel = hiltVi
     ) {
         Row(
             modifier = Modifier
-                .align(Alignment.End)
-                .padding(top = 15.dp)
+                .padding(top = 10.dp, start = 15.dp, end = 15.dp, bottom = 10.dp)
         ) {
-            RetirementButton(text = "Agregar entrada",
-                modifier = Modifier.clip(RoundedCornerShape(35.dp)),
-                onClick = {
-                    navController.navigate(Screen.AddRetirementEntryScreen.route)
-                })
+            GlobalDetail()
         }
         Card(
             modifier = Modifier.padding(start = 15.dp, end = 15.dp),
