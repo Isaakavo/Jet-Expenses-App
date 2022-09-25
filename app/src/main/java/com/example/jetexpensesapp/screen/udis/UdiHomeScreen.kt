@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,6 +34,13 @@ fun UdiHomeScreen(navController: NavController, viewModel: UdiViewModel = hiltVi
                     navController.navigate(Screen.AddRetirementEntryScreen.route)
                 })
         }
-        UdiListModalSheet(viewModel = viewModel)
+        Card(
+            modifier = Modifier.padding(start = 15.dp, end = 15.dp),
+            shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
+            elevation = 5.dp
+        ) {
+            UdiListModalSheet(viewModel = viewModel)
+        }
+
     }
 }

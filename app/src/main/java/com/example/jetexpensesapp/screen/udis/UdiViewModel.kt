@@ -40,7 +40,8 @@ class UdiViewModel @Inject constructor(private val repository: UdiRepository) : 
                 if (udis.isEmpty()) {
                     Log.d("Empty", "Empty list")
                 } else {
-                    _dataFromDb.value = udis
+                    val ordered = udis.sortedBy { it.dateOfPurchase }
+                    _dataFromDb.value = ordered
                 }
             }
         }

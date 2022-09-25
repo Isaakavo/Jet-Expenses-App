@@ -13,9 +13,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.jetexpensesapp.components.shared.DateRow
 import com.example.jetexpensesapp.components.shared.GenericRow
 import com.example.jetexpensesapp.model.RetirementPlan
 import com.example.jetexpensesapp.screen.udis.UdiViewModel
+import com.example.jetexpensesapp.utils.formatDate
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -33,6 +35,8 @@ fun UdiListModalSheet(
     val retirementData = remember {
         mutableStateOf(RetirementPlan())
     }
+
+    val dateSet = mutableSetOf<String>()
 
     Log.d("Modal", "value of remember ${showModalSheet}")
 
@@ -59,18 +63,21 @@ fun UdiListModalSheet(
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
     ) {
         LazyColumn(
-            modifier = Modifier.fillMaxHeight()
+            modifier = Modifier.fillMaxHeight(),
         ) {
             items(udisObj) { udiObj ->
+                val formattedDate = formatDate(udiObj.dateOfPurchase)
+                if (!dateSet.contains(formattedDate)) {
+                    DateRow(date = formattedDate, modifier = Modifier.padding(end = 6.dp))
+                }
                 GenericRow(
                     retirementPlan = udiObj,
                     retirementData = retirementData,
                     sheetState = bottomSheetState,
                     showModalSheet = showModalSheet,
-                    modifier = Modifier.padding(top = 5.dp, start = 10.dp, end = 10.dp),
-                    elevation = 6.dp,
-                    shape = RoundedCornerShape(15.dp)
+                    modifier = Modifier.padding(top = 5.dp, start = 10.dp, end = 10.dp)
                 )
+                dateSet.add(formattedDate)
             }
         }
 
