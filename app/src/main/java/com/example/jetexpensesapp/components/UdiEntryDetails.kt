@@ -21,7 +21,8 @@ import com.example.jetexpensesapp.utils.formatDate
 @Composable
 fun UdiEntryDetails(
     retirementPlan: RetirementPlan,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    editOptions: @Composable () -> Unit = {}
 ) {
     Surface(
         modifier = modifier,
@@ -77,7 +78,9 @@ fun UdiEntryDetails(
                 title = "Fecha de Compra",
                 content = formatDate(retirementPlan.dateOfPurchase)
             )
+            editOptions()
         }
+
     }
 }
 
@@ -85,5 +88,5 @@ fun UdiEntryDetails(
 @Composable
 fun previewList() {
     val udisObj = RetirementData().load()
-    UdiEntryDetails(retirementPlan = udisObj[0])
+    UdiEntryDetails(retirementPlan = udisObj[0]) {}
 }

@@ -1,15 +1,11 @@
 package com.example.jetexpensesapp.components
 
 import android.util.Log
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -18,7 +14,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.jetexpensesapp.components.shared.GenericRow
-import com.example.jetexpensesapp.data.RetirementData
 import com.example.jetexpensesapp.model.RetirementPlan
 import com.example.jetexpensesapp.screen.udis.UdiViewModel
 
@@ -44,7 +39,21 @@ fun UdiBottomSheetModalDetails(
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
         sheetContent = {
-            UdiEntryDetails(retirementPlan = retirementData.value, modifier = Modifier)
+            UdiEntryDetails(retirementPlan = retirementData.value, modifier = Modifier) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Button(modifier = Modifier.weight(0.5f),
+                        onClick = { /*TODO*/ }) {
+                        Text(text = "Borrar")
+                    }
+                    Button(modifier = Modifier.weight(0.5f),
+                        onClick = { /*TODO*/ }) {
+                        Text(text = "Editar")
+                    }
+                }
+            }
         },
         sheetElevation = 10.dp,
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
