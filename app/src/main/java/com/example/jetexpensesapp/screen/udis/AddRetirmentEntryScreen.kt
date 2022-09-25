@@ -175,7 +175,10 @@ fun AddRetirementEntryScreen(
                 }
             }
             UdiEntryDetails(
-                retirementPlan = retirement
+                retirementPlan = retirement,
+                modifier = Modifier
+                    .padding(top = 15.dp)
+                    .fillMaxHeight()
             )
         }
     }

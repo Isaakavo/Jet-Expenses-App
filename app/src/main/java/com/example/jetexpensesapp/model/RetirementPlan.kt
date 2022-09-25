@@ -10,19 +10,19 @@ data class RetirementPlan(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     @ColumnInfo(name = "purchase_date")
-    val dateOfPurchase: LocalDateTime,
+    val dateOfPurchase: LocalDateTime = LocalDateTime.now(),
     @ColumnInfo(name = "purchase_total")
-    var purchaseTotal: Double,
+    var purchaseTotal: Double = 0.0,
     @ColumnInfo(name = "udi_value")
-    val udiValue: Double,
+    val udiValue: Double = 0.0,
     @ColumnInfo(name = "udi_total")
-    val totalOfUdi: Double,
+    val totalOfUdi: Double = 0.0,
     @ColumnInfo(name = "mine_udi")
-    val mineUdi: Double,
+    val mineUdi: Double = 0.0,
     @ColumnInfo(name = "udi_commission")
-    val udiCommission: Double,
+    val udiCommission: Double = 0.0,
     @ColumnInfo(name = "udi_money")
-    val udiValueInMoney: Double,
+    val udiValueInMoney: Double = 0.0,
     @ColumnInfo(name = "commission_money")
-    val udiValueInMoneyCommission: Double
+    val udiValueInMoneyCommission: Double = 0.0
 )

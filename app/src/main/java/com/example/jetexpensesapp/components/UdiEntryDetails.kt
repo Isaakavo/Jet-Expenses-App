@@ -20,16 +20,15 @@ import com.example.jetexpensesapp.utils.formatDate
 
 @Composable
 fun UdiEntryDetails(
-    retirementPlan: RetirementPlan
+    retirementPlan: RetirementPlan,
+    modifier: Modifier = Modifier
 ) {
     Surface(
-        modifier = Modifier
-            .padding(top = 15.dp)
-            .fillMaxHeight(),
+        modifier = modifier,
         shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
         elevation = 10.dp
     ) {
-        Column() {
+        Column {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
