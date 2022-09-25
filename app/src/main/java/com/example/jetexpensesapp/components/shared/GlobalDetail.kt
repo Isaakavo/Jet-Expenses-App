@@ -13,10 +13,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.jetexpensesapp.components.RetirementButton
+import com.example.jetexpensesapp.navigation.Screen
 
 @Composable
-fun GlobalDetail() {
+fun GlobalDetail(
+    navController: NavController
+) {
     Column() {
         Row() {
             Card(
@@ -101,11 +105,15 @@ fun GlobalDetail() {
             }
         }
         Row(
-            modifier = Modifier.fillMaxWidth().padding(end = 10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(end = 10.dp),
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.End
         ) {
-            RetirementButton(text = "Agregar", onClick = { /*TODO*/ })
+            RetirementButton(
+                text = "Agregar",
+                onClick = { navController.navigate(Screen.AddRetirementEntryScreen.route) })
         }
     }
 }
@@ -113,5 +121,5 @@ fun GlobalDetail() {
 @Preview(showBackground = true)
 @Composable
 fun GlobalDetailPreview() {
-    GlobalDetail()
+    //GlobalDetail()
 }
