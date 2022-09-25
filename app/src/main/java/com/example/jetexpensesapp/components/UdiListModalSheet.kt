@@ -19,7 +19,7 @@ import com.example.jetexpensesapp.screen.udis.UdiViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun UdiBottomSheetModalDetails(
+fun UdiListModalSheet(
     viewModel: UdiViewModel
 ) {
     val udisObj = viewModel.dataFromDb.collectAsState().value

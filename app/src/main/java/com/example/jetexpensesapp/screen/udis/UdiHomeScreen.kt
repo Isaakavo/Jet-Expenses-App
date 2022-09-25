@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.jetexpensesapp.components.RetirementButton
-import com.example.jetexpensesapp.components.UdiBottomSheetModalDetails
+import com.example.jetexpensesapp.components.UdiListModalSheet
 import com.example.jetexpensesapp.navigation.Screen
 
 @Composable
@@ -33,6 +33,6 @@ fun UdiHomeScreen(navController: NavController, viewModel: UdiViewModel = hiltVi
                     navController.navigate(Screen.AddRetirementEntryScreen.route)
                 })
         }
-        UdiBottomSheetModalDetails(viewModel = viewModel)
+        UdiListModalSheet(viewModel = viewModel)
     }
 }
