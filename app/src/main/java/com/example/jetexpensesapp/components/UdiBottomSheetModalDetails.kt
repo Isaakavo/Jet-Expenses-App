@@ -42,7 +42,6 @@ fun UdiBottomSheetModalDetails(
     Log.d("Modal", "value of remember ${showModalSheet}")
 
     ModalBottomSheetLayout(
-        modifier = Modifier.fillMaxHeight(),
         sheetState = bottomSheetState,
         sheetContent = {
             UdiEntryDetails(retirementPlan = retirementData.value, modifier = Modifier)
@@ -50,7 +49,9 @@ fun UdiBottomSheetModalDetails(
         sheetElevation = 10.dp,
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
     ) {
-        LazyColumn {
+        LazyColumn(
+            modifier = Modifier.fillMaxHeight()
+        ) {
             items(udisObj) { udiObj ->
                 GenericRow(
                     retirementPlan = udiObj,
