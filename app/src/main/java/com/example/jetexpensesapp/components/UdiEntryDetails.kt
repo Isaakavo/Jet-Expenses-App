@@ -3,7 +3,6 @@ package com.example.jetexpensesapp.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -47,35 +46,35 @@ fun UdiEntryDetails(
                 color = Color.Black,
                 startIndent = 10.dp
             )
-            UdiRowAddEntry(
+            UdiRowDetails(
                 title = "Total Comprado",
                 content = "$" + String.format("%.2f", retirementPlan.purchaseTotal)
             )
-            UdiRowAddEntry(
+            UdiRowDetails(
                 title = "Valor de la UDI",
                 content = "$" + retirementPlan.udiValue
             )
-            UdiRowAddEntry(
+            UdiRowDetails(
                 title = "Total de UDIS",
                 content = String.format("%.2f", retirementPlan.totalOfUdi)
             )
-            UdiRowAddEntry(
+            UdiRowDetails(
                 title = "Mis UDIS",
                 content = String.format("%.2f", retirementPlan.mineUdi)
             )
-            UdiRowAddEntry(
+            UdiRowDetails(
                 title = "Comision en UDIS",
                 content = String.format("%.2f", retirementPlan.udiCommission)
             )
-            UdiRowAddEntry(
+            UdiRowDetails(
                 title = "Conversion",
                 content = "$" + String.format("%.2f", retirementPlan.udiValueInMoney)
             )
-            UdiRowAddEntry(
+            UdiRowDetails(
                 title = "Conversion de la comision",
                 content = "$" + String.format("%.2f", retirementPlan.udiValueInMoneyCommission)
             )
-            UdiRowAddEntry(
+            UdiRowDetails(
                 title = "Fecha de Compra",
                 content = formatDate(retirementPlan.dateOfPurchase)
             )
