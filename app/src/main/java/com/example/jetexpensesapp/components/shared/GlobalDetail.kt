@@ -15,10 +15,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.jetexpensesapp.components.RetirementButton
+import com.example.jetexpensesapp.data.UdiGlobalDetails
 import com.example.jetexpensesapp.navigation.Screen
+import com.example.jetexpensesapp.utils.formatMoney
+import com.example.jetexpensesapp.utils.formatNumber
 
 @Composable
 fun GlobalDetail(
+    udisGlobalDetails: UdiGlobalDetails,
     navController: NavController
 ) {
     Column() {
@@ -77,7 +81,7 @@ fun GlobalDetail(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = "$10000",
+                            text = formatMoney(udisGlobalDetails.totalExpend),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Light,
                             style = MaterialTheme.typography.subtitle2,
@@ -85,7 +89,7 @@ fun GlobalDetail(
                             textAlign = TextAlign.Center,
                         )
                         Text(
-                            text = "70000",
+                            text = formatNumber(udisGlobalDetails.udisTotal),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Light,
                             style = MaterialTheme.typography.subtitle2,
@@ -93,7 +97,7 @@ fun GlobalDetail(
                             textAlign = TextAlign.Center
                         )
                         Text(
-                            text = "$120981293",
+                            text = formatMoney(udisGlobalDetails.udisConvertion),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Light,
                             style = MaterialTheme.typography.subtitle2,

@@ -1,6 +1,6 @@
 package com.example.jetexpensesapp.utils
 
-import android.icu.text.SimpleDateFormat
+import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -28,4 +28,12 @@ fun checkNegativeNumber(quantity: Double): Double {
 
 fun formatNumber(number: Double?): String {
     return if (number != null) String.format("%.2f", number) else ""
+}
+
+fun formatMoney(number: Double?): String {
+    val format = NumberFormat.getCurrencyInstance().apply {
+        maximumFractionDigits = 0
+        //currency = Currency.getInstance("MXN")
+    }
+    return if (number != null) format.format(number) else ""
 }

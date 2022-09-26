@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetexpensesapp.data.DataOrException
+import com.example.jetexpensesapp.data.UdiGlobalDetails
 import com.example.jetexpensesapp.model.RetirementPlan
 import com.example.jetexpensesapp.model.UdiItem
 import com.example.jetexpensesapp.repository.UdiRepository
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -33,6 +35,8 @@ class UdiViewModel @Inject constructor(private val repository: UdiRepository) : 
         )
     )
 
+    var globalValues by mutableStateOf<UdiGlobalDetails>(UdiGlobalDetails())
+
     init {
         getUdiForToday(LocalDateTime.now())
         viewModelScope.launch(Dispatchers.IO) {
@@ -42,6 +46,10 @@ class UdiViewModel @Inject constructor(private val repository: UdiRepository) : 
                 } else {
                     val ordered = udis.sortedBy { it.dateOfPurchase }
                     _dataFromDb.value = ordered
+                    withContext(Dispatchers.Main) {
+                        if (globalValues.totalExpend == 0.0 && globalValues.udisTotal == 0.0 && globalValues.udisConvertion == 0.0)
+                            getUdiGlobalDetails()
+                    }
                 }
             }
         }
@@ -55,12 +63,25 @@ class UdiViewModel @Inject constructor(private val repository: UdiRepository) : 
 
             if (udiFromApi.data.toString().isNotEmpty()) {
                 Log.d("viewmodel", "Result from api: $udiFromApi")
-                //udiFromApi.loading = false
                 udiFromApi = udiFromApi.copy(loading = false)
             }
         }
     }
 
-    fun addUdi(retirementPlan: RetirementPlan) =
-        viewModelScope.launch { repository.addUdi(retirementPlan) }
+    fun getUdiGlobalDetails() {
+        _dataFromDb.value.map {
+            globalValues.totalExpend += it.purchaseTotal
+            globalValues.udisTotal += it.totalOfUdi
+        }
+        globalValues.udisConvertion =
+            globalValues.udisTotal * (udiFromApi.data?.udiValue?.toDouble()
+                ?: 0.0)
+    }
+
+    fun addUdi(retirementPlan: RetirementPlan) {
+        viewModelScope.launch {
+            repository.addUdi(retirementPlan)
+        }
+    }
+
 }

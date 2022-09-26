@@ -29,6 +29,7 @@ fun UdiHomeScreen(
     viewModel: UdiViewModel
 ) {
     val udisObj = viewModel.dataFromDb.collectAsState().value
+    val udiGlobalDetails = viewModel.globalValues
     val bottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
@@ -74,7 +75,7 @@ fun UdiHomeScreen(
                 modifier = Modifier
                     .padding(top = 10.dp, start = 15.dp, end = 15.dp, bottom = 10.dp)
             ) {
-                GlobalDetail(navController)
+                GlobalDetail(udiGlobalDetails, navController)
             }
 
             Card(
