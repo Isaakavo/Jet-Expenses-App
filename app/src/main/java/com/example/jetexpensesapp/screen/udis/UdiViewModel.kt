@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -35,7 +34,8 @@ class UdiViewModel @Inject constructor(private val repository: UdiRepository) : 
         )
     )
 
-    var globalValues by mutableStateOf<UdiGlobalDetails>(UdiGlobalDetails())
+    var globalValues by mutableStateOf(UdiGlobalDetails(0.0, 0.0, 0.0))
+    var dataFromDbSize = _dataFromDb.value.size
 
     init {
         getUdiForToday(LocalDateTime.now())
@@ -46,10 +46,6 @@ class UdiViewModel @Inject constructor(private val repository: UdiRepository) : 
                 } else {
                     val ordered = udis.sortedBy { it.dateOfPurchase }
                     _dataFromDb.value = ordered
-                    withContext(Dispatchers.Main) {
-                        if (globalValues.totalExpend == 0.0 && globalValues.udisTotal == 0.0 && globalValues.udisConvertion == 0.0)
-                            getUdiGlobalDetails()
-                    }
                 }
             }
         }
@@ -68,20 +64,17 @@ class UdiViewModel @Inject constructor(private val repository: UdiRepository) : 
         }
     }
 
-    fun getUdiGlobalDetails() {
+    private fun getUdiGlobalDetails() {
         _dataFromDb.value.map {
             globalValues.totalExpend += it.purchaseTotal
             globalValues.udisTotal += it.totalOfUdi
         }
-        globalValues.udisConvertion =
-            globalValues.udisTotal * (udiFromApi.data?.udiValue?.toDouble()
-                ?: 0.0)
     }
 
-    fun addUdi(retirementPlan: RetirementPlan) {
+    fun addUdi(retirementPlan: RetirementPlan) =
         viewModelScope.launch {
             repository.addUdi(retirementPlan)
         }
-    }
+
 
 }

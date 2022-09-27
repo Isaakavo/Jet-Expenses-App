@@ -3,7 +3,7 @@ package com.example.jetexpensesapp.components
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -40,8 +40,6 @@ fun UdiHomeScreen(
     val retirementData = remember {
         mutableStateOf(RetirementPlan())
     }
-
-    val dateSet = mutableSetOf<String>()
 
     Log.d("Modal", "value of remember ${showModalSheet}")
 
@@ -86,14 +84,20 @@ fun UdiHomeScreen(
                 LazyColumn(
                     modifier = Modifier.fillMaxHeight(),
                 ) {
-                    items(udisObj) { udiObj ->
+                    itemsIndexed(udisObj) { index, udiObj ->
                         val formattedDate = formatDate(udiObj.dateOfPurchase)
-                        if (!dateSet.contains(formattedDate)) {
+                        if (index != 0 && formatDate(udisObj[index - 1].dateOfPurchase) != formattedDate) {
+                            DateRow(
+                                date = formattedDate,
+                                modifier = Modifier.padding(end = 6.dp)
+                            )
+                        } else if (index == 0) {
                             DateRow(
                                 date = formattedDate,
                                 modifier = Modifier.padding(end = 6.dp)
                             )
                         }
+
                         GenericRow(
                             retirementPlan = udiObj,
                             retirementData = retirementData,
@@ -101,7 +105,6 @@ fun UdiHomeScreen(
                             showModalSheet = showModalSheet,
                             modifier = Modifier.padding(top = 5.dp, start = 10.dp, end = 10.dp)
                         )
-                        dateSet.add(formattedDate)
                     }
                 }
             }
