@@ -9,10 +9,14 @@ interface UdiDatabaseDao {
     @Query("Select * from udis")
     fun getUdis(): Flow<List<RetirementPlan>>
 
+    @Query("SELECT * FROM udis WHERE id = :id")
+    fun getUdiByID(id: Long): Flow<RetirementPlan>
+
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(retirementPlan: RetirementPlan)
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateUdi(retirementData: RetirementPlan)
 
     @Delete

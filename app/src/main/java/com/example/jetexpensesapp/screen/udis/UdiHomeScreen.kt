@@ -16,6 +16,7 @@ import com.example.jetexpensesapp.components.shared.DateRow
 import com.example.jetexpensesapp.components.shared.GenericRow
 import com.example.jetexpensesapp.components.shared.GlobalDetail
 import com.example.jetexpensesapp.model.RetirementPlan
+import com.example.jetexpensesapp.navigation.Screen
 import com.example.jetexpensesapp.screen.udis.UdiViewModel
 import com.example.jetexpensesapp.utils.formatDate
 import kotlinx.coroutines.launch
@@ -60,7 +61,15 @@ fun UdiHomeScreen(
                         Text(text = "Borrar")
                     }
                     Button(modifier = Modifier.weight(0.5f),
-                        onClick = { /*TODO*/ }) {
+                        onClick = {
+                            scope.launch {
+                                bottomSheetState.hide()
+                            }
+                            showModalSheet.value = false
+                            navController.navigate(
+                                Screen.AddRetirementEntryScreen.route + "/${retirementData.value.id}"
+                            )
+                        }) {
                         Text(text = "Editar")
                     }
                 }

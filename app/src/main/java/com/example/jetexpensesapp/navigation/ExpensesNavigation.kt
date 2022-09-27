@@ -62,6 +62,16 @@ fun ExpensesNavigation() {
                 val udiViewModel = hiltViewModel<UdiViewModel>()
                 AddRetirementEntryScreen(navController, viewModel = udiViewModel)
             }
+
+            composable(Screen.AddRetirementEntryScreen.route + "/{id}") {
+                val id = it.arguments?.getString("id")
+                val udiViewModel = hiltViewModel<UdiViewModel>()
+                AddRetirementEntryScreen(
+                    navController = navController,
+                    viewModel = udiViewModel,
+                    retirementPlanId = id?.toLong()
+                )
+            }
         }
     }
 

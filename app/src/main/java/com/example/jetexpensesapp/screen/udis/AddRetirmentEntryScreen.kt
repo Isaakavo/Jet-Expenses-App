@@ -34,14 +34,23 @@ import java.util.*
 @Composable
 fun AddRetirementEntryScreen(
     navController: NavController,
-    viewModel: UdiViewModel = hiltViewModel()
+    viewModel: UdiViewModel = hiltViewModel(),
+    retirementPlanId: Long? = null
 ) {
 
-    var amount by remember {
+    val amount = remember {
         mutableStateOf("")
     }
 
-    var date by remember {
+    val udiCall = remember {
+        mutableStateOf(false)
+    }
+
+    val singleRetirementPlan =
+        viewModel.singleRetirementPlan.collectAsState().value
+
+
+    val date = remember {
         mutableStateOf(formatDateForRequest(LocalDateTime.now()))
     }
 
@@ -49,16 +58,24 @@ fun AddRetirementEntryScreen(
         mutableStateOf(formatDateForRequest(LocalDateTime.now()))
     }
 
+    if (retirementPlanId != null && singleRetirementPlan == null) {
+        viewModel.getUdiById(retirementPlanId)
+    } else if (singleRetirementPlan != null && !udiCall.value) {
+        amount.value = singleRetirementPlan.purchaseTotal.toString()
+        date.value = formatDateForRequest(singleRetirementPlan.dateOfPurchase)
+        udiCall.value = true
+    }
+
     val context = LocalContext.current
     val udiValue = viewModel.udiFromApi.data?.udiValue?.toDouble() ?: "0".toDouble()
-    val amountDouble = (amount.toDoubleOrNull() ?: "0".toDouble())
+    val amountDouble = (amount.value.toDoubleOrNull() ?: "0".toDouble())
     val totalOfUdi = amountDouble / udiValue
     val udiCommission = totalOfUdi - Constants.MINE_UDI
     val udiValueInMoney = Constants.MINE_UDI * udiValue
     val udiValueInMoneyCommission = udiCommission * udiValue
 
     val retirement = RetirementPlan(
-        dateOfPurchase = formatStringToDate(date).atStartOfDay(),
+        dateOfPurchase = formatStringToDate(date.value).atStartOfDay(),
         purchaseTotal = amountDouble,
         udiValue = udiValue,
         totalOfUdi = totalOfUdi,
@@ -89,8 +106,8 @@ fun AddRetirementEntryScreen(
             if (!dayTemp.matches(Regex("(0[1-9]|[12][0-9]|3[01])"))) {
                 dayTemp = "0$dayTemp"
             }
-            date = "$year-${monthTemp}-$dayTemp"
-            viewModel.getUdiForToday(formatStringToDate(date).atStartOfDay())
+            date.value = "$year-${monthTemp}-$dayTemp"
+            viewModel.getUdiForToday(formatStringToDate(date.value).atStartOfDay())
         }, mYear, mMonth, mDay
     )
     //mDatePickerDialog.datePicker.maxDate = mDay.plus(5L)
@@ -125,25 +142,25 @@ fun AddRetirementEntryScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
                     RetirementInputText(
-                        text = amount,
+                        text = amount.value,
                         label = "Total comprado",
                         keyboardType = KeyboardType.Number,
                         onTextChange = {
-                            amount = if (amount == "0") "" else it
+                            amount.value = if (amount.value == "0") "" else it
                         })
                     RetirementInputText(
-                        text = date,
+                        text = date.value,
                         label = "Fecha del cargo",
                         modifier = Modifier
                             .padding(top = 6.dp),
                         onTextChange = {
                             if (it.length == 10) {
-                                date = it
+                                date.value = it
                                 dateSupp = it
                                 viewModel.getUdiForToday(formatStringToDate(it).atStartOfDay())
                             } else {
                                 if (it.length <= 10 && dateSupp.length <= 10) {
-                                    date = it
+                                    date.value = it
                                 }
                             }
                         },
@@ -160,20 +177,32 @@ fun AddRetirementEntryScreen(
                             }
                     )
 
-                    RetirementButton(text = "Agregar", onClick = {
-                        if (amount.isNotEmpty() && amount != "0") {
-                            // add to viewmodel
-                            viewModel.addUdi(retirement)
-                            Toast.makeText(context, "UDI Added!", Toast.LENGTH_SHORT).show()
-                            navController.popBackStack()
+                    RetirementButton(
+                        text = if (retirementPlanId == null) {
+                            "Agregar"
                         } else {
-                            Toast.makeText(
-                                context,
-                                "Por favor, agregue un total",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    })
+                            "Actualizar"
+                        }, onClick = {
+                            if (amount.value.isNotEmpty() && amount.value != "0") {
+                                // add to viewmodel
+                                if (retirementPlanId != null) {
+                                    retirement.id = retirementPlanId
+                                    viewModel.updateUdiValue(retirement)
+                                    Toast.makeText(context, "UDI Updated!", Toast.LENGTH_SHORT)
+                                        .show()
+                                } else {
+                                    viewModel.addUdi(retirement)
+                                    Toast.makeText(context, "UDI Added!", Toast.LENGTH_SHORT).show()
+                                }
+                                navController.popBackStack()
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Por favor, agregue un total",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        })
                 }
             }
             UdiEntryDetails(

@@ -38,6 +38,13 @@ class UdiRepository @Inject constructor(
     fun getAllUdis(): Flow<List<RetirementPlan>> =
         udiDatabaseDao.getUdis().flowOn(Dispatchers.IO).conflate()
 
+    suspend fun updateUdiValue(retirementPlan: RetirementPlan) {
+        udiDatabaseDao.updateUdi(retirementPlan)
+    }
+
+    fun getUdiById(id: Long): Flow<RetirementPlan> =
+        udiDatabaseDao.getUdiByID(id).flowOn(Dispatchers.IO).conflate()
+
     suspend fun deleteUdi(retirementPlan: RetirementPlan) {
         udiDatabaseDao.deleteUdi(retirementPlan)
     }

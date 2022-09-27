@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 @Entity(tableName = "udis")
 data class RetirementPlan(
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
+    var id: Long = 0,
     @ColumnInfo(name = "purchase_date")
     val dateOfPurchase: LocalDateTime = LocalDateTime.now(),
     @ColumnInfo(name = "purchase_total")

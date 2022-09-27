@@ -26,6 +26,9 @@ class UdiViewModel @Inject constructor(private val repository: UdiRepository) : 
     private val _dataFromDb = MutableStateFlow<List<RetirementPlan>>(emptyList())
     val dataFromDb = _dataFromDb.asStateFlow()
 
+    private val _singleRetirementPlan = MutableStateFlow<RetirementPlan?>(null)
+    val singleRetirementPlan = _singleRetirementPlan.asStateFlow()
+
     var udiFromApi by mutableStateOf<DataOrException<UdiItem, Boolean, Exception>>(
         DataOrException(
             null,
@@ -76,6 +79,19 @@ class UdiViewModel @Inject constructor(private val repository: UdiRepository) : 
             repository.addUdi(retirementPlan)
         }
 
+    fun updateUdiValue(retirementPlan: RetirementPlan) {
+        viewModelScope.launch {
+            repository.updateUdiValue(retirementPlan)
+        }
+    }
+
+    fun getUdiById(id: Long) {
+        viewModelScope.launch(Dispatchers.Main) {
+            repository.getUdiById(id).distinctUntilChanged().collect {
+                _singleRetirementPlan.value = it
+            }
+        }
+    }
 
     fun deleteUdi(retirementPlan: RetirementPlan) {
         viewModelScope.launch {
