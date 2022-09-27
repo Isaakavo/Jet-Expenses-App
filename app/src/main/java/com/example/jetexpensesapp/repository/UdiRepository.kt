@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flowOn
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class UdiRepository @Inject constructor(
@@ -38,4 +37,8 @@ class UdiRepository @Inject constructor(
 
     fun getAllUdis(): Flow<List<RetirementPlan>> =
         udiDatabaseDao.getUdis().flowOn(Dispatchers.IO).conflate()
+
+    suspend fun deleteUdi(retirementPlan: RetirementPlan) {
+        udiDatabaseDao.deleteUdi(retirementPlan)
+    }
 }

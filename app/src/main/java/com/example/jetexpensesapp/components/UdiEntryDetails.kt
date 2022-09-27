@@ -14,7 +14,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.jetexpensesapp.data.RetirementData
 import com.example.jetexpensesapp.model.RetirementPlan
 import com.example.jetexpensesapp.utils.formatDate
 
@@ -87,6 +86,6 @@ fun UdiEntryDetails(
 @Preview(showBackground = true)
 @Composable
 fun previewList() {
-    val udisObj = RetirementData().load()
-    UdiEntryDetails(retirementPlan = udisObj[0]) {}
+//    val udisObj = RetirementData().load()
+//    UdiEntryDetails(retirementPlan = udisObj[0]) {}
 }

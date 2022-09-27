@@ -77,4 +77,9 @@ class UdiViewModel @Inject constructor(private val repository: UdiRepository) : 
         }
 
 
+    fun deleteUdi(retirementPlan: RetirementPlan) {
+        viewModelScope.launch {
+            repository.deleteUdi(retirementPlan)
+        }
+    }
 }

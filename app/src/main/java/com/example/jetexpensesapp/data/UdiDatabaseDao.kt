@@ -1,9 +1,6 @@
 package com.example.jetexpensesapp.data
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.jetexpensesapp.model.RetirementPlan
 import kotlinx.coroutines.flow.Flow
 
@@ -14,4 +11,10 @@ interface UdiDatabaseDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(retirementPlan: RetirementPlan)
+
+    @Update
+    suspend fun updateUdi(retirementData: RetirementPlan)
+
+    @Delete
+    suspend fun deleteUdi(retirementData: RetirementPlan)
 }

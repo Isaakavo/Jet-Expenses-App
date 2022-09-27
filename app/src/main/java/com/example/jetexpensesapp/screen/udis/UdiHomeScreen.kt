@@ -6,10 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +18,7 @@ import com.example.jetexpensesapp.components.shared.GlobalDetail
 import com.example.jetexpensesapp.model.RetirementPlan
 import com.example.jetexpensesapp.screen.udis.UdiViewModel
 import com.example.jetexpensesapp.utils.formatDate
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -32,6 +30,7 @@ fun UdiHomeScreen(
     val udiGlobalDetails = viewModel.globalValues
     val bottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val scope = rememberCoroutineScope()
 
     val showModalSheet = rememberSaveable {
         mutableStateOf(false)
@@ -52,7 +51,12 @@ fun UdiHomeScreen(
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     Button(modifier = Modifier.weight(0.5f),
-                        onClick = { /*TODO*/ }) {
+                        onClick = {
+                            viewModel.deleteUdi(retirementPlan = retirementData.value)
+                            scope.launch {
+                                bottomSheetState.hide()
+                            }
+                        }) {
                         Text(text = "Borrar")
                     }
                     Button(modifier = Modifier.weight(0.5f),
