@@ -8,21 +8,24 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.jetexpensesapp.components.shared.Button
-import com.example.jetexpensesapp.components.shared.ButtonVariants
 import com.example.jetexpensesapp.components.RetirementInputText
 import com.example.jetexpensesapp.components.UdiEntryDetails
+import com.example.jetexpensesapp.components.shared.TopBar
 import com.example.jetexpensesapp.model.RetirementPlan
 import com.example.jetexpensesapp.utils.Constants
 import com.example.jetexpensesapp.utils.checkNegativeNumber
@@ -129,49 +132,36 @@ fun AddRetirementEntryScreen(
         }
     } else {
         Column() {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Button(
-                    text = null,
-                    onClick = {
-                        navController.popBackStack()
-                    },
-                    icon = Icons.Filled.ArrowBack,
-                    contentColor = MaterialTheme.colors.primary,
-                    variant = ButtonVariants.TEXT
-                )
-                Button(
-                    text = if (retirementPlanId == null) {
-                        "Agregar"
-                    } else {
-                        "Actualizar"
-                    },
-                    contentColor = MaterialTheme.colors.primary,
-                    variant = ButtonVariants.TEXT,
-                    onClick = {
-                        if (amount.value.isNotEmpty() && amount.value != "0") {
-                            // add to viewmodel
-                            if (retirementPlanId != null) {
-                                retirement.id = retirementPlanId
-                                viewModel.updateUdiValue(retirement)
-                                Toast.makeText(context, "UDI Updated!", Toast.LENGTH_SHORT)
-                                    .show()
-                            } else {
-                                viewModel.addUdi(retirement)
-                                Toast.makeText(context, "UDI Added!", Toast.LENGTH_SHORT).show()
-                            }
-                            navController.popBackStack()
+            TopBar(
+                navController = navController, buttonText = if (retirementPlanId == null) {
+                    "Agregar"
+                } else {
+                    "Actualizar"
+                },
+                backgroundColor = Color.Transparent,
+                icon = Icons.Filled.ArrowBack,
+                onClick = {
+                    if (amount.value.isNotEmpty() && amount.value != "0") {
+                        // add to viewmodel
+                        if (retirementPlanId != null) {
+                            retirement.id = retirementPlanId
+                            viewModel.updateUdiValue(retirement)
+                            Toast.makeText(context, "UDI Updated!", Toast.LENGTH_SHORT)
+                                .show()
                         } else {
-                            Toast.makeText(
-                                context,
-                                "Por favor, agregue un total",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            viewModel.addUdi(retirement)
+                            Toast.makeText(context, "UDI Added!", Toast.LENGTH_SHORT).show()
                         }
-                    })
-            }
+                        navController?.popBackStack()
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Por favor, agregue un total",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            )
             Surface(
                 modifier = Modifier.padding(top = 15.dp, start = 25.dp, end = 25.dp),
                 shape = RoundedCornerShape(10.dp),
