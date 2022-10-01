@@ -48,6 +48,7 @@ fun ExpensesNavigation() {
             }
         }
     ) { innerPadding ->
+        val udiViewModel = hiltViewModel<UdiViewModel>()
         NavHost(
             navController = navController,
             startDestination = Screen.UdiHomeScreen.route,
@@ -55,18 +56,16 @@ fun ExpensesNavigation() {
         ) {
 
             composable(Screen.UdiHomeScreen.route) {
-                val udiViewModel = hiltViewModel<UdiViewModel>()
                 UdiHomeScreen(navController, viewModel = udiViewModel)
             }
 
             composable(Screen.AddRetirementEntryScreen.route) {
-                val udiViewModel = hiltViewModel<UdiViewModel>()
+
                 AddRetirementEntryScreen(navController, viewModel = udiViewModel)
             }
 
             composable(Screen.AddRetirementEntryScreen.route + "/{id}") {
                 val id = it.arguments?.getString("id")
-                val udiViewModel = hiltViewModel<UdiViewModel>()
                 AddRetirementEntryScreen(
                     navController = navController,
                     viewModel = udiViewModel,
@@ -75,7 +74,7 @@ fun ExpensesNavigation() {
             }
 
             composable(Screen.UdiGlobalDetailsScreen.route) {
-                val udiViewModel = hiltViewModel<UdiViewModel>()
+
                 UdiGlobalDetailsScreen(
                     navController = navController,
                     viewModel = udiViewModel
