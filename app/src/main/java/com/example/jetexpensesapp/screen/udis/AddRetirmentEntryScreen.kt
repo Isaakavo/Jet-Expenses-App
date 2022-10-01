@@ -139,7 +139,6 @@ fun AddRetirementEntryScreen(
                     "Actualizar"
                 },
                 backgroundColor = Color.Transparent,
-                icon = Icons.Filled.ArrowBack,
                 onClick = {
                     if (amount.value.isNotEmpty() && amount.value != "0") {
                         // add to viewmodel

@@ -39,7 +39,6 @@ fun UdiGlobalDetailsScreen(
     ) {
         Column {
             TopBar(
-                icon = Icons.Filled.ArrowBack,
                 backgroundColor = Color.Transparent,
                 navController = navController
             ) {
