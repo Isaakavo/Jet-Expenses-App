@@ -4,8 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -31,83 +29,78 @@ fun GlobalDetail(
     udisGlobalDetails: UdiGlobalDetails,
     navController: NavController
 ) {
-    Column() {
+    Column(modifier = Modifier.clickable(
+        interactionSource = remember {
+            MutableInteractionSource()
+        },
+        indication = null
+    ) {
+        navController.navigate(Screen.UdiGlobalDetailsScreen.route)
+    }) {
         Row() {
-            Card(
-                shape = RoundedCornerShape(12.dp),
-                elevation = 10.dp,
-                modifier = Modifier.clickable(
-                    interactionSource = remember {
-                        MutableInteractionSource()
-                    },
-                    indication = null
-                ) {
-                    navController.navigate(Screen.UdiGlobalDetailsScreen.route)
-                }
+            Column(
+                modifier = Modifier.padding(20.dp)
             ) {
-                Column(
-                    modifier = Modifier.padding(20.dp)
+                Row(
+                    modifier = Modifier
+                        .padding(bottom = 7.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
+                    Text(
+                        text = "Detalle Global",
+                        textAlign = TextAlign.Left,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.h1,
+                    )
+                    Icon(imageVector = Icons.Outlined.ChevronRight, contentDescription = null)
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Total Gastado",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Medium,
+                        style = MaterialTheme.typography.subtitle1,
                         modifier = Modifier
-                            .padding(bottom = 7.dp)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Detalle Global",
-                            textAlign = TextAlign.Left,
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.h1,
-                        )
-                        Icon(imageVector = Icons.Outlined.ChevronRight, contentDescription = null)
-                    }
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "Total Gastado",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Medium,
-                            style = MaterialTheme.typography.subtitle1,
-                            modifier = Modifier
-                                .weight(0.3f)
-                                .padding(start = 4.dp, end = 4.dp)
-                        )
-                        Text(
-                            text = "Total de Udis",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Medium,
-                            style = MaterialTheme.typography.subtitle1,
-                            modifier = Modifier
-                                .weight(0.3f)
-                                .padding(start = 4.dp, end = 4.dp)
-                        )
-                    }
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = formatMoney(udisGlobalDetails.totalExpend),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Light,
-                            style = MaterialTheme.typography.subtitle2,
-                            modifier = Modifier.weight(0.3f),
-                            textAlign = TextAlign.Center,
-                        )
-                        Text(
-                            text = formatNumber(udisGlobalDetails.udisTotal),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Light,
-                            style = MaterialTheme.typography.subtitle2,
-                            modifier = Modifier.weight(0.3f),
-                            textAlign = TextAlign.Center
-                        )
-                    }
+                            .weight(0.3f)
+                            .padding(start = 4.dp, end = 4.dp)
+                    )
+                    Text(
+                        text = "Total de Udis",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Medium,
+                        style = MaterialTheme.typography.subtitle1,
+                        modifier = Modifier
+                            .weight(0.3f)
+                            .padding(start = 4.dp, end = 4.dp)
+                    )
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = formatMoney(udisGlobalDetails.totalExpend),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Light,
+                        style = MaterialTheme.typography.subtitle2,
+                        modifier = Modifier.weight(0.3f),
+                        textAlign = TextAlign.Center,
+                    )
+                    Text(
+                        text = formatNumber(udisGlobalDetails.udisTotal),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Light,
+                        style = MaterialTheme.typography.subtitle2,
+                        modifier = Modifier.weight(0.3f),
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
+
         }
         Row(
             modifier = Modifier

@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.jetexpensesapp.R
@@ -93,45 +94,62 @@ fun UdiHomeScreen(
             modifier = Modifier.fillMaxHeight(),
             horizontalAlignment = Alignment.End
         ) {
-            Row(
-                modifier = Modifier
-                    .padding(top = 10.dp, start = 15.dp, end = 15.dp, bottom = 10.dp)
+            LazyColumn(
+                modifier = Modifier.fillMaxHeight(),
             ) {
-                GlobalDetail(udiGlobalDetails, navController)
-            }
+                item {
+                    TopBar(
+                        title = "Expenses App",
+                        titleWeight = FontWeight.Bold,
+                        icon = null,
+                        backgroundColor = MaterialTheme.colors.primary
+                    ) {
 
-            Card(
-                modifier = Modifier.padding(start = 15.dp, end = 15.dp),
-                shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
-                elevation = 5.dp
-            ) {
-                LazyColumn(
-                    modifier = Modifier.fillMaxHeight(),
-                ) {
-                    itemsIndexed(udisObj) { index, udiObj ->
-                        val formattedDate = formatDate(udiObj.dateOfPurchase)
-                        if (index != 0 && formatDate(udisObj[index - 1].dateOfPurchase) != formattedDate) {
-                            DateRow(
-                                date = formattedDate,
-                                modifier = Modifier.padding(end = 6.dp)
-                            )
-                        } else if (index == 0) {
-                            DateRow(
-                                date = formattedDate,
-                                modifier = Modifier.padding(end = 6.dp)
-                            )
-                        }
-
-                        GenericRow(
-                            retirementPlan = udiObj,
-                            retirementData = retirementData,
-                            sheetState = bottomSheetState,
-                            showModalSheet = showModalSheet,
-                            modifier = Modifier.padding(top = 5.dp, start = 10.dp, end = 10.dp)
+                    }
+                }
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Text(
+                            text = "Udi hoy: $${viewModel.udiFromApi.data?.udiValue}",
+                            modifier = Modifier.padding(top = 5.dp, end = 7.dp)
                         )
                     }
                 }
+                item {
+                    Row(
+                        modifier = Modifier
+                            .padding(top = 10.dp, start = 15.dp, end = 15.dp, bottom = 10.dp)
+                    ) {
+                        GlobalDetail(udiGlobalDetails, navController)
+                    }
+                }
+                itemsIndexed(udisObj) { index, udiObj ->
+                    val formattedDate = formatDate(udiObj.dateOfPurchase)
+                    if (index != 0 && formatDate(udisObj[index - 1].dateOfPurchase) != formattedDate) {
+                        DateRow(
+                            date = formattedDate,
+                            modifier = Modifier.padding(end = 6.dp)
+                        )
+                    } else if (index == 0) {
+                        DateRow(
+                            date = formattedDate,
+                            modifier = Modifier.padding(end = 6.dp)
+                        )
+                    }
+
+                    GenericRow(
+                        retirementPlan = udiObj,
+                        retirementData = retirementData,
+                        sheetState = bottomSheetState,
+                        showModalSheet = showModalSheet,
+                        modifier = Modifier.padding(top = 5.dp, start = 10.dp, end = 10.dp)
+                    )
+                }
             }
+
         }
     }
 }

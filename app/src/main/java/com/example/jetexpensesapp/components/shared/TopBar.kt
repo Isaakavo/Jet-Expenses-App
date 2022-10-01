@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -15,30 +17,45 @@ import androidx.navigation.NavController
 fun TopBar(
     navController: NavController? = null,
     title: String = "",
+    titleModifier: Modifier = Modifier,
+    titleStyle: TextStyle = MaterialTheme.typography.h6,
+    titleWeight: FontWeight = FontWeight.Normal,
     buttonText: String = "",
-    icon: ImageVector = Icons.Filled.ArrowBack,
+    icon: ImageVector? = Icons.Filled.ArrowBack,
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colors.primary,
-    elevation: Dp = 0.dp ,
+    elevation: Dp = 0.dp,
     onClick: () -> Unit
 ) {
     TopAppBar(
         modifier = modifier,
         navigationIcon = {
-            IconButton(onClick = { navController?.popBackStack() }) {
-                Icon(imageVector = icon, contentDescription = null)
+            if (icon != null) {
+                IconButton(onClick = { navController?.popBackStack() }) {
+                    Icon(imageVector = icon, contentDescription = null)
+                }
             }
         },
-        title = { Text(title) },
+        title = {
+            Text(
+                title,
+                modifier = titleModifier,
+                style = titleStyle,
+                fontWeight = titleWeight
+            )
+        },
         backgroundColor = backgroundColor,
         elevation = elevation,
         actions = {
-            Button(
-                text = buttonText,
-                contentColor = MaterialTheme.colors.primary,
-                variant = ButtonVariants.TEXT,
-                onClick = onClick
-            )
+            if (buttonText.isNotEmpty()) {
+                Button(
+                    text = buttonText,
+                    contentColor = MaterialTheme.colors.primary,
+                    variant = ButtonVariants.TEXT,
+                    onClick = onClick
+                )
+            }
+
         }
     )
 }
