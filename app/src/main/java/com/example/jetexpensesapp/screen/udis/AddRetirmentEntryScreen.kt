@@ -19,8 +19,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.jetexpensesapp.components.Button
-import com.example.jetexpensesapp.components.ButtonVariants
+import com.example.jetexpensesapp.components.shared.Button
+import com.example.jetexpensesapp.components.shared.ButtonVariants
 import com.example.jetexpensesapp.components.RetirementInputText
 import com.example.jetexpensesapp.components.UdiEntryDetails
 import com.example.jetexpensesapp.model.RetirementPlan

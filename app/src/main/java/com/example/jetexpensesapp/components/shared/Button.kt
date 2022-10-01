@@ -1,4 +1,4 @@
-package com.example.jetexpensesapp.components
+package com.example.jetexpensesapp.components.shared
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Row
