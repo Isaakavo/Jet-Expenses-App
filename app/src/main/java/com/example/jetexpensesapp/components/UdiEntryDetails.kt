@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jetexpensesapp.model.RetirementPlan
-import com.example.jetexpensesapp.utils.formatDate
+import com.example.jetexpensesapp.utils.formatDateNoYear
 
 @Composable
 fun UdiEntryDetails(
@@ -75,7 +75,7 @@ fun UdiEntryDetails(
             )
             UdiRowDetails(
                 title = "Fecha de Compra",
-                content = formatDate(retirementPlan.dateOfPurchase)
+                content = formatDateNoYear(retirementPlan.dateOfPurchase)
             )
             editOptions()
         }
