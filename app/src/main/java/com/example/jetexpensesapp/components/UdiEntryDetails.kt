@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jetexpensesapp.model.RetirementPlan
 import com.example.jetexpensesapp.utils.formatDateNoYear
+import com.example.jetexpensesapp.utils.formatMoney
 
 @Composable
 fun UdiEntryDetails(
@@ -47,7 +48,7 @@ fun UdiEntryDetails(
             )
             UdiRowDetails(
                 title = "Total Comprado",
-                content = "$" + String.format("%.2f", retirementPlan.purchaseTotal)
+                content = formatMoney(retirementPlan.purchaseTotal)
             )
             UdiRowDetails(
                 title = "Valor de la UDI",
@@ -67,11 +68,11 @@ fun UdiEntryDetails(
             )
             UdiRowDetails(
                 title = "Conversion",
-                content = "$" + String.format("%.2f", retirementPlan.udiValueInMoney)
+                content = formatMoney(retirementPlan.udiValueInMoney)
             )
             UdiRowDetails(
                 title = "Conversion de la comision",
-                content = "$" + String.format("%.2f", retirementPlan.udiValueInMoneyCommission)
+                content = formatMoney(retirementPlan.udiValueInMoneyCommission)
             )
             UdiRowDetails(
                 title = "Fecha de Compra",

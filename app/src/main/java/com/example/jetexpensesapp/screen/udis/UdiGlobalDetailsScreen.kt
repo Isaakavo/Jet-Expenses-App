@@ -1,23 +1,16 @@
 package com.example.jetexpensesapp.screen.udis
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.jetexpensesapp.components.UdiRowDetails
 import com.example.jetexpensesapp.components.shared.TopBar
+import com.example.jetexpensesapp.utils.formatMoney
 
 @Composable
 fun UdiGlobalDetailsScreen(
@@ -34,39 +27,23 @@ fun UdiGlobalDetailsScreen(
     }
     Surface(
         modifier = modifier,
-        shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
-        elevation = 10.dp
+        elevation = 0.dp
     ) {
         Column {
             TopBar(
                 backgroundColor = Color.Transparent,
+                title = "Detalles Globales",
                 navController = navController
             ) {
                 navController?.popBackStack()
             }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "Detalles", textAlign = TextAlign.Center,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(top = 5.dp)
-                )
-            }
-            Divider(
-                modifier = Modifier.padding(5.dp, end = 10.dp),
-                color = Color.Black,
-                startIndent = 10.dp
-            )
             UdiRowDetails(
                 title = "Total Gastado",
-                content = "$" + String.format("%.2f", udisGlobalDetails.totalExpend)
+                content = formatMoney( udisGlobalDetails.totalExpend)
             )
             UdiRowDetails(
                 title = "Valor de la UDI",
-                content = "$$udiForToday"
+                content = udiForToday.toString()
             )
             UdiRowDetails(
                 title = "Total de UDIS",
@@ -74,7 +51,21 @@ fun UdiGlobalDetailsScreen(
             )
             UdiRowDetails(
                 title = "Conversion",
-                content = String.format("%.2f", udisGlobalDetails.udisConvertion)
+                content = formatMoney(udisGlobalDetails.udisConvertion)
+            )
+            UdiRowDetails(
+                title = "Rendimiento",
+                content = formatMoney(
+                    udisGlobalDetails.udisConvertion - udisGlobalDetails.totalExpend
+                )
+            )
+            UdiRowDetails(
+                title = "Starting date",
+                content = "11 ago 2022"
+            )
+            UdiRowDetails(
+                title = "Plazo de pago",
+                content = "20 años"
             )
         }
     }
