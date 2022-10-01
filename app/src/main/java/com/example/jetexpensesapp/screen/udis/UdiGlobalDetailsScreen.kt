@@ -33,13 +33,13 @@ fun UdiGlobalDetailsScreen(
             TopBar(
                 backgroundColor = Color.Transparent,
                 title = "Detalles Globales",
-                navController = navController
+                navControllerAction = { navController?.popBackStack() }
             ) {
                 navController?.popBackStack()
             }
             UdiRowDetails(
                 title = "Total Gastado",
-                content = formatMoney( udisGlobalDetails.totalExpend)
+                content = formatMoney(udisGlobalDetails.totalExpend)
             )
             UdiRowDetails(
                 title = "Valor de la UDI",

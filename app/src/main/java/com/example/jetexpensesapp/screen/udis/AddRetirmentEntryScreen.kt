@@ -12,8 +12,6 @@ import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,7 +48,7 @@ fun AddRetirementEntryScreen(
     }
 
     val singleRetirementPlan =
-        viewModel.singleRetirementPlan.collectAsState().value
+        viewModel.singleRetirementPlan.value
 
 
     val date = remember {
@@ -63,7 +61,7 @@ fun AddRetirementEntryScreen(
 
     if (retirementPlanId != null && singleRetirementPlan == null) {
         viewModel.getUdiById(retirementPlanId)
-    } else if (singleRetirementPlan != null && !udiCall.value) {
+    } else if (retirementPlanId != null && singleRetirementPlan != null && !udiCall.value) {
         amount.value = singleRetirementPlan.purchaseTotal.toString()
         date.value = formatDateForRequest(singleRetirementPlan.dateOfPurchase)
         udiCall.value = true
@@ -133,7 +131,11 @@ fun AddRetirementEntryScreen(
     } else {
         Column() {
             TopBar(
-                navController = navController, buttonText = if (retirementPlanId == null) {
+                navControllerAction = {
+                    viewModel.resetSingleRetirementPlan()
+                    navController.popBackStack()
+                },
+                buttonText = if (retirementPlanId == null) {
                     "Agregar"
                 } else {
                     "Actualizar"
@@ -151,7 +153,8 @@ fun AddRetirementEntryScreen(
                             viewModel.addUdi(retirement)
                             Toast.makeText(context, "UDI Added!", Toast.LENGTH_SHORT).show()
                         }
-                        navController?.popBackStack()
+                        viewModel.resetSingleRetirementPlan()
+                        navController.popBackStack()
                     } else {
                         Toast.makeText(
                             context,

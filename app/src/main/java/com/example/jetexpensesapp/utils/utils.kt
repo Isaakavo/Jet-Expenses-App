@@ -27,6 +27,11 @@ fun formatDateNoYear(time: LocalDateTime): String {
     return time.format(format)
 }
 
+fun formatDateFullMonth(time: LocalDateTime): String {
+    val format = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.getDefault())
+    return time.format(format)
+}
+
 fun formatStringToDate(str: String): LocalDate {
     val format = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.getDefault())
     return LocalDate.parse(str, format)

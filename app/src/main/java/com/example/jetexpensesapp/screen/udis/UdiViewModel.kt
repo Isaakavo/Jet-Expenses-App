@@ -68,7 +68,7 @@ class UdiViewModel @Inject constructor(private val repository: UdiRepository) : 
         }
     }
 
-    private fun getUdiGlobalDetails() {
+     private fun getUdiGlobalDetails() {
         globalValues.totalExpend = 0.0
         globalValues.udisTotal = 0.0
         _dataFromDb.value.map {
@@ -100,6 +100,13 @@ class UdiViewModel @Inject constructor(private val repository: UdiRepository) : 
     fun deleteUdi(retirementPlan: RetirementPlan) {
         viewModelScope.launch {
             repository.deleteUdi(retirementPlan)
+            getUdiGlobalDetails()
+        }
+    }
+
+    fun resetSingleRetirementPlan() {
+        viewModelScope.launch {
+            _singleRetirementPlan.value = null
         }
     }
 }

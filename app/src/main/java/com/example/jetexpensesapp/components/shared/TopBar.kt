@@ -11,11 +11,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 
 @Composable
 fun TopBar(
-    navController: NavController? = null,
+    //navController: NavController? = null,
     title: String = "",
     titleModifier: Modifier = Modifier,
     titleStyle: TextStyle = MaterialTheme.typography.h6,
@@ -25,13 +24,14 @@ fun TopBar(
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colors.primary,
     elevation: Dp = 0.dp,
+    navControllerAction: () -> Unit = {},
     onClick: () -> Unit
 ) {
     TopAppBar(
         modifier = modifier,
         navigationIcon = {
             if (icon != null) {
-                IconButton(onClick = { navController?.popBackStack() }) {
+                IconButton(onClick = navControllerAction) {
                     Icon(imageVector = icon, contentDescription = null)
                 }
             }
