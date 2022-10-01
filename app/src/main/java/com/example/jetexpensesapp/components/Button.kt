@@ -24,7 +24,7 @@ enum class ButtonVariants() {
 @Composable
 fun Button(
     modifier: Modifier = Modifier,
-    text: String,
+    text: String?,
     shape: Shape = CircleShape,
     onClick: () -> Unit,
     contentColor: Color = Color.White,
@@ -52,7 +52,9 @@ fun Button(
                     if (icon != null) {
                         Icon(imageVector = icon, contentDescription = null)
                     }
-                    Text(text, modifier = Modifier.padding(start = 3.dp))
+                    if (text != null) {
+                        Text(text, modifier = Modifier.padding(start = 3.dp))
+                    }
                 }
             }
         }
@@ -69,7 +71,9 @@ fun Button(
                     if (icon != null) {
                         Icon(imageVector = icon, contentDescription = null)
                     }
-                    Text(text, modifier = Modifier.padding(start = 3.dp))
+                    if (text != null) {
+                        Text(text, modifier = Modifier.padding(start = 3.dp))
+                    }
                 }
             }
         }
@@ -79,7 +83,9 @@ fun Button(
                     if (icon != null) {
                         Icon(imageVector = icon, contentDescription = null)
                     }
-                    Text(text, modifier = Modifier.padding(start = 3.dp))
+                    if (text != null) {
+                        Text(text, modifier = Modifier.padding(start = 3.dp))
+                    }
                 }
             }
         }

@@ -9,6 +9,8 @@ import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -127,6 +129,49 @@ fun AddRetirementEntryScreen(
         }
     } else {
         Column() {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(
+                    text = null,
+                    onClick = {
+                        navController.popBackStack()
+                    },
+                    icon = Icons.Filled.ArrowBack,
+                    contentColor = MaterialTheme.colors.primary,
+                    variant = ButtonVariants.TEXT
+                )
+                Button(
+                    text = if (retirementPlanId == null) {
+                        "Agregar"
+                    } else {
+                        "Actualizar"
+                    },
+                    contentColor = MaterialTheme.colors.primary,
+                    variant = ButtonVariants.TEXT,
+                    onClick = {
+                        if (amount.value.isNotEmpty() && amount.value != "0") {
+                            // add to viewmodel
+                            if (retirementPlanId != null) {
+                                retirement.id = retirementPlanId
+                                viewModel.updateUdiValue(retirement)
+                                Toast.makeText(context, "UDI Updated!", Toast.LENGTH_SHORT)
+                                    .show()
+                            } else {
+                                viewModel.addUdi(retirement)
+                                Toast.makeText(context, "UDI Added!", Toast.LENGTH_SHORT).show()
+                            }
+                            navController.popBackStack()
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Por favor, agregue un total",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    })
+            }
             Surface(
                 modifier = Modifier.padding(top = 15.dp, start = 25.dp, end = 25.dp),
                 shape = RoundedCornerShape(10.dp),
@@ -174,36 +219,6 @@ fun AddRetirementEntryScreen(
                                 }
                             }
                     )
-
-                    Button(
-                        text = if (retirementPlanId == null) {
-                            "Agregar"
-                        } else {
-                            "Actualizar"
-                        },
-                        contentColor = MaterialTheme.colors.primary,
-                        variant = ButtonVariants.TEXT,
-                        onClick = {
-                            if (amount.value.isNotEmpty() && amount.value != "0") {
-                                // add to viewmodel
-                                if (retirementPlanId != null) {
-                                    retirement.id = retirementPlanId
-                                    viewModel.updateUdiValue(retirement)
-                                    Toast.makeText(context, "UDI Updated!", Toast.LENGTH_SHORT)
-                                        .show()
-                                } else {
-                                    viewModel.addUdi(retirement)
-                                    Toast.makeText(context, "UDI Added!", Toast.LENGTH_SHORT).show()
-                                }
-                                navController.popBackStack()
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    "Por favor, agregue un total",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
-                        })
                 }
             }
             UdiEntryDetails(
