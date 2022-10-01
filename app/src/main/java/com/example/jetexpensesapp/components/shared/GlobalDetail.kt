@@ -1,11 +1,15 @@
 package com.example.jetexpensesapp.components.shared
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,15 +32,19 @@ fun GlobalDetail(
     Column() {
         Row() {
             Card(
-                //modifier = Modifier.padding(5.dp),
                 shape = RoundedCornerShape(12.dp),
-                elevation = 10.dp
+                elevation = 10.dp,
+                modifier = Modifier.clickable {
+                    navController.navigate(Screen.UdiGlobalDetailsScreen.route)
+                }
             ) {
                 Column(
                     modifier = Modifier.padding(20.dp)
                 ) {
                     Row(
-                        modifier = Modifier.padding(bottom = 7.dp)
+                        modifier = Modifier.padding(bottom = 7.dp).fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
                             text = "Detalle Global",
@@ -45,6 +53,7 @@ fun GlobalDetail(
                             fontWeight = FontWeight.Bold,
                             style = MaterialTheme.typography.h1,
                         )
+                        Icon(imageVector = Icons.Outlined.ChevronRight, contentDescription = null)
                     }
                     Row(
                         modifier = Modifier.fillMaxWidth()
@@ -67,15 +76,6 @@ fun GlobalDetail(
                                 .weight(0.3f)
                                 .padding(start = 4.dp, end = 4.dp)
                         )
-                        Text(
-                            text = "Conversion",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Medium,
-                            style = MaterialTheme.typography.subtitle1,
-                            modifier = Modifier
-                                .weight(0.3f)
-                                .padding(start = 4.dp, end = 4.dp)
-                        )
                     }
                     Row(
                         modifier = Modifier.fillMaxWidth()
@@ -90,14 +90,6 @@ fun GlobalDetail(
                         )
                         Text(
                             text = formatNumber(udisGlobalDetails.udisTotal),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Light,
-                            style = MaterialTheme.typography.subtitle2,
-                            modifier = Modifier.weight(0.3f),
-                            textAlign = TextAlign.Center
-                        )
-                        Text(
-                            text = formatMoney(udisGlobalDetails.udisConvertion),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Light,
                             style = MaterialTheme.typography.subtitle2,

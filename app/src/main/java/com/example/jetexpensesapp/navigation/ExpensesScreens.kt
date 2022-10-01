@@ -14,7 +14,5 @@ sealed class Screen(
     object UdiHomeScreen : Screen("udihome", R.string.udi_home, Icons.Filled.ShowChart)
     object AddRetirementEntryScreen :
         Screen("addretiremententry", R.string.add_retirement_entry)
-
-    object EditRetirementEntryScreen :
-        Screen("addretiremententry", R.string.edit_retirement_entry)
+    object UdiGlobalDetailsScreen: Screen("udiDetails", R.string.global_details)
 }

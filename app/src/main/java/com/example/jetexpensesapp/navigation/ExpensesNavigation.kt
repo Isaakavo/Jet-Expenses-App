@@ -15,6 +15,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.jetexpensesapp.components.UdiHomeScreen
 import com.example.jetexpensesapp.screen.udis.AddRetirementEntryScreen
+import com.example.jetexpensesapp.screen.udis.UdiGlobalDetailsScreen
 import com.example.jetexpensesapp.screen.udis.UdiViewModel
 
 @Composable
@@ -70,6 +71,14 @@ fun ExpensesNavigation() {
                     navController = navController,
                     viewModel = udiViewModel,
                     retirementPlanId = id?.toLong()
+                )
+            }
+
+            composable(Screen.UdiGlobalDetailsScreen.route) {
+                val udiViewModel = hiltViewModel<UdiViewModel>()
+                UdiGlobalDetailsScreen(
+                    navController = navController,
+                    viewModel = udiViewModel
                 )
             }
         }

@@ -2,5 +2,5 @@
     <string name="app_name">JetExpensesApp</string>
     <string name="udi_home">UdiHomeScreen</string>
     <string name="add_retirement_entry">AddRetirementEntry</string>
-    <string name="edit_retirement_entry">EditRetirementEntry</string>
+    <string name="global_details">GlobalDetails</string>
 </resources>

@@ -1,6 +1,5 @@
 package com.example.jetexpensesapp.components
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -18,11 +17,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.jetexpensesapp.R
-import com.example.jetexpensesapp.components.shared.Button
-import com.example.jetexpensesapp.components.shared.ButtonVariants
-import com.example.jetexpensesapp.components.shared.DateRow
-import com.example.jetexpensesapp.components.shared.GenericRow
-import com.example.jetexpensesapp.components.shared.GlobalDetail
+import com.example.jetexpensesapp.components.shared.*
 import com.example.jetexpensesapp.model.RetirementPlan
 import com.example.jetexpensesapp.navigation.Screen
 import com.example.jetexpensesapp.screen.udis.UdiViewModel
@@ -48,8 +43,6 @@ fun UdiHomeScreen(
     val retirementData = remember {
         mutableStateOf(RetirementPlan())
     }
-
-    Log.d("Modal", "value of remember ${showModalSheet}")
 
     fun hideSheet() {
         if (bottomSheetState.isVisible) {
