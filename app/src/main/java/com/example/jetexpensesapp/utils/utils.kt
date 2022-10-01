@@ -7,8 +7,13 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 fun formatDate(time: LocalDateTime): String {
-    //val date = Date(time)
-    val format = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.getDefault())
+    var format = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.getDefault())
+
+    when (time.year) {
+        LocalDateTime.now().year -> {
+            format = DateTimeFormatter.ofPattern("dd MMMM", Locale.getDefault())
+        }
+    }
     return time.format(format)
 }
 
@@ -38,7 +43,6 @@ fun formatNumber(number: Double?): String {
 fun formatMoney(number: Double?): String {
     val format = NumberFormat.getCurrencyInstance().apply {
         maximumFractionDigits = 0
-        //currency = Currency.getInstance("MXN")
     }
     return if (number != null) format.format(number) else ""
 }
