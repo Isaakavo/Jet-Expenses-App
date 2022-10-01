@@ -32,21 +32,19 @@ fun UdiGlobalDetailsScreen(
     if (udiForToday != null) {
         udisGlobalDetails.udisConvertion = udiForToday * udisGlobalDetails.udisTotal
     }
-
-    TopBar(
-        icon = Icons.Filled.ArrowBack,
-        backgroundColor = Color.Transparent,
-        navController = navController
-    ) {
-        navController?.popBackStack()
-    }
-
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
         elevation = 10.dp
     ) {
         Column {
+            TopBar(
+                icon = Icons.Filled.ArrowBack,
+                backgroundColor = Color.Transparent,
+                navController = navController
+            ) {
+                navController?.popBackStack()
+            }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
