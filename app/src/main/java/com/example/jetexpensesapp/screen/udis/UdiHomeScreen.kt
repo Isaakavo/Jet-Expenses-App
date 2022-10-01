@@ -43,6 +43,15 @@ fun UdiHomeScreen(
 
     Log.d("Modal", "value of remember ${showModalSheet}")
 
+    fun hideSheet() {
+        if (bottomSheetState.isVisible) {
+            scope.launch {
+                bottomSheetState.hide()
+            }
+            showModalSheet.value = false
+        }
+    }
+
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
         sheetContent = {
@@ -53,19 +62,14 @@ fun UdiHomeScreen(
                 ) {
                     Button(modifier = Modifier.weight(0.5f),
                         onClick = {
+                            hideSheet()
                             viewModel.deleteUdi(retirementPlan = retirementData.value)
-                            scope.launch {
-                                bottomSheetState.hide()
-                            }
                         }) {
                         Text(text = "Borrar")
                     }
                     Button(modifier = Modifier.weight(0.5f),
                         onClick = {
-                            scope.launch {
-                                bottomSheetState.hide()
-                            }
-                            showModalSheet.value = false
+                            hideSheet()
                             navController.navigate(
                                 Screen.AddRetirementEntryScreen.route + "/${retirementData.value.id}"
                             )
