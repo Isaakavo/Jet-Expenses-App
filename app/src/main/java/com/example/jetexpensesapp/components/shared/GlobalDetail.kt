@@ -1,6 +1,7 @@
 package com.example.jetexpensesapp.components.shared
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
@@ -14,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.jetexpensesapp.components.RetirementButton
+import com.example.jetexpensesapp.components.Button
 import com.example.jetexpensesapp.data.UdiGlobalDetails
 import com.example.jetexpensesapp.navigation.Screen
 import com.example.jetexpensesapp.utils.formatMoney
@@ -115,8 +116,9 @@ fun GlobalDetail(
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.End
         ) {
-            RetirementButton(
+            Button(
                 text = "Agregar",
+                shape = CircleShape,
                 onClick = { navController.navigate(Screen.AddRetirementEntryScreen.route) })
         }
     }

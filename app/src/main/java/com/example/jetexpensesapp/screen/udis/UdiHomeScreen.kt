@@ -6,12 +6,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.jetexpensesapp.R
 import com.example.jetexpensesapp.components.shared.DateRow
 import com.example.jetexpensesapp.components.shared.GenericRow
 import com.example.jetexpensesapp.components.shared.GlobalDetail
@@ -60,22 +66,28 @@ fun UdiHomeScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    Button(modifier = Modifier.weight(0.5f),
+                    Button(text = "Borrar",
+                        modifier = Modifier.weight(0.5f),
+                        shape = RectangleShape,
+                        contentColor = colorResource(R.color.error),
+                        icon = Icons.Filled.Delete,
+                        variant = ButtonVariants.TEXT,
                         onClick = {
                             hideSheet()
                             viewModel.deleteUdi(retirementPlan = retirementData.value)
-                        }) {
-                        Text(text = "Borrar")
-                    }
-                    Button(modifier = Modifier.weight(0.5f),
+                        })
+                    Button(text = "Editar",
+                        modifier = Modifier.weight(0.5f),
+                        shape = RectangleShape,
+                        contentColor = colorResource(R.color.accepted),
+                        icon = Icons.Filled.Edit,
+                        variant = ButtonVariants.TEXT,
                         onClick = {
                             hideSheet()
                             navController.navigate(
                                 Screen.AddRetirementEntryScreen.route + "/${retirementData.value.id}"
                             )
-                        }) {
-                        Text(text = "Editar")
-                    }
+                        })
                 }
             }
         },

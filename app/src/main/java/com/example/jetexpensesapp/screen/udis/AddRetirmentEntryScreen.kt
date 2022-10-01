@@ -8,10 +8,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,7 +17,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.jetexpensesapp.components.RetirementButton
+import com.example.jetexpensesapp.components.Button
+import com.example.jetexpensesapp.components.ButtonVariants
 import com.example.jetexpensesapp.components.RetirementInputText
 import com.example.jetexpensesapp.components.UdiEntryDetails
 import com.example.jetexpensesapp.model.RetirementPlan
@@ -177,12 +175,15 @@ fun AddRetirementEntryScreen(
                             }
                     )
 
-                    RetirementButton(
+                    Button(
                         text = if (retirementPlanId == null) {
                             "Agregar"
                         } else {
                             "Actualizar"
-                        }, onClick = {
+                        },
+                        contentColor = MaterialTheme.colors.primary,
+                        variant = ButtonVariants.TEXT,
+                        onClick = {
                             if (amount.value.isNotEmpty() && amount.value != "0") {
                                 // add to viewmodel
                                 if (retirementPlanId != null) {
