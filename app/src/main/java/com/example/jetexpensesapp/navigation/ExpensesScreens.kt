@@ -4,7 +4,31 @@ import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShowChart
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavHostController
 import com.example.jetexpensesapp.R
+import com.example.jetexpensesapp.navigation.UdiDestinationArgs.TITLE_ARG
+import com.example.jetexpensesapp.navigation.UdiDestinationArgs.UDI_ID_ARG
+import com.example.jetexpensesapp.navigation.UdiDestinationArgs.USER_MESSAGE_ARG
+import com.example.jetexpensesapp.navigation.UdiScreens.ADD_EDIT_UDI_SCREEN
+import com.example.jetexpensesapp.navigation.UdiScreens.UDI_DETAIL_SCREEN
+import com.example.jetexpensesapp.navigation.UdiScreens.UDI_HOME_SCREEN
+
+private object UdiScreens {
+    const val UDI_HOME_SCREEN = "udis"
+    const val UDI_DETAIL_SCREEN = "udi"
+    const val ADD_EDIT_UDI_SCREEN = "addEditUdi"
+}
+
+object UdiDestinationArgs {
+    const val USER_MESSAGE_ARG = "userMessage"
+    const val UDI_ID_ARG = "udiId"
+    const val TITLE_ARG = "title"
+}
+
+object UdisDestination {
+    const val UDI_HOMESCREEN_ROUTE = "$UDI_HOME_SCREEN?$USER_MESSAGE_ARG={$USER_MESSAGE_ARG}"
+    const val ADD_EDIT_TASK_ROUTE = "$ADD_EDIT_UDI_SCREEN/${TITLE_ARG}?$UDI_ID_ARG=${UDI_ID_ARG}"
+}
 
 sealed class Screen(
     val route: String,
@@ -15,4 +39,19 @@ sealed class Screen(
     object AddRetirementEntryScreen :
         Screen("addretiremententry", R.string.add_retirement_entry)
     object UdiGlobalDetailsScreen: Screen("udiDetails", R.string.global_details)
+}
+
+class UdiNavigationActions(private val navHostController: NavHostController) {
+
+    fun navigateToUdiDetail(udiId: String) {
+        navHostController.navigate("$UDI_DETAIL_SCREEN/$udiId")
+    }
+
+    fun navigateToAddEditUdiEntry(title: Int, udiId: String?) {
+        navHostController.navigate(
+            "$ADD_EDIT_UDI_SCREEN/$title".let {
+                if (udiId != null) "$it?$UDI_ID_ARG=$udiId" else it
+            }
+        )
+    }
 }

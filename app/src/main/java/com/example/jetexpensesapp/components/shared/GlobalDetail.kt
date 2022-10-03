@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.jetexpensesapp.data.UdiGlobalDetails
 import com.example.jetexpensesapp.navigation.Screen
 import com.example.jetexpensesapp.utils.formatMoney
@@ -27,7 +28,7 @@ import com.example.jetexpensesapp.utils.formatNumber
 @Composable
 fun GlobalDetail(
     udisGlobalDetails: UdiGlobalDetails,
-    navController: NavController
+    navController: NavController = rememberNavController()
 ) {
     Column(modifier = Modifier.clickable(
         interactionSource = remember {

@@ -3,4 +3,8 @@
     <string name="udi_home">UdiHomeScreen</string>
     <string name="add_retirement_entry">AddRetirementEntry</string>
     <string name="global_details">GlobalDetails</string>
+    <string name="add_udi">add_udi</string>
+    <string name="successfully_saved_task_message">Udi Guardada</string>
+    <string name="successfully_added_task_message">Udi Guardada</string>
+    <string name="successfully_deleted_task_message">Udi Borrada</string>
 </resources>

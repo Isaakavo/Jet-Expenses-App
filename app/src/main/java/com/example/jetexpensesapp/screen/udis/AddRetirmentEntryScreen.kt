@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.util.Log
 import android.widget.DatePicker
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.*
@@ -20,7 +21,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.example.jetexpensesapp.components.RetirementInputText
 import com.example.jetexpensesapp.components.UdiEntryDetails
 import com.example.jetexpensesapp.components.shared.TopBar
@@ -34,9 +34,10 @@ import java.util.*
 
 @Composable
 fun AddRetirementEntryScreen(
-    navController: NavController,
+    @StringRes topBarTitle: Int,
+    onUdiUpdate: () -> Unit,
+    onBack: () -> Unit,
     viewModel: UdiViewModel = hiltViewModel(),
-    retirementPlanId: Long? = null
 ) {
 
     val amount = remember {
@@ -59,13 +60,13 @@ fun AddRetirementEntryScreen(
         mutableStateOf(formatDateForRequest(LocalDateTime.now()))
     }
 
-    if (retirementPlanId != null && singleRetirementPlan == null) {
-        viewModel.getUdiById(retirementPlanId)
-    } else if (retirementPlanId != null && singleRetirementPlan != null && !udiCall.value) {
-        amount.value = singleRetirementPlan.purchaseTotal.toString()
-        date.value = formatDateForRequest(singleRetirementPlan.dateOfPurchase)
-        udiCall.value = true
-    }
+//    if (retirementPlanId != null && singleRetirementPlan == null) {
+//        viewModel.getUdiById(retirementPlanId)
+//    } else if (retirementPlanId != null && singleRetirementPlan != null && !udiCall.value) {
+//        amount.value = singleRetirementPlan.purchaseTotal.toString()
+//        date.value = formatDateForRequest(singleRetirementPlan.dateOfPurchase)
+//        udiCall.value = true
+//    }
 
     val context = LocalContext.current
     val udiValue = viewModel.udiFromApi.data?.udiValue?.toDouble() ?: "0".toDouble()
@@ -133,28 +134,24 @@ fun AddRetirementEntryScreen(
             TopBar(
                 navControllerAction = {
                     viewModel.resetSingleRetirementPlan()
-                    navController.popBackStack()
+                    //navController.popBackStack()
                 },
-                buttonText = if (retirementPlanId == null) {
-                    "Agregar"
-                } else {
-                    "Actualizar"
-                },
+                buttonText = "add",
                 backgroundColor = Color.Transparent,
                 onClick = {
                     if (amount.value.isNotEmpty() && amount.value != "0") {
                         // add to viewmodel
-                        if (retirementPlanId != null) {
-                            retirement.id = retirementPlanId
-                            viewModel.updateUdiValue(retirement)
-                            Toast.makeText(context, "UDI Updated!", Toast.LENGTH_SHORT)
-                                .show()
-                        } else {
-                            viewModel.addUdi(retirement)
-                            Toast.makeText(context, "UDI Added!", Toast.LENGTH_SHORT).show()
-                        }
-                        viewModel.resetSingleRetirementPlan()
-                        navController.popBackStack()
+//                        if (retirementPlanId != null) {
+//                            retirement.id = retirementPlanId
+//                            viewModel.updateUdiValue(retirement)
+//                            Toast.makeText(context, "UDI Updated!", Toast.LENGTH_SHORT)
+//                                .show()
+//                        } else {
+//                            viewModel.addUdi(retirement)
+//                            Toast.makeText(context, "UDI Added!", Toast.LENGTH_SHORT).show()
+//                        }
+//                        viewModel.resetSingleRetirementPlan()
+                        //navController.popBackStack()
                     } else {
                         Toast.makeText(
                             context,
