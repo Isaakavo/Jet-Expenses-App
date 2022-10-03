@@ -141,7 +141,9 @@ fun ExpensesNavigation(
             AddRetirementEntryScreen(
                 topBarTitle = entry.arguments?.getInt(TITLE_ARG)!!,
                 onUdiUpdate = {
-
+                    navActions.navigateToHome(
+                        if (udiId == null) ADD_EDIT_RESULT_OK else EDIT_RESULT_OK
+                    )
                 },
                 onBack = { navController.popBackStack() }
             )

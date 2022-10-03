@@ -2,6 +2,7 @@ package com.example.jetexpensesapp.repository
 
 import android.util.Log
 import com.example.jetexpensesapp.data.DataOrException
+import com.example.jetexpensesapp.data.Result
 import com.example.jetexpensesapp.data.UdiDatabaseDao
 import com.example.jetexpensesapp.model.RetirementPlan
 import com.example.jetexpensesapp.model.UdiItem
@@ -11,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -42,8 +44,18 @@ class UdiRepository @Inject constructor(
         udiDatabaseDao.updateUdi(retirementPlan)
     }
 
-    fun getUdiById(id: Long): Flow<RetirementPlan> =
-        udiDatabaseDao.getUdiByID(id).flowOn(Dispatchers.IO).conflate()
+    suspend fun getUdiById(id: Long): Result<RetirementPlan> = withContext(Dispatchers.IO) {
+        try {
+            val udi = udiDatabaseDao.getUdiByID(id)
+            if (udi != null) {
+                return@withContext Result.Success(udi)
+            } else {
+                return@withContext Result.Error(Exception("udi not found"))
+            }
+        } catch (e: Exception) {
+            return@withContext Result.Error(e)
+        }
+    }
 
     suspend fun deleteUdi(retirementPlan: RetirementPlan) {
         udiDatabaseDao.deleteUdi(retirementPlan)

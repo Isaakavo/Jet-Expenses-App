@@ -7,4 +7,5 @@
     <string name="successfully_saved_task_message">Udi Guardada</string>
     <string name="successfully_added_task_message">Udi Guardada</string>
     <string name="successfully_deleted_task_message">Udi Borrada</string>
+    <string name="empty_task_message">Campos vacios</string>
 </resources>

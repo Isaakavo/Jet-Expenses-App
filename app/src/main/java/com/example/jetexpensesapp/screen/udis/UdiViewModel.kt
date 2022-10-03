@@ -135,37 +135,4 @@ class UdiViewModel @Inject constructor(
             globalValues.udisTotal += it.totalOfUdi
         }
     }
-
-
-    fun addUdi(retirementPlan: RetirementPlan) =
-        viewModelScope.launch {
-            repository.addUdi(retirementPlan)
-        }
-
-    fun updateUdiValue(retirementPlan: RetirementPlan) {
-        viewModelScope.launch {
-            repository.updateUdiValue(retirementPlan)
-        }
-    }
-
-    fun getUdiById(id: Long) {
-        viewModelScope.launch(Dispatchers.Main) {
-            repository.getUdiById(id).distinctUntilChanged().collect {
-                _singleRetirementPlan.value = it
-            }
-        }
-    }
-
-    fun deleteUdi(retirementPlan: RetirementPlan) {
-        viewModelScope.launch {
-            repository.deleteUdi(retirementPlan)
-            getUdiGlobalDetails()
-        }
-    }
-
-    fun resetSingleRetirementPlan() {
-        viewModelScope.launch {
-            _singleRetirementPlan.value = null
-        }
-    }
 }

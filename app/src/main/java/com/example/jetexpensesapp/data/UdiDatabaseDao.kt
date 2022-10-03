@@ -10,7 +10,7 @@ interface UdiDatabaseDao {
     fun getUdis(): Flow<List<RetirementPlan>>
 
     @Query("SELECT * FROM udis WHERE id = :id")
-    fun getUdiByID(id: Long): Flow<RetirementPlan>
+    fun getUdiByID(id: Long): RetirementPlan?
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
