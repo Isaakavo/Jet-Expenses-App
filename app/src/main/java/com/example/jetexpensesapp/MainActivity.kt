@@ -13,18 +13,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.jetexpensesapp.navigation.ExpensesNavigation
+import com.example.jetexpensesapp.navigation.ExpensesNavGraph
 import com.example.jetexpensesapp.ui.theme.JetExpensesAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             JetExpensesAppTheme {
                 // A surface container using the 'background' color from the theme
-                ExpensesApp()
+                ExpensesNavGraph()
             }
         }
     }
@@ -41,7 +42,7 @@ fun ExpensesApp() {
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ExpensesNavigation()
+            ExpensesNavGraph()
         }
     }
 }

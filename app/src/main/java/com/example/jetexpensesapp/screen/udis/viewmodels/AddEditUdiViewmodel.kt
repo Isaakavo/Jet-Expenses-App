@@ -24,7 +24,7 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 
 data class AddEditUdiUiState(
-    val amount: String = "",
+    val amount: String = "0.0",
     val date: String = formatDateForRequest(LocalDateTime.now()),
     val udiValue: String = "0.0",
     val totalOfUdi: Double = 0.0,
@@ -36,6 +36,7 @@ data class AddEditUdiUiState(
     val userMessage: Int? = null,
     val isUdiSaved: Boolean = false
 )
+
 //TODO improve code
 //TODO implement delete
 @HiltViewModel
@@ -52,7 +53,6 @@ class AddEditUdiViewmodel @Inject constructor(
         if (udiId != null) {
             loadUdi(udiId)
         }
-
         getUdiForToday(LocalDateTime.now())
     }
 
@@ -72,9 +72,11 @@ class AddEditUdiViewmodel @Inject constructor(
     }
 
     fun updateAmount(newAmount: String) {
-        val totalOfUdi = newAmount.toDouble() / uiState.value.udiValue.toDouble()
+        val totalOfUdi =
+            if (newAmount.isEmpty()) 0.0 else newAmount.toDouble() / uiState.value.udiValue.toDouble()
         val udiComission = checkNegativeNumber(totalOfUdi - Constants.MINE_UDI)
-        val udiValueInMoney = checkNegativeNumber(Constants.MINE_UDI * uiState.value.udiValue.toDouble())
+        val udiValueInMoney =
+            checkNegativeNumber(Constants.MINE_UDI * uiState.value.udiValue.toDouble())
         _uiState.update {
             it.copy(
                 amount = newAmount,
@@ -87,15 +89,6 @@ class AddEditUdiViewmodel @Inject constructor(
     }
 
     fun updateDate(newDate: String) {
-//        if (newDate.length == 10) {
-//            date.value = it
-//            dateSupp = it
-//            //viewModel.getUdiForToday(formatStringToDate(it).atStartOfDay())
-//        } else {
-//            if (it.length <= 10 && dateSupp.length <= 10) {
-//                date.value = it
-//            }
-//        }
         _uiState.update {
             it.copy(date = newDate)
         }
@@ -141,7 +134,6 @@ class AddEditUdiViewmodel @Inject constructor(
             }
         }
     }
-
 
     private fun loadUdi(udiId: String) {
         _uiState.update {

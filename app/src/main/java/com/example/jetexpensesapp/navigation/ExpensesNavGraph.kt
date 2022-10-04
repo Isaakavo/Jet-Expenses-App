@@ -4,17 +4,18 @@ import android.app.Activity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -23,6 +24,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.jetexpensesapp.R
+import com.example.jetexpensesapp.components.UdiBottomSheet
 import com.example.jetexpensesapp.components.UdiEntryDetails
 import com.example.jetexpensesapp.components.UdiHomeScreen
 import com.example.jetexpensesapp.components.shared.Button
@@ -37,11 +39,15 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ExpensesNavigation(
+fun ExpensesNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
-    bottomSheetState: ModalBottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
+    bottomSheetState: ModalBottomSheetState =
+        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
+    showModalSheet: MutableState<Boolean> = rememberSaveable {
+        mutableStateOf(false)
+    },
     startDestination: String = UdisDestination.UDI_HOMESCREEN_ROUTE,
     navActions: UdiNavigationActions = remember(navController) {
         UdiNavigationActions(navController)
@@ -61,10 +67,8 @@ fun ExpensesNavigation(
                 navArgument(USER_MESSAGE_ARG) { type = NavType.IntType; defaultValue = 0 }
             )
         ) { entry ->
+
             var retirementDataBottomSheet by remember { mutableStateOf(RetirementPlan()) }
-            val showModalSheet = rememberSaveable {
-                mutableStateOf(false)
-            }
 
             fun hideSheet() {
                 if (bottomSheetState.isVisible) {
@@ -74,8 +78,9 @@ fun ExpensesNavigation(
                     showModalSheet.value = false
                 }
             }
-            ModalBottomSheetLayout(
-                sheetState = bottomSheetState,
+
+            UdiBottomSheet(
+                bottomSheetState = bottomSheetState,
                 sheetContent = {
                     UdiEntryDetails(
                         retirementPlan = retirementDataBottomSheet,
@@ -110,13 +115,16 @@ fun ExpensesNavigation(
                                 })
                         }
                     }
-                },
-                sheetElevation = 10.dp,
-                sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+                }
             ) {
                 UdiHomeScreen(
                     userMessage = entry.arguments?.getInt(USER_MESSAGE_ARG)!!,
-                    onUserMessageDisplayed = { entry.arguments?.putInt(USER_MESSAGE_ARG, 0) },
+                    onUserMessageDisplayed = {
+                        entry.arguments?.putInt(
+                            USER_MESSAGE_ARG,
+                            0
+                        )
+                    },
                     onAddEntry = { navActions.navigateToAddEditUdiEntry(R.string.add_udi, null) },
                     onUdiClick = { udi ->
                         retirementDataBottomSheet = udi
@@ -128,6 +136,7 @@ fun ExpensesNavigation(
                     openModalSheet = { coroutineScope.launch { bottomSheetState.show() } }
                 )
             }
+
         }
 
         composable(
