@@ -1,7 +1,5 @@
 package com.example.jetexpensesapp.repository
 
-import android.util.Log
-import com.example.jetexpensesapp.data.DataOrException
 import com.example.jetexpensesapp.data.Result
 import com.example.jetexpensesapp.data.UdiDatabaseDao
 import com.example.jetexpensesapp.model.RetirementPlan
@@ -20,20 +18,18 @@ class UdiRepository @Inject constructor(
     private val api: UdiApi,
     private val udiDatabaseDao: UdiDatabaseDao
 ) {
-    private val dataOrException = DataOrException<UdiItem, Boolean, Exception>()
 
-    suspend fun getUdiForToday(date: LocalDateTime): DataOrException<UdiItem, Boolean, Exception> {
+    suspend fun getUdiForToday(date: LocalDateTime): Result<UdiItem> = withContext(Dispatchers.IO) {
         try {
-            dataOrException.loading = true
             val formatted = formatDateForRequest(date)
-            dataOrException.data = api.getUdiForToday(formatted, formatted).bmx.series[0].datos[0]
-            if (dataOrException.data.toString().isNotEmpty()) dataOrException.loading = false
+            val resultFromRequest = api.getUdiForToday(formatted, formatted).bmx.series[0].datos[0]
+            return@withContext Result.Success(resultFromRequest)
         } catch (e: Exception) {
-            dataOrException.e = e
-            Log.d("Repository", "getUdiForToday ${e.localizedMessage}")
+            return@withContext Result.Error(e)
         }
-        return dataOrException
     }
+
+
 
     suspend fun addUdi(retirementPlan: RetirementPlan) = udiDatabaseDao.insert(retirementPlan)
 

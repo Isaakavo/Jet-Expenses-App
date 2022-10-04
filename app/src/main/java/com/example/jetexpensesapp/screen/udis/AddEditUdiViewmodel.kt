@@ -1,5 +1,6 @@
 package com.example.jetexpensesapp.screen.udis
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,6 +14,7 @@ import com.example.jetexpensesapp.utils.checkNegativeNumber
 import com.example.jetexpensesapp.utils.formatDateForRequest
 import com.example.jetexpensesapp.utils.formatStringToDate
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,7 +26,7 @@ import javax.inject.Inject
 data class AddEditUdiUiState(
     val amount: String = "",
     val date: String = formatDateForRequest(LocalDateTime.now()),
-    val udiValue: String = "",
+    val udiValue: String = "0.0",
     val totalOfUdi: Double = 0.0,
     val mineUdi: Double = Constants.MINE_UDI,
     val udiComission: Double = 0.0,
@@ -34,7 +36,8 @@ data class AddEditUdiUiState(
     val userMessage: Int? = null,
     val isUdiSaved: Boolean = false
 )
-
+//TODO improve code
+//TODO implement delete
 @HiltViewModel
 class AddEditUdiViewmodel @Inject constructor(
     private val repository: UdiRepository,
@@ -49,6 +52,8 @@ class AddEditUdiViewmodel @Inject constructor(
         if (udiId != null) {
             loadUdi(udiId)
         }
+
+        getUdiForToday(LocalDateTime.now())
     }
 
     fun saveUdi() {
@@ -67,13 +72,16 @@ class AddEditUdiViewmodel @Inject constructor(
     }
 
     fun updateAmount(newAmount: String) {
+        val totalOfUdi = newAmount.toDouble() / uiState.value.udiValue.toDouble()
+        val udiComission = checkNegativeNumber(totalOfUdi - Constants.MINE_UDI)
+        val udiValueInMoney = checkNegativeNumber(Constants.MINE_UDI * uiState.value.udiValue.toDouble())
         _uiState.update {
             it.copy(
                 amount = newAmount,
-                totalOfUdi = newAmount.toDouble() / 7.53 ,//uiState.value.udiValue.toDouble(),
-                udiComission = checkNegativeNumber(uiState.value.totalOfUdi - Constants.MINE_UDI),
-                udiValueInMoney = checkNegativeNumber(Constants.MINE_UDI * 7.53), //uiState.value.udiValue.toDouble()),
-                udiValueInMoneyCommission = uiState.value.udiComission *  7.53 //uiState.value.udiValue.toDouble()
+                totalOfUdi = totalOfUdi,
+                udiComission = udiComission,
+                udiValueInMoney = udiValueInMoney,
+                udiValueInMoneyCommission = udiComission * uiState.value.udiValue.toDouble()
             )
         }
     }
@@ -97,8 +105,8 @@ class AddEditUdiViewmodel @Inject constructor(
         val newUdi = RetirementPlan(
             dateOfPurchase = formatStringToDate(uiState.value.date).atStartOfDay(),
             purchaseTotal = uiState.value.amount.toDouble(),
-            udiValue = 7.53 ,//uiState.value.udiValue.toDouble(),
-            totalOfUdi = uiState.value.amount.toDouble() / 7.53,//uiState.value.udiValue.toDouble(),
+            udiValue = uiState.value.udiValue.toDouble(),
+            totalOfUdi = uiState.value.amount.toDouble() / uiState.value.udiValue.toDouble(),//uiState.value.udiValue.toDouble(),
             mineUdi = Constants.MINE_UDI,
             udiCommission = uiState.value.udiComission,
             udiValueInMoney = uiState.value.udiValueInMoney,
@@ -117,7 +125,14 @@ class AddEditUdiViewmodel @Inject constructor(
         viewModelScope.launch {
             val updatedUdi = RetirementPlan(
                 id = udiId.toLong(),
-                purchaseTotal = uiState.value.amount.toDouble()
+                dateOfPurchase = formatStringToDate(uiState.value.date).atStartOfDay(),
+                purchaseTotal = uiState.value.amount.toDouble(),
+                udiValue = uiState.value.udiValue.toDouble(),
+                totalOfUdi = uiState.value.amount.toDouble() / uiState.value.udiValue.toDouble(),//uiState.value.udiValue.toDouble(),
+                mineUdi = Constants.MINE_UDI,
+                udiCommission = uiState.value.udiComission,
+                udiValueInMoney = uiState.value.udiValueInMoney,
+                udiValueInMoneyCommission = uiState.value.udiValueInMoneyCommission
             )
 
             repository.updateUdiValue(updatedUdi)
@@ -143,6 +158,34 @@ class AddEditUdiViewmodel @Inject constructor(
                             isLoading = false,
                         )
                     }
+                    getUdiForToday(udi.dateOfPurchase)
+                } else {
+                    _uiState.update {
+                        it.copy(isLoading = false)
+                    }
+                }
+            }
+        }
+    }
+
+    fun getUdiForToday(date: LocalDateTime) {
+        _uiState.update {
+            it.copy(isLoading = true)
+        }
+        Log.d("AddViewmodel", "Calling api... with date $date")
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getUdiForToday(date).let { result ->
+                if (result is Result.Success) {
+
+                    val udiValue = result.data.udiValue
+                    val udiDate = result.data.date
+                    _uiState.update {
+                        it.copy(
+                            udiValue = udiValue,
+                            isLoading = false
+                        )
+                    }
+                    Log.d("AddViewmodel", "Api success $udiValue with date $udiDate")
                 } else {
                     _uiState.update {
                         it.copy(isLoading = false)

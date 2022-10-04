@@ -1,6 +1,5 @@
 package com.example.jetexpensesapp.screen.udis
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -19,11 +18,7 @@ import com.example.jetexpensesapp.repository.UdiRepository
 import com.example.jetexpensesapp.utils.Async
 import com.example.jetexpensesapp.utils.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.time.LocalDateTime
 import javax.inject.Inject
 
 data class UdiUiState(
@@ -83,12 +78,6 @@ class UdiViewModel @Inject constructor(
         _userMessage.value = message
     }
 
-    private val _dataFromDb = MutableStateFlow<List<RetirementPlan>>(emptyList())
-    val dataFromDb = _dataFromDb.asStateFlow()
-
-    private val _singleRetirementPlan = MutableStateFlow<RetirementPlan?>(null)
-    val singleRetirementPlan = _singleRetirementPlan.asStateFlow()
-
     var udiFromApi by mutableStateOf<DataOrException<UdiItem, Boolean, Exception>>(
         DataOrException(
             null,
@@ -99,40 +88,16 @@ class UdiViewModel @Inject constructor(
 
     var globalValues by mutableStateOf(UdiGlobalDetails(0.0, 0.0, 0.0))
 
-    init {
-        if (udiFromApi.data == null) {
-            getUdiForToday(LocalDateTime.now())
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.getAllUdis().distinctUntilChanged().collect { udis ->
-                val ordered = udis.sortedBy { it.dateOfPurchase }
-                _dataFromDb.value = ordered
-                withContext(Dispatchers.Main) {
-                    getUdiGlobalDetails()
-                }
-            }
-        }
-    }
-
-    fun getUdiForToday(date: LocalDateTime) {
-        viewModelScope.launch {
-            Log.d("viewmodel", "Calling api")
-            udiFromApi = udiFromApi.copy(loading = true)
-            udiFromApi = repository.getUdiForToday(date)
-
-            if (udiFromApi.data.toString().isNotEmpty()) {
-                Log.d("viewmodel", "Result from api: $udiFromApi")
-                udiFromApi = udiFromApi.copy(loading = false)
-            }
-        }
-    }
-
-    private fun getUdiGlobalDetails() {
-        globalValues.totalExpend = 0.0
-        globalValues.udisTotal = 0.0
-        _dataFromDb.value.map {
-            globalValues.totalExpend += it.purchaseTotal
-            globalValues.udisTotal += it.totalOfUdi
-        }
-    }
+//    fun getUdiForToday(date: LocalDateTime) {
+//        viewModelScope.launch {
+//            Log.d("viewmodel", "Calling api")
+//            udiFromApi = udiFromApi.copy(loading = true)
+//            udiFromApi = repository.getUdiForToday(date)
+//
+//            if (udiFromApi.data.toString().isNotEmpty()) {
+//                Log.d("viewmodel", "Result from api: $udiFromApi")
+//                udiFromApi = udiFromApi.copy(loading = false)
+//            }
+//        }
+//    }
 }

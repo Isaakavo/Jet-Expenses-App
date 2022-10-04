@@ -16,6 +16,7 @@ import com.example.jetexpensesapp.utils.formatMoney
 fun UdiGlobalDetailsScreen(
     modifier: Modifier = Modifier,
     viewModel: UdiViewModel = hiltViewModel(),
+    onBack: () -> Unit = {},
     navController: NavController? = null,
 ) {
 
@@ -33,7 +34,7 @@ fun UdiGlobalDetailsScreen(
             TopBar(
                 backgroundColor = Color.Transparent,
                 title = "Detalles Globales",
-                navControllerAction = { navController?.popBackStack() }
+                onBack = onBack
             ) {
                 navController?.popBackStack()
             }

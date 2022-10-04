@@ -24,14 +24,14 @@ fun TopBar(
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colors.primary,
     elevation: Dp = 0.dp,
-    navControllerAction: () -> Unit = {},
+    onBack: () -> Unit = {},
     onClick: () -> Unit
 ) {
     TopAppBar(
         modifier = modifier,
         navigationIcon = {
             if (icon != null) {
-                IconButton(onClick = navControllerAction) {
+                IconButton(onClick = onBack) {
                     Icon(imageVector = icon, contentDescription = null)
                 }
             }

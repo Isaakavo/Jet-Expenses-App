@@ -103,9 +103,10 @@ fun ExpensesNavigation(
                                 variant = ButtonVariants.TEXT,
                                 onClick = {
                                     hideSheet()
-//                            navController.navigate(
-//                                Screen.AddRetirementEntryScreen.route + "/${retirementData.value.id}"
-//                            )
+                                    navActions.navigateToAddEditUdiEntry(
+                                        R.string.edit_udi,
+                                        retirementDataBottomSheet.id.toString()
+                                    )
                                 })
                         }
                     }
@@ -123,7 +124,6 @@ fun ExpensesNavigation(
                             bottomSheetState.show()
                         }
                     },
-                    //onUdiClick = { udi -> navActions.navigateToUdiDetail("${udi.id}") },
                     scope = coroutineScope,
                     openModalSheet = { coroutineScope.launch { bottomSheetState.show() } }
                 )
