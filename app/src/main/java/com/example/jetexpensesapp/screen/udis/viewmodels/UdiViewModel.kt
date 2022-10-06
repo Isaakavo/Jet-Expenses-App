@@ -7,10 +7,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetexpensesapp.R
-import com.example.jetexpensesapp.data.DataOrException
 import com.example.jetexpensesapp.data.UdiGlobalDetails
 import com.example.jetexpensesapp.model.RetirementPlan
-import com.example.jetexpensesapp.model.UdiItem
 import com.example.jetexpensesapp.navigation.ADD_EDIT_RESULT_OK
 import com.example.jetexpensesapp.navigation.DELETE_RESULT_OK
 import com.example.jetexpensesapp.navigation.EDIT_RESULT_OK
@@ -69,7 +67,7 @@ class UdiViewModel @Inject constructor(
     fun showEditResultMessage(result: Int) {
         when (result) {
             EDIT_RESULT_OK -> showSnackBarMessage(R.string.successfully_saved_task_message)
-            ADD_EDIT_RESULT_OK -> showSnackBarMessage(R.string.successfully_added_task_message)
+            ADD_EDIT_RESULT_OK -> showSnackBarMessage(R.string.successfully_edited_task_message)
             DELETE_RESULT_OK -> showSnackBarMessage(R.string.successfully_deleted_task_message)
         }
     }
@@ -78,26 +76,7 @@ class UdiViewModel @Inject constructor(
         _userMessage.value = message
     }
 
-    var udiFromApi by mutableStateOf<DataOrException<UdiItem, Boolean, Exception>>(
-        DataOrException(
-            null,
-            false,
-            Exception("")
-        )
-    )
 
     var globalValues by mutableStateOf(UdiGlobalDetails(0.0, 0.0, 0.0))
 
-//    fun getUdiForToday(date: LocalDateTime) {
-//        viewModelScope.launch {
-//            Log.d("viewmodel", "Calling api")
-//            udiFromApi = udiFromApi.copy(loading = true)
-//            udiFromApi = repository.getUdiForToday(date)
-//
-//            if (udiFromApi.data.toString().isNotEmpty()) {
-//                Log.d("viewmodel", "Result from api: $udiFromApi")
-//                udiFromApi = udiFromApi.copy(loading = false)
-//            }
-//        }
-//    }
 }

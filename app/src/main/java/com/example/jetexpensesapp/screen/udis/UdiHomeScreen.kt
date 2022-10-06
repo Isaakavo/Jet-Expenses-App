@@ -1,6 +1,5 @@
 package com.example.jetexpensesapp.components
 
-import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -14,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
@@ -31,37 +31,53 @@ import com.example.jetexpensesapp.components.shared.*
 import com.example.jetexpensesapp.model.RetirementPlan
 import com.example.jetexpensesapp.screen.udis.UdiViewModel
 import com.example.jetexpensesapp.utils.formatDate
-import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalLifecycleComposeApi::class)
 @Composable
 fun UdiHomeScreen(
     @StringRes userMessage: Int,
+    scaffoldState: ScaffoldState = rememberScaffoldState(),
     onAddEntry: () -> Unit,
     onUdiClick: (RetirementPlan) -> Unit,
     onUserMessageDisplayed: () -> Unit,
-    openModalSheet: (RetirementPlan) -> Unit,
-    viewModel: UdiViewModel = hiltViewModel(),
-    scope: CoroutineScope
+    viewModel: UdiViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    UdisContent(
-        loading = uiState.isLoading,
-        udis = uiState.udis,
-        onUdiClick = onUdiClick,
-        onAddEntry = onAddEntry
-    )
+    Scaffold(
+        scaffoldState = scaffoldState,
+        topBar = {
+            TopBar(
+                title = "Expenses App",
+                titleWeight = FontWeight.Bold,
+                icon = null,
+                backgroundColor = MaterialTheme.colors.primary,
+            )
+        }
+    ) {
+        UdisContent(
+            loading = uiState.isLoading,
+            udis = uiState.udis,
+            onUdiClick = onUdiClick,
+            onAddEntry = onAddEntry
+        )
+    }
 
     uiState.userMessage?.let { message ->
-        Toast.makeText(context, stringResource(message), Toast.LENGTH_LONG).show()
+        val snackBarText = stringResource(id = message)
+        LaunchedEffect(scaffoldState, viewModel, message, snackBarText) {
+            scaffoldState.snackbarHostState.showSnackbar(snackBarText)
+            viewModel.snackbarMessageShown()
+        }
     }
 
     val currentOnUserMessageDisplayed by rememberUpdatedState(newValue = onUserMessageDisplayed)
-    if (userMessage != 0) {
-        viewModel.showEditResultMessage(userMessage)
-        currentOnUserMessageDisplayed()
+    LaunchedEffect(userMessage) {
+        if (userMessage != 0) {
+            viewModel.showEditResultMessage(userMessage)
+            currentOnUserMessageDisplayed()
+        }
     }
 }
 
@@ -86,16 +102,6 @@ fun UdisContent(
             LazyColumn(
                 modifier = Modifier.fillMaxHeight(),
             ) {
-                item {
-                    TopBar(
-                        title = "Expenses App",
-                        titleWeight = FontWeight.Bold,
-                        icon = null,
-                        backgroundColor = MaterialTheme.colors.primary,
-                    ) {
-
-                    }
-                }
                 item {
                     Row(
                         modifier = Modifier

@@ -131,9 +131,7 @@ fun ExpensesNavGraph(
                         coroutineScope.launch {
                             bottomSheetState.show()
                         }
-                    },
-                    scope = coroutineScope,
-                    openModalSheet = { coroutineScope.launch { bottomSheetState.show() } }
+                    }
                 )
             }
 

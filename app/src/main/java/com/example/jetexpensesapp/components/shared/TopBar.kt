@@ -25,7 +25,7 @@ fun TopBar(
     backgroundColor: Color = MaterialTheme.colors.primary,
     elevation: Dp = 0.dp,
     onBack: () -> Unit = {},
-    onClick: () -> Unit
+    onClick: () -> Unit = {}
 ) {
     TopAppBar(
         modifier = modifier,

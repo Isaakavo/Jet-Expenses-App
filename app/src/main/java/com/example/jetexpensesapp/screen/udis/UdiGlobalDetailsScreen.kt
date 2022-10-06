@@ -20,12 +20,12 @@ fun UdiGlobalDetailsScreen(
     navController: NavController? = null,
 ) {
 
-    val udiForToday = viewModel.udiFromApi.data?.udiValue?.toDouble()
+    //val udiForToday = viewModel.udiFromApi.data?.udiValue?.toDouble()
     val udisGlobalDetails = viewModel.globalValues
 
-    if (udiForToday != null) {
-        udisGlobalDetails.udisConvertion = udiForToday * udisGlobalDetails.udisTotal
-    }
+//    if (udiForToday != null) {
+//        udisGlobalDetails.udisConvertion = udiForToday * udisGlobalDetails.udisTotal
+//    }
     Surface(
         modifier = modifier,
         elevation = 0.dp
@@ -44,7 +44,7 @@ fun UdiGlobalDetailsScreen(
             )
             UdiRowDetails(
                 title = "Valor de la UDI",
-                content = udiForToday.toString()
+                content = "un chingo"
             )
             UdiRowDetails(
                 title = "Total de UDIS",
