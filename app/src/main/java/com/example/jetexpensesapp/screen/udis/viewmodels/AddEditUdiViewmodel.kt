@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.jetexpensesapp.R
 import com.example.jetexpensesapp.data.Result
 import com.example.jetexpensesapp.model.RetirementPlan
+import com.example.jetexpensesapp.model.UdiItem
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs
 import com.example.jetexpensesapp.repository.UdiRepository
 import com.example.jetexpensesapp.utils.Constants
@@ -15,6 +16,7 @@ import com.example.jetexpensesapp.utils.formatDateForRequest
 import com.example.jetexpensesapp.utils.formatStringToDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -45,6 +47,11 @@ class AddEditUdiViewmodel @Inject constructor(
     private val repository: UdiRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    companion object {
+        const val TAG = "AddEditUdiViewmodel"
+    }
+
     private val udiId: String? = savedStateHandle[UdiDestinationArgs.UDI_ID_ARG]
     private val shouldDeleteUdi: String? = savedStateHandle[UdiDestinationArgs.DELETE_ARG]
 
@@ -57,8 +64,9 @@ class AddEditUdiViewmodel @Inject constructor(
         }
         if (udiId != null && shouldDeleteUdi == null) {
             loadUdi(udiId)
+        } else if (udiId == null) {
+            getUdiForToday(LocalDateTime.now())
         }
-        getUdiForToday(LocalDateTime.now())
     }
 
     fun saveUdi() {
@@ -148,14 +156,31 @@ class AddEditUdiViewmodel @Inject constructor(
             repository.getUdiById(udiId.toLong()).let { result ->
                 if (result is Result.Success) {
                     val udi = result.data
-                    _uiState.update {
-                        it.copy(
-                            amount = udi.purchaseTotal.toString(),
-                            date = formatDateForRequest(udi.dateOfPurchase),
-                            isLoading = false,
-                        )
+                    val resultFromApi = getUdiForTodayAsync(udi.dateOfPurchase)
+                    if (resultFromApi is Result.Success){
+                        Log.d(TAG, "Api result with values ${resultFromApi.data}")
+                        val udiValueFromApi = resultFromApi.data.udiValue.toDouble()
+                        val totalOfUdi =
+                            udi.purchaseTotal / udiValueFromApi
+                        val udiComission = checkNegativeNumber(totalOfUdi - Constants.MINE_UDI)
+                        val udiValueInMoney =
+                            checkNegativeNumber(Constants.MINE_UDI * udiValueFromApi)
+                        _uiState.update {
+                            it.copy(
+                                amount = udi.purchaseTotal.toString(),
+                                udiValue = resultFromApi.data.udiValue,
+                                date = formatDateForRequest(udi.dateOfPurchase),
+                                totalOfUdi = totalOfUdi,
+                                udiComission = udiComission,
+                                udiValueInMoney = udiValueInMoney,
+                                isLoading = false,
+                            )
+                        }
+                    } else {
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
                     }
-                    getUdiForToday(udi.dateOfPurchase)
                 } else {
                     _uiState.update {
                         it.copy(isLoading = false)
@@ -193,7 +218,7 @@ class AddEditUdiViewmodel @Inject constructor(
         _uiState.update {
             it.copy(isLoading = true)
         }
-        Log.d("AddViewmodel", "Calling api... with date $date")
+        Log.d(TAG, "Calling api... with date $date")
         viewModelScope.launch(Dispatchers.IO) {
             repository.getUdiForToday(date).let { result ->
                 if (result is Result.Success) {
@@ -206,7 +231,7 @@ class AddEditUdiViewmodel @Inject constructor(
                             isLoading = false
                         )
                     }
-                    Log.d("AddViewmodel", "Api success $udiValue with date $udiDate")
+                    Log.d(TAG, "Api success $udiValue with date $udiDate")
                 } else {
                     _uiState.update {
                         it.copy(isLoading = false)
@@ -214,5 +239,13 @@ class AddEditUdiViewmodel @Inject constructor(
                 }
             }
         }
+    }
+
+    private suspend fun getUdiForTodayAsync(date: LocalDateTime): Result<UdiItem> {
+        val result = viewModelScope.async {
+            Log.d(TAG, "Calling api... with date $date")
+             repository.getUdiForToday(date)
+        }
+        return result.await()
     }
 }
