@@ -34,7 +34,8 @@ data class AddEditUdiUiState(
     val udiValueInMoneyCommission: Double = 0.0,
     val isLoading: Boolean = false,
     val userMessage: Int? = null,
-    val isUdiSaved: Boolean = false
+    val isUdiSaved: Boolean = false,
+    val isUdiDeleted: Boolean = false
 )
 
 //TODO improve code
@@ -45,12 +46,16 @@ class AddEditUdiViewmodel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val udiId: String? = savedStateHandle[UdiDestinationArgs.UDI_ID_ARG]
+    private val shouldDeleteUdi: String? = savedStateHandle[UdiDestinationArgs.DELETE_ARG]
 
     private val _uiState = MutableStateFlow(AddEditUdiUiState())
     val uiState: StateFlow<AddEditUdiUiState> = _uiState.asStateFlow()
 
     init {
-        if (udiId != null) {
+        if (udiId != null && shouldDeleteUdi != null && shouldDeleteUdi == "true") {
+            deleteUdi(udiId)
+        }
+        if (udiId != null && shouldDeleteUdi != null && shouldDeleteUdi == "false") {
             loadUdi(udiId)
         }
         getUdiForToday(LocalDateTime.now())
@@ -151,6 +156,30 @@ class AddEditUdiViewmodel @Inject constructor(
                         )
                     }
                     getUdiForToday(udi.dateOfPurchase)
+                } else {
+                    _uiState.update {
+                        it.copy(isLoading = false)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun deleteUdi(udiId: String) {
+        _uiState.update {
+            it.copy(isLoading = true)
+        }
+        viewModelScope.launch {
+            repository.getUdiById(udiId.toLong()).let { result ->
+                if (result is Result.Success) {
+                    val udi = result.data
+                    repository.deleteUdi(udi)
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            isUdiDeleted = true
+                        )
+                    }
                 } else {
                     _uiState.update {
                         it.copy(isLoading = false)

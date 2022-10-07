@@ -30,6 +30,7 @@ import com.example.jetexpensesapp.components.UdiHomeScreen
 import com.example.jetexpensesapp.components.shared.Button
 import com.example.jetexpensesapp.components.shared.ButtonVariants
 import com.example.jetexpensesapp.model.RetirementPlan
+import com.example.jetexpensesapp.navigation.UdiDestinationArgs.DELETE_ARG
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.TITLE_ARG
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.UDI_ID_ARG
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.USER_MESSAGE_ARG
@@ -98,6 +99,11 @@ fun ExpensesNavGraph(
                                 variant = ButtonVariants.TEXT,
                                 onClick = {
                                     hideSheet()
+                                    navActions.navigateToDeleteUdiEntry(
+                                        R.string.edit_udi,
+                                        retirementDataBottomSheet.id.toString(),
+                                        true
+                                    )
                                     //viewModel.deleteUdi(retirementPlan = retirementData.value)
                                 })
                             Button(text = "Editar",
@@ -141,7 +147,8 @@ fun ExpensesNavGraph(
             UdisDestination.ADD_EDIT_TASK_ROUTE,
             arguments = listOf(
                 navArgument(TITLE_ARG) { type = NavType.IntType },
-                navArgument(UDI_ID_ARG) { type = NavType.StringType; nullable = true }
+                navArgument(UDI_ID_ARG) { type = NavType.StringType; nullable = true },
+                navArgument(DELETE_ARG) { type = NavType.StringType; nullable = true }
             )
         ) { entry ->
             val udiId = entry.arguments?.getString(UDI_ID_ARG)
@@ -151,6 +158,9 @@ fun ExpensesNavGraph(
                     navActions.navigateToHome(
                         if (udiId == null) ADD_EDIT_RESULT_OK else EDIT_RESULT_OK
                     )
+                },
+                onDeleteUdi = {
+                    navActions.navigateToHome(DELETE_RESULT_OK)
                 },
                 onBack = { navController.popBackStack() }
             )

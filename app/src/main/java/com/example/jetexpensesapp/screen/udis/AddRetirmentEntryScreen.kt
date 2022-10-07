@@ -37,6 +37,7 @@ fun AddRetirementEntryScreen(
     @StringRes topBarTitle: Int,
     onUdiUpdate: () -> Unit,
     onBack: () -> Unit,
+    onDeleteUdi: () -> Unit,
     viewModel: AddEditUdiViewmodel = hiltViewModel(),
 ) {
 
@@ -86,6 +87,12 @@ fun AddRetirementEntryScreen(
     LaunchedEffect(uiState.isUdiSaved) {
         if (uiState.isUdiSaved) {
             onUdiUpdate()
+        }
+    }
+
+    LaunchedEffect(uiState.isUdiDeleted) {
+        if (uiState.isUdiDeleted) {
+            onDeleteUdi()
         }
     }
 }
