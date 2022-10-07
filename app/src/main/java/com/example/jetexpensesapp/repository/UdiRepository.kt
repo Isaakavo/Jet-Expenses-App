@@ -8,8 +8,7 @@ import com.example.jetexpensesapp.network.UdiApi
 import com.example.jetexpensesapp.utils.formatDateForRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -33,8 +32,10 @@ class UdiRepository @Inject constructor(
 
     suspend fun addUdi(retirementPlan: RetirementPlan) = udiDatabaseDao.insert(retirementPlan)
 
-    fun getAllUdis(): Flow<List<RetirementPlan>> =
-        udiDatabaseDao.getUdis().flowOn(Dispatchers.IO).conflate()
+    fun getAllUdis(): Flow<Result<List<RetirementPlan>>> =
+        udiDatabaseDao.getUdis().map {
+            Result.Success(it)
+        }
 
     suspend fun updateUdiValue(retirementPlan: RetirementPlan) {
         udiDatabaseDao.updateUdi(retirementPlan)
