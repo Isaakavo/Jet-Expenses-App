@@ -7,9 +7,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
@@ -27,7 +27,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.jetexpensesapp.components.shared.*
+import com.example.jetexpensesapp.R
+import com.example.jetexpensesapp.components.shared.DateRow
+import com.example.jetexpensesapp.components.shared.GenericRow
+import com.example.jetexpensesapp.components.shared.LoadingContent
+import com.example.jetexpensesapp.components.shared.TopBar
 import com.example.jetexpensesapp.model.RetirementPlan
 import com.example.jetexpensesapp.screen.udis.UdiViewModel
 import com.example.jetexpensesapp.utils.formatDate
@@ -54,6 +58,11 @@ fun UdiHomeScreen(
                 icon = null,
                 backgroundColor = MaterialTheme.colors.primary,
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = onAddEntry) {
+                Icon(Icons.Filled.Add, stringResource(id = R.string.add_udi))
+            }
         }
     ) {
         UdisContent(
@@ -102,20 +111,6 @@ fun UdisContent(
             LazyColumn(
                 modifier = Modifier.fillMaxHeight(),
             ) {
-                item {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(end = 10.dp),
-                        verticalAlignment = Alignment.Bottom,
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        Button(
-                            text = "Agregar",
-                            shape = CircleShape,
-                            onClick = { onAddEntry() })
-                    }
-                }
                 itemsIndexed(udis) { index, udiObj ->
                     val dismissState = rememberDismissState(
                         confirmStateChange = {
