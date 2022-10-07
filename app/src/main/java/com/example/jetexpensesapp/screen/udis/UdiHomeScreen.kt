@@ -42,6 +42,8 @@ fun UdiHomeScreen(
     @StringRes userMessage: Int,
     scaffoldState: ScaffoldState = rememberScaffoldState(),
     onAddEntry: () -> Unit,
+    onEditEntry: (RetirementPlan) -> Unit,
+    onDeleteEntry: (RetirementPlan) -> Unit,
     onUdiClick: (RetirementPlan) -> Unit,
     onUserMessageDisplayed: () -> Unit,
     viewModel: UdiViewModel = hiltViewModel()
@@ -69,6 +71,8 @@ fun UdiHomeScreen(
             loading = uiState.isLoading,
             udis = uiState.udis,
             onUdiClick = onUdiClick,
+            onEditEntry = onEditEntry,
+            onDeleteEntry = onDeleteEntry,
             onAddEntry = onAddEntry
         )
     }
@@ -96,6 +100,8 @@ fun UdisContent(
     loading: Boolean,
     udis: List<RetirementPlan>,
     onUdiClick: (RetirementPlan) -> Unit,
+    onEditEntry: (RetirementPlan) -> Unit,
+    onDeleteEntry: (RetirementPlan) -> Unit,
     onAddEntry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -115,11 +121,9 @@ fun UdisContent(
                     val dismissState = rememberDismissState(
                         confirmStateChange = {
                             if (it == DismissValue.DismissedToEnd)
-//                                navController.navigate(
-//                                Screen.AddRetirementEntryScreen.route + "/${udiObj.id}"
-//                            )
+                                onEditEntry(udiObj)
                             else if (it == DismissValue.DismissedToStart) {
-                                //viewModel.deleteUdi(retirementPlan = udiObj)
+                                onDeleteEntry(udiObj)
                             }
                             it != DismissValue.DismissedToEnd
                         }
@@ -136,6 +140,7 @@ fun UdisContent(
                             modifier = Modifier.padding(end = 6.dp)
                         )
                     }
+                    //TODO Extract this to another file
                     SwipeToDismiss(
                         state = dismissState,
                         modifier = Modifier.padding(vertical = 4.dp),

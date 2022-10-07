@@ -132,6 +132,19 @@ fun ExpensesNavGraph(
                         )
                     },
                     onAddEntry = { navActions.navigateToAddEditUdiEntry(R.string.add_udi, null) },
+                    onEditEntry = {
+                        navActions.navigateToAddEditUdiEntry(
+                            R.string.edit_udi,
+                            it.id.toString()
+                        )
+                    },
+                    onDeleteEntry = {
+                        navActions.navigateToDeleteUdiEntry(
+                            R.string.edit_udi,
+                            it.id.toString(),
+                            true
+                        )
+                    },
                     onUdiClick = { udi ->
                         retirementDataBottomSheet = udi
                         coroutineScope.launch {

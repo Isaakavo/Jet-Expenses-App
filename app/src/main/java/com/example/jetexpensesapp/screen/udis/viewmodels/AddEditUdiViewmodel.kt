@@ -55,7 +55,7 @@ class AddEditUdiViewmodel @Inject constructor(
         if (udiId != null && shouldDeleteUdi != null && shouldDeleteUdi == "true") {
             deleteUdi(udiId)
         }
-        if (udiId != null && shouldDeleteUdi != null && shouldDeleteUdi == "false") {
+        if (udiId != null && shouldDeleteUdi == null) {
             loadUdi(udiId)
         }
         getUdiForToday(LocalDateTime.now())
