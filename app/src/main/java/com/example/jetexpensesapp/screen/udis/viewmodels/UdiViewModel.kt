@@ -21,10 +21,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
-data class UdiUiState(
+data class UdiHomeUiState(
     val udis: List<RetirementPlan> = emptyList(),
     val isLoading: Boolean = false,
     val userMessage: Int? = null
+)
+
+data class UdiGlobalState(
+    val totalExpended: Double,
+    val totalUdis: Double
 )
 
 @HiltViewModel
@@ -47,15 +52,15 @@ class UdiViewModel @Inject constructor(
         .map { Async.Success(it) }
         .onStart<Async<List<RetirementPlan>>> { emit(Async.Loading) }
 
-    val uiState: StateFlow<UdiUiState> = combine(
+    val uiState: StateFlow<UdiHomeUiState> = combine(
         _userMessage, _isLoading, _udisAsync
     ) { userMessage, isLoading, taskAsync ->
         when (taskAsync) {
             Async.Loading -> {
-                UdiUiState(isLoading = true)
+                UdiHomeUiState(isLoading = true)
             }
             is Async.Success -> {
-                UdiUiState(
+                UdiHomeUiState(
                     udis = taskAsync.data,
                     isLoading = isLoading,
                     userMessage = userMessage
@@ -66,7 +71,7 @@ class UdiViewModel @Inject constructor(
         .stateIn(
             scope = viewModelScope,
             started = WhileUiSubscribed,
-            initialValue = UdiUiState(isLoading = true)
+            initialValue = UdiHomeUiState(isLoading = true)
         )
 
     fun snackbarMessageShown() {
@@ -101,13 +106,17 @@ class UdiViewModel @Inject constructor(
     ): List<RetirementPlan> =
         when (filteringType) {
             UdisDateFilterType.NEW_TO_LAST -> {
-                udis.sortedBy { it.dateOfPurchase }
+                udis.sortedByDescending { it.dateOfPurchase }
             }
             UdisDateFilterType.LAST_TO_NEW -> {
-                udis.sortedByDescending { it.dateOfPurchase }
+                udis.sortedBy { it.dateOfPurchase }
             }
         }
 
+
+    fun setFiltering(requestType: UdisDateFilterType) {
+        savesStateHandle[UDIS_FILTER_SAVED_STATE_KEY] = requestType
+    }
 
     var globalValues by mutableStateOf(UdiGlobalDetails(0.0, 0.0, 0.0))
 }

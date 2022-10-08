@@ -34,6 +34,7 @@ import com.example.jetexpensesapp.components.shared.LoadingContent
 import com.example.jetexpensesapp.components.shared.TopBar
 import com.example.jetexpensesapp.model.RetirementPlan
 import com.example.jetexpensesapp.screen.udis.UdiViewModel
+import com.example.jetexpensesapp.screen.udis.UdisDateFilterType
 import com.example.jetexpensesapp.utils.formatDate
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalLifecycleComposeApi::class)
@@ -59,6 +60,8 @@ fun UdiHomeScreen(
                 titleWeight = FontWeight.Bold,
                 icon = null,
                 backgroundColor = MaterialTheme.colors.primary,
+                onFilterNew = { viewModel.setFiltering(UdisDateFilterType.NEW_TO_LAST) },
+                onFilterLast = { viewModel.setFiltering(UdisDateFilterType.LAST_TO_NEW) }
             )
         },
         floatingActionButton = {
