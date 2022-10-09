@@ -31,6 +31,7 @@ fun TopBar(
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colors.primary,
     elevation: Dp = 0.dp,
+    shouldDisplayFilter: Boolean = false,
     onFilterNew: () -> Unit = {},
     onFilterLast: () -> Unit = {},
     onBack: () -> Unit = {},
@@ -64,7 +65,8 @@ fun TopBar(
                     onClick = onClick
                 )
             }
-            FilterDatesMenu(onFilterNew = onFilterNew, onFilterLast)
+            if (shouldDisplayFilter)
+                FilterDatesMenu(onFilterNew = onFilterNew, onFilterLast)
         }
     )
 }

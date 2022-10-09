@@ -53,6 +53,7 @@ fun UdiHomeScreen(
                 titleWeight = FontWeight.Bold,
                 icon = null,
                 backgroundColor = MaterialTheme.colors.primary,
+                shouldDisplayFilter = true,
                 onFilterNew = { viewModel.setFiltering(UdisDateFilterType.NEW_TO_LAST) },
                 onFilterLast = { viewModel.setFiltering(UdisDateFilterType.LAST_TO_NEW) }
             )
