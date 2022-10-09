@@ -40,8 +40,6 @@ data class AddEditUdiUiState(
     val isUdiDeleted: Boolean = false
 )
 
-//TODO improve code
-//TODO implement delete
 @HiltViewModel
 class AddEditUdiViewmodel @Inject constructor(
     private val repository: UdiRepository,

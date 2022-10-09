@@ -1,7 +1,5 @@
 package com.example.jetexpensesapp.screen.udis
 
-import android.app.DatePickerDialog
-import android.widget.DatePicker
 import androidx.annotation.StringRes
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
@@ -28,9 +26,7 @@ import com.example.jetexpensesapp.components.shared.LoadingContent
 import com.example.jetexpensesapp.components.shared.TopBar
 import com.example.jetexpensesapp.model.RetirementPlan
 import com.example.jetexpensesapp.utils.formatStringToDate
-import java.util.*
 
-//TODO Refactor all this
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun AddRetirementEntryScreen(
@@ -43,33 +39,12 @@ fun AddRetirementEntryScreen(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-
-    // Initializing a Calendar
-    val mCalendar = Calendar.getInstance()
-
-    // Fetching current year, month and day
-    val mYear = mCalendar.get(Calendar.YEAR)
-    val mMonth = mCalendar.get(Calendar.MONTH)
-    val mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
-
-    mCalendar.time = Date()
-
-    val datePickerDialog = DatePickerDialog(
+    val datePicker = com.example.jetexpensesapp.components.shared.DatePicker.getDatePicker(
         context,
-        { _: DatePicker, year: Int, month: Int, mDayOfMonth: Int ->
-            var monthTemp = "${month + 1}"
-            var dayTemp = "$mDayOfMonth"
-            if (!monthTemp.matches(Regex("(0[1-9]|[12][0-9]|3[01])"))) {
-                monthTemp = "0${month + 1}"
-            }
-            if (!dayTemp.matches(Regex("(0[1-9]|[12][0-9]|3[01])"))) {
-                dayTemp = "0$dayTemp"
-            }
-            val requestDate = "$year-${monthTemp}-$dayTemp"
-            viewModel.updateDate(requestDate)
-            viewModel.getUdiForToday(formatStringToDate(requestDate).atStartOfDay())
-        }, mYear, mMonth, mDay
-    )
+        onRequest = {
+            viewModel.updateDate(it)
+            viewModel.getUdiForToday(formatStringToDate(it).atStartOfDay())
+        })
 
     AddEditContent(
         topBarTitle = topBarTitle,
@@ -81,7 +56,7 @@ fun AddRetirementEntryScreen(
         onSaveUdi = viewModel::saveUdi,
         onAmountChange = viewModel::updateAmount,
         onDateChange = viewModel::updateDate,
-        onShowDatePicker = datePickerDialog::show
+        onShowDatePicker = datePicker::show
     )
 
     LaunchedEffect(uiState.isUdiSaved) {
@@ -166,7 +141,7 @@ fun AddEditContent(
                     purchaseTotal = if (retirementData.amount.isNotEmpty()) {
                         amount.toDouble()
                     } else {
-                           0.0
+                        0.0
                     },
                     udiValue = retirementData.udiValue.toDouble(),
                     udiValueInMoney = retirementData.udiValueInMoney,
