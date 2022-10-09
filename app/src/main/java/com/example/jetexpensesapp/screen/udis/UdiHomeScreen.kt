@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
@@ -20,24 +19,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.jetexpensesapp.R
-import com.example.jetexpensesapp.components.shared.DateRow
-import com.example.jetexpensesapp.components.shared.GenericRow
-import com.example.jetexpensesapp.components.shared.LoadingContent
-import com.example.jetexpensesapp.components.shared.TopBar
+import com.example.jetexpensesapp.components.shared.*
 import com.example.jetexpensesapp.model.RetirementPlan
 import com.example.jetexpensesapp.screen.udis.UdiViewModel
 import com.example.jetexpensesapp.screen.udis.UdisDateFilterType
 import com.example.jetexpensesapp.utils.formatDate
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalLifecycleComposeApi::class)
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun UdiHomeScreen(
     @StringRes userMessage: Int,
@@ -50,7 +44,6 @@ fun UdiHomeScreen(
     viewModel: UdiViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -63,21 +56,19 @@ fun UdiHomeScreen(
                 onFilterNew = { viewModel.setFiltering(UdisDateFilterType.NEW_TO_LAST) },
                 onFilterLast = { viewModel.setFiltering(UdisDateFilterType.LAST_TO_NEW) }
             )
-        },
-        floatingActionButton = {
-            FloatingActionButton(onClick = onAddEntry) {
-                Icon(Icons.Filled.Add, stringResource(id = R.string.add_udi))
-            }
         }
     ) {
-        UdisContent(
-            loading = uiState.isLoading,
-            udis = uiState.udis,
-            onUdiClick = onUdiClick,
-            onEditEntry = onEditEntry,
-            onDeleteEntry = onDeleteEntry,
-            onAddEntry = onAddEntry
-        )
+        Column {
+            GlobalDetail(udisGlobalDetails = uiState.globalTotals, onAddEntry = onAddEntry)
+            UdisContent(
+                loading = uiState.isLoading,
+                udis = uiState.udis,
+                onUdiClick = onUdiClick,
+                onEditEntry = onEditEntry,
+                onDeleteEntry = onDeleteEntry,
+                onAddEntry = onAddEntry
+            )
+        }
     }
 
     uiState.userMessage?.let { message ->

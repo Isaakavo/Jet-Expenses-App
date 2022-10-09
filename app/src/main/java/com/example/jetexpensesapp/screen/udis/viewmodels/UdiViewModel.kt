@@ -23,13 +23,9 @@ import javax.inject.Inject
 
 data class UdiHomeUiState(
     val udis: List<RetirementPlan> = emptyList(),
+    val globalTotals: UdiGlobalDetails = UdiGlobalDetails(),
     val isLoading: Boolean = false,
     val userMessage: Int? = null
-)
-
-data class UdiGlobalState(
-    val totalExpended: Double,
-    val totalUdis: Double
 )
 
 @HiltViewModel
@@ -43,9 +39,9 @@ class UdiViewModel @Inject constructor(
         UdisDateFilterType.NEW_TO_LAST
     )
 
-    private val _filterDateUiInfo = _savedFilterType.map { }
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
     private val _isLoading = MutableStateFlow(false)
+    private val globalTotals = MutableStateFlow(UdiGlobalDetails())
     private val _udisAsync = combine(repository.getAllUdis(), _savedFilterType) { udis, type ->
         filterUdis(udis, type)
     }
@@ -62,6 +58,7 @@ class UdiViewModel @Inject constructor(
             is Async.Success -> {
                 UdiHomeUiState(
                     udis = taskAsync.data,
+                    globalTotals = calculateTotals(taskAsync.data),
                     isLoading = isLoading,
                     userMessage = userMessage
                 )
@@ -88,6 +85,17 @@ class UdiViewModel @Inject constructor(
 
     private fun showSnackBarMessage(message: Int) {
         _userMessage.value = message
+    }
+
+    private fun calculateTotals(allUdis: List<RetirementPlan>): UdiGlobalDetails {
+        val udiGlobalDetails = UdiGlobalDetails()
+        for (item in allUdis) {
+            udiGlobalDetails.totalExpend += item.purchaseTotal
+            udiGlobalDetails.udisTotal += item.totalOfUdi
+            udiGlobalDetails.udisConvertion += item.purchaseTotal * item.totalOfUdi
+        }
+
+        return udiGlobalDetails
     }
 
     private fun filterUdis(

@@ -12,4 +12,5 @@
     <string name="loading_udis_error">Error al cargar las udis</string>
     <string name="label_new">Recientes</string>
     <string name="label_old">Viejas</string>
+    <string name="calculate_error">Error al calcular los valores</string>
 </resources>
