@@ -35,7 +35,6 @@ fun GenericRow(
     val scope = rememberCoroutineScope()
     Surface(
         modifier
-            .fillMaxWidth()
             .clickable {
                 if (retirementPlan != null) {
                     onUdiClick(retirementPlan)
@@ -46,8 +45,7 @@ fun GenericRow(
     ) {
         Row(
             modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth(),
+                .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
 

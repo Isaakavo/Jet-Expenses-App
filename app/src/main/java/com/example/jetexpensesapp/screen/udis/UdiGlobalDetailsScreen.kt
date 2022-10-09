@@ -17,13 +17,6 @@ fun UdiGlobalDetailsScreen(
     modifier: Modifier = Modifier,
     onBack: () -> Unit = {},
 ) {
-
-    //val udiForToday = viewModel.udiFromApi.data?.udiValue?.toDouble()
-    //val udisGlobalDetails = viewModel.globalValues
-
-//    if (udiForToday != null) {
-//        udisGlobalDetails.udisConvertion = udiForToday * udisGlobalDetails.udisTotal
-//    }
     Surface(
         modifier = modifier,
         elevation = 0.dp

@@ -27,7 +27,7 @@ fun DateRow(
             style = MaterialTheme.typography.subtitle1,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Right,
-            modifier = Modifier.fillMaxWidth()
+            modifier = modifier.fillMaxWidth()
         )
     }
 }

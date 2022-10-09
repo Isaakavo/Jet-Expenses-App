@@ -77,7 +77,7 @@ fun UdiHomeScreen(
                     fontWeight = FontWeight.Bold
                     )
             }
-            GlobalDetail(
+            UdiGlobalDetail(
                 udisGlobalDetails = uiState.globalTotals,
                 onAddEntry = onAddEntry,
                 onDetailsClick = { onDetailsClick(uiState.globalTotals) }
@@ -156,61 +156,70 @@ fun UdisContent(
                             modifier = Modifier.padding(end = 6.dp)
                         )
                     }
-                    //TODO Extract this to another file
-                    SwipeToDismiss(
-                        state = dismissState,
-                        modifier = Modifier.padding(vertical = 4.dp),
-                        directions = setOf(
-                            DismissDirection.StartToEnd,
-                            DismissDirection.EndToStart
-                        ),
-                        background = {
-                            val direction = dismissState.dismissDirection ?: return@SwipeToDismiss
-                            val color by animateColorAsState(
-                                when (dismissState.targetValue) {
-                                    DismissValue.Default -> Color.LightGray
-                                    DismissValue.DismissedToEnd -> Color.Green
-                                    DismissValue.DismissedToStart -> Color.Red
-                                }
-                            )
-                            val alignment = when (direction) {
-                                DismissDirection.StartToEnd -> Alignment.CenterStart
-                                DismissDirection.EndToStart -> Alignment.CenterEnd
-                            }
-                            val icon = when (direction) {
-                                DismissDirection.StartToEnd -> Icons.Default.Done
-                                DismissDirection.EndToStart -> Icons.Default.Delete
-                            }
-                            val scale by animateFloatAsState(
-                                if (dismissState.targetValue == DismissValue.Default) 0.75f else 1f
-                            )
-
-                            Box(
-                                Modifier
-                                    .fillMaxSize()
-                                    .background(color)
-                                    .padding(horizontal = 20.dp),
-                                contentAlignment = alignment
-                            ) {
-                                Icon(
-                                    icon,
-                                    contentDescription = "Localized description",
-                                    modifier = Modifier.scale(scale)
-                                )
-                            }
-                        },
-                        dismissContent = {
-                            Column {
-                                GenericRow(
-                                    retirementPlan = udiObj,
-                                    onUdiClick = onUdiClick
-                                )
-                            }
-                        }
+                    SwipeToEditOrDelete(
+                        dismissState = dismissState,
+                        udiObj = udiObj,
+                        onUdiClick = onUdiClick
                     )
                 }
             }
 
         }
     }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun SwipeToEditOrDelete(dismissState: DismissState, udiObj: RetirementPlan, onUdiClick: (RetirementPlan) -> Unit) {
+    SwipeToDismiss(
+        state = dismissState,
+        modifier = Modifier.padding(vertical = 4.dp),
+        directions = setOf(
+            DismissDirection.StartToEnd,
+            DismissDirection.EndToStart
+        ),
+        background = {
+            val direction = dismissState.dismissDirection ?: return@SwipeToDismiss
+            val color by animateColorAsState(
+                when (dismissState.targetValue) {
+                    DismissValue.Default -> Color.LightGray
+                    DismissValue.DismissedToEnd -> Color.Green
+                    DismissValue.DismissedToStart -> Color.Red
+                }
+            )
+            val alignment = when (direction) {
+                DismissDirection.StartToEnd -> Alignment.CenterStart
+                DismissDirection.EndToStart -> Alignment.CenterEnd
+            }
+            val icon = when (direction) {
+                DismissDirection.StartToEnd -> Icons.Default.Done
+                DismissDirection.EndToStart -> Icons.Default.Delete
+            }
+            val scale by animateFloatAsState(
+                if (dismissState.targetValue == DismissValue.Default) 0.75f else 1f
+            )
+
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .background(color)
+                    .padding(horizontal = 20.dp),
+                contentAlignment = alignment
+            ) {
+                Icon(
+                    icon,
+                    contentDescription = "Localized description",
+                    modifier = Modifier.scale(scale)
+                )
+            }
+        },
+        dismissContent = {
+            Column {
+                GenericRow(
+                    retirementPlan = udiObj,
+                    onUdiClick = onUdiClick
+                )
+            }
+        }
+    )
 }

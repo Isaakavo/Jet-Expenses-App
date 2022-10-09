@@ -8,6 +8,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -23,7 +24,7 @@ import com.example.jetexpensesapp.utils.formatMoney
 import com.example.jetexpensesapp.utils.formatNumber
 
 @Composable
-fun GlobalDetail(
+fun UdiGlobalDetail(
     udisGlobalDetails: UdiGlobalDetails,
     onAddEntry: () -> Unit = {},
     onDetailsClick: () -> Unit = {}
@@ -109,9 +110,11 @@ fun GlobalDetail(
             horizontalArrangement = Arrangement.End
         ) {
             Button(
-                text = "Agregar",
+                icon = Icons.Filled.Add,
                 shape = CircleShape,
-                onClick = onAddEntry)
+                onClick = onAddEntry,
+                modifier = Modifier.size(50.dp).padding(bottom = 5.dp)
+                )
         }
     }
 }

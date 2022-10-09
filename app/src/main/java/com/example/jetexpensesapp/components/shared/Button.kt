@@ -24,7 +24,7 @@ enum class ButtonVariants() {
 @Composable
 fun Button(
     modifier: Modifier = Modifier,
-    text: String?,
+    text: String? = null,
     shape: Shape = CircleShape,
     onClick: () -> Unit,
     contentColor: Color = Color.White,
@@ -65,7 +65,8 @@ fun Button(
                     contentColor = contentColor,
                     disabledBackgroundColor = Color.Transparent,
                     disabledContentColor = contentColor.copy(alpha = ContentAlpha.disabled)
-                )
+                ),
+                modifier = modifier
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (icon != null) {

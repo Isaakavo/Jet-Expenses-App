@@ -23,7 +23,7 @@ fun LoadingContent(
         emptyContent()
     } else if (loading) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .fillMaxHeight(),
             horizontalAlignment = Alignment.CenterHorizontally,
