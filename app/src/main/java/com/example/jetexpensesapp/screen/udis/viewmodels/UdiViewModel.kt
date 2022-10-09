@@ -77,8 +77,8 @@ class UdiViewModel @Inject constructor(
 
     fun showEditResultMessage(result: Int) {
         when (result) {
-            EDIT_RESULT_OK -> showSnackBarMessage(R.string.successfully_saved_task_message)
-            ADD_EDIT_RESULT_OK -> showSnackBarMessage(R.string.successfully_edited_task_message)
+            EDIT_RESULT_OK -> showSnackBarMessage(R.string.successfully_edited_task_message)
+            ADD_EDIT_RESULT_OK -> showSnackBarMessage(R.string.successfully_saved_task_message)
             DELETE_RESULT_OK -> showSnackBarMessage(R.string.successfully_deleted_task_message)
         }
     }
