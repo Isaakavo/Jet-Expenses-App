@@ -16,6 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
@@ -26,6 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.jetexpensesapp.components.shared.*
+import com.example.jetexpensesapp.data.UdiGlobalDetails
 import com.example.jetexpensesapp.model.RetirementPlan
 import com.example.jetexpensesapp.screen.udis.UdiViewModel
 import com.example.jetexpensesapp.screen.udis.UdisDateFilterType
@@ -40,6 +42,7 @@ fun UdiHomeScreen(
     onEditEntry: (RetirementPlan) -> Unit,
     onDeleteEntry: (RetirementPlan) -> Unit,
     onUdiClick: (RetirementPlan) -> Unit,
+    onDetailsClick: (UdiGlobalDetails) -> Unit,
     onUserMessageDisplayed: () -> Unit,
     viewModel: UdiViewModel = hiltViewModel()
 ) {
@@ -60,7 +63,25 @@ fun UdiHomeScreen(
         }
     ) {
         Column {
-            GlobalDetail(udisGlobalDetails = uiState.globalTotals, onAddEntry = onAddEntry)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Text(
+                    text = "Precio de la udi Hoy: $${uiState.udiValueToday}",
+                    modifier = Modifier
+                        .align(alignment = CenterVertically)
+                        .padding(end = 10.dp),
+                    style = MaterialTheme.typography.body1,
+                    fontWeight = FontWeight.Bold
+                    )
+            }
+            GlobalDetail(
+                udisGlobalDetails = uiState.globalTotals,
+                onAddEntry = onAddEntry,
+                onDetailsClick = { onDetailsClick(uiState.globalTotals) }
+            )
             UdisContent(
                 loading = uiState.isLoading,
                 udis = uiState.udis,

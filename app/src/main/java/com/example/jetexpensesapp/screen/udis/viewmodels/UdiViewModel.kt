@@ -1,8 +1,6 @@
 package com.example.jetexpensesapp.screen.udis
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,6 +9,7 @@ import com.example.jetexpensesapp.data.Result
 import com.example.jetexpensesapp.data.Result.Success
 import com.example.jetexpensesapp.data.UdiGlobalDetails
 import com.example.jetexpensesapp.model.RetirementPlan
+import com.example.jetexpensesapp.model.UdiItem
 import com.example.jetexpensesapp.navigation.ADD_EDIT_RESULT_OK
 import com.example.jetexpensesapp.navigation.DELETE_RESULT_OK
 import com.example.jetexpensesapp.navigation.EDIT_RESULT_OK
@@ -18,12 +17,15 @@ import com.example.jetexpensesapp.repository.UdiRepository
 import com.example.jetexpensesapp.utils.Async
 import com.example.jetexpensesapp.utils.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 data class UdiHomeUiState(
     val udis: List<RetirementPlan> = emptyList(),
     val globalTotals: UdiGlobalDetails = UdiGlobalDetails(),
+    val udiValueToday: String = "0.0",
     val isLoading: Boolean = false,
     val userMessage: Int? = null
 )
@@ -34,14 +36,19 @@ class UdiViewModel @Inject constructor(
     private val savesStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    companion object {
+        const val TAG = "UdiHomeScreenViewModel"
+    }
+
     private val _savedFilterType = savesStateHandle.getStateFlow(
         UDIS_FILTER_SAVED_STATE_KEY,
         UdisDateFilterType.NEW_TO_LAST
     )
 
+    private val _savedUdiValue = savesStateHandle.getStateFlow(UDI_VALUE_FROM_API, "0.0")
+
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
     private val _isLoading = MutableStateFlow(false)
-    private val globalTotals = MutableStateFlow(UdiGlobalDetails())
     private val _udisAsync = combine(repository.getAllUdis(), _savedFilterType) { udis, type ->
         filterUdis(udis, type)
     }
@@ -56,12 +63,30 @@ class UdiViewModel @Inject constructor(
                 UdiHomeUiState(isLoading = true)
             }
             is Async.Success -> {
-                UdiHomeUiState(
-                    udis = taskAsync.data,
-                    globalTotals = calculateTotals(taskAsync.data),
-                    isLoading = isLoading,
-                    userMessage = userMessage
-                )
+                Log.d(TAG, "value of savedUdiValue ${_savedUdiValue.value}")
+                if (_savedUdiValue.value == "0.0") {
+                    val udiFromApi = getUdiForTodayAsync(LocalDateTime.now())
+                    if (udiFromApi is Success) {
+                        savesStateHandle[UDI_VALUE_FROM_API] = udiFromApi.data.udiValue
+                        UdiHomeUiState(
+                            udis = taskAsync.data,
+                            globalTotals = calculateTotals(taskAsync.data, udiFromApi.data.udiValue),
+                            udiValueToday = udiFromApi.data.udiValue,
+                            isLoading = isLoading,
+                            userMessage = userMessage
+                        )
+                    } else {
+                        UdiHomeUiState(isLoading = false)
+                    }
+                } else {
+                    UdiHomeUiState(
+                        udis = taskAsync.data,
+                        globalTotals = calculateTotals(taskAsync.data, _savedUdiValue.value),
+                        udiValueToday = _savedUdiValue.value,
+                        isLoading = isLoading,
+                        userMessage = userMessage
+                    )
+                }
             }
         }
     }
@@ -87,13 +112,16 @@ class UdiViewModel @Inject constructor(
         _userMessage.value = message
     }
 
-    private fun calculateTotals(allUdis: List<RetirementPlan>): UdiGlobalDetails {
-        val udiGlobalDetails = UdiGlobalDetails()
+    private fun calculateTotals(allUdis: List<RetirementPlan>, udiToday: String): UdiGlobalDetails {
+        val udiGlobalDetails = UdiGlobalDetails(
+            udiValueToday = udiToday
+        )
         for (item in allUdis) {
             udiGlobalDetails.totalExpend += item.purchaseTotal
             udiGlobalDetails.udisTotal += item.totalOfUdi
-            udiGlobalDetails.udisConvertion += item.purchaseTotal * item.totalOfUdi
         }
+        udiGlobalDetails.udisConvertion =
+            udiToday.toDouble() * udiGlobalDetails.udisTotal
 
         return udiGlobalDetails
     }
@@ -126,7 +154,14 @@ class UdiViewModel @Inject constructor(
         savesStateHandle[UDIS_FILTER_SAVED_STATE_KEY] = requestType
     }
 
-    var globalValues by mutableStateOf(UdiGlobalDetails(0.0, 0.0, 0.0))
+    private suspend fun getUdiForTodayAsync(date: LocalDateTime): Result<UdiItem> {
+        val result = viewModelScope.async {
+            Log.d(TAG, "Calling api... with date $date")
+            repository.getUdiForToday(date)
+        }
+        return result.await()
+    }
 }
 
 const val UDIS_FILTER_SAVED_STATE_KEY = "UDIS_FILTER_SAVED_STATE_KEY"
+const val UDI_VALUE_FROM_API = "UDI_VALUE_FROM_API"

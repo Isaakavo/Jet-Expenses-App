@@ -25,8 +25,8 @@ import com.example.jetexpensesapp.utils.formatNumber
 @Composable
 fun GlobalDetail(
     udisGlobalDetails: UdiGlobalDetails,
-    onAddEntry: () -> Unit = {}
-    // navController: NavController = rememberNavController()
+    onAddEntry: () -> Unit = {},
+    onDetailsClick: () -> Unit = {}
 ) {
     Column(modifier = Modifier.clickable(
         interactionSource = remember {
@@ -34,7 +34,7 @@ fun GlobalDetail(
         },
         indication = null
     ) {
-        //navController.navigate(Screen.UdiGlobalDetailsScreen.route)
+        onDetailsClick()
     }) {
         Row() {
             Column(

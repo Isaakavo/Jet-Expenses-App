@@ -1,22 +1,19 @@
 package com.example.jetexpensesapp.navigation
 
-import androidx.annotation.StringRes
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ShowChart
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import com.example.jetexpensesapp.R
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.DELETE_ARG
+import com.example.jetexpensesapp.navigation.UdiDestinationArgs.GLOBAL_VALUES
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.TITLE_ARG
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.UDI_ID_ARG
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.USER_MESSAGE_ARG
 import com.example.jetexpensesapp.navigation.UdiScreens.ADD_EDIT_UDI_SCREEN
+import com.example.jetexpensesapp.navigation.UdiScreens.UDI_GLOBAL_DETAIL_SCREEN
 import com.example.jetexpensesapp.navigation.UdiScreens.UDI_HOME_SCREEN
 
 private object UdiScreens {
     const val UDI_HOME_SCREEN = "udis"
-    const val UDI_DETAIL_SCREEN = "udi"
+    const val UDI_GLOBAL_DETAIL_SCREEN = "udiGlobalDetail"
     const val ADD_EDIT_UDI_SCREEN = "addEditUdi"
 }
 
@@ -25,23 +22,13 @@ object UdiDestinationArgs {
     const val UDI_ID_ARG = "udiId"
     const val TITLE_ARG = "title"
     const val DELETE_ARG = "delete"
+    const val GLOBAL_VALUES = "globalValues"
 }
 
 object UdisDestination {
     const val UDI_HOMESCREEN_ROUTE = "$UDI_HOME_SCREEN?$USER_MESSAGE_ARG={$USER_MESSAGE_ARG}"
     const val ADD_EDIT_TASK_ROUTE = "$ADD_EDIT_UDI_SCREEN/{$TITLE_ARG}?$UDI_ID_ARG={$UDI_ID_ARG}&$DELETE_ARG={$DELETE_ARG}"
-}
-
-sealed class Screen(
-    val route: String,
-    @StringRes val resourceId: Int,
-    val icon: ImageVector? = null
-) {
-    object UdiHomeScreen : Screen("udihome", R.string.udi_home, Icons.Filled.ShowChart)
-    object AddRetirementEntryScreen :
-        Screen("addretiremententry", R.string.add_retirement_entry)
-
-    object UdiGlobalDetailsScreen : Screen("udiDetails", R.string.global_details)
+    const val UDI_GLOBAL_DETAIL = "$UDI_GLOBAL_DETAIL_SCREEN?{$GLOBAL_VALUES}"
 }
 
 class UdiNavigationActions(private val navHostController: NavHostController) {
@@ -58,7 +45,7 @@ class UdiNavigationActions(private val navHostController: NavHostController) {
                 saveState = navigateFrom
             }
             launchSingleTop = true
-            restoreState = navigateFrom
+            restoreState = true
         }
     }
 
@@ -73,6 +60,12 @@ class UdiNavigationActions(private val navHostController: NavHostController) {
     fun navigateToDeleteUdiEntry(title: Int, udiId: String, shouldDelete: Boolean) {
         navHostController.navigate(
             "$ADD_EDIT_UDI_SCREEN/$title?$UDI_ID_ARG=$udiId&$DELETE_ARG=$shouldDelete"
+        )
+    }
+
+    fun navigateToUdiGlobalDetails(values: String) {
+        navHostController.navigate(
+            "$UDI_GLOBAL_DETAIL_SCREEN?$GLOBAL_VALUES=$values"
         )
     }
 }

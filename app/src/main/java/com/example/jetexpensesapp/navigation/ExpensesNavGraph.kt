@@ -29,12 +29,16 @@ import com.example.jetexpensesapp.components.UdiEntryDetails
 import com.example.jetexpensesapp.components.UdiHomeScreen
 import com.example.jetexpensesapp.components.shared.Button
 import com.example.jetexpensesapp.components.shared.ButtonVariants
+import com.example.jetexpensesapp.data.UdiGlobalDetails
 import com.example.jetexpensesapp.model.RetirementPlan
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.DELETE_ARG
+import com.example.jetexpensesapp.navigation.UdiDestinationArgs.GLOBAL_VALUES
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.TITLE_ARG
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.UDI_ID_ARG
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.USER_MESSAGE_ARG
 import com.example.jetexpensesapp.screen.udis.AddRetirementEntryScreen
+import com.example.jetexpensesapp.screen.udis.UdiGlobalDetailsScreen
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -150,6 +154,12 @@ fun ExpensesNavGraph(
                         coroutineScope.launch {
                             bottomSheetState.show()
                         }
+                    },
+                    onDetailsClick = {
+                        val jsonUdi = Gson().toJson(it)
+                        navActions.navigateToUdiGlobalDetails(
+                            jsonUdi
+                        )
                     }
                 )
             }
@@ -178,7 +188,18 @@ fun ExpensesNavGraph(
                 onBack = { navController.popBackStack() }
             )
         }
+
+        composable(UdisDestination.UDI_GLOBAL_DETAIL,
+            arguments = listOf(
+                navArgument(GLOBAL_VALUES) { type = NavType.StringType; }
+            )
+        ) { entry ->
+            val arg = entry.arguments?.getString(GLOBAL_VALUES)?.split("=")?.get(1)
+            val obj = Gson().fromJson(arg, UdiGlobalDetails::class.java)
+            UdiGlobalDetailsScreen(obj, onBack = { navController.popBackStack() })
+        }
     }
+
 
 //    Scaffold(
 //        bottomBar = {

@@ -40,12 +40,6 @@ fun GenericRow(
                 if (retirementPlan != null) {
                     onUdiClick(retirementPlan)
                 }
-//                showModalSheet.value = !showModalSheet.value
-//                scope.launch {
-//
-//                    sheetState?.show()
-//                    Log.d("ROW", "Click, ${showModalSheet.value}, ${sheetState?.currentValue}")
-//                }
             },
         shape,
         elevation = elevation
