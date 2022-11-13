@@ -1,7 +1,7 @@
 package com.example.jetexpensesapp.data
 
 import androidx.room.*
-import com.example.jetexpensesapp.model.RetirementPlan
+import com.example.jetexpensesapp.model.udi.RetirementPlan
 import kotlinx.coroutines.flow.Flow
 
 @Dao

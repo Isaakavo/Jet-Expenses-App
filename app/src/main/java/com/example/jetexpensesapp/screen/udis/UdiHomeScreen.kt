@@ -28,7 +28,7 @@ import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.jetexpensesapp.components.shared.*
 import com.example.jetexpensesapp.data.UdiGlobalDetails
-import com.example.jetexpensesapp.model.RetirementPlan
+import com.example.jetexpensesapp.model.udi.RetirementPlan
 import com.example.jetexpensesapp.screen.udis.UdiViewModel
 import com.example.jetexpensesapp.screen.udis.UdisDateFilterType
 import com.example.jetexpensesapp.utils.formatDate

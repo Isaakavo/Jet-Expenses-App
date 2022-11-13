@@ -1,6 +1,6 @@
 package com.example.jetexpensesapp.network
 
-import com.example.jetexpensesapp.model.Bmx
+import com.example.jetexpensesapp.model.udi.Bmx
 import com.example.jetexpensesapp.utils.Constants.BASE_UDI_ID
 import com.example.jetexpensesapp.utils.Constants.BMX_TOKEN
 import retrofit2.http.GET

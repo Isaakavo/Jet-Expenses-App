@@ -1,4 +1,4 @@
-package com.example.jetexpensesapp.model
+package com.example.jetexpensesapp.model.udi
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

@@ -24,7 +24,7 @@ import com.example.jetexpensesapp.components.RetirementInputText
 import com.example.jetexpensesapp.components.UdiEntryDetails
 import com.example.jetexpensesapp.components.shared.LoadingContent
 import com.example.jetexpensesapp.components.shared.TopBar
-import com.example.jetexpensesapp.model.RetirementPlan
+import com.example.jetexpensesapp.model.udi.RetirementPlan
 import com.example.jetexpensesapp.utils.formatStringToDate
 
 @OptIn(ExperimentalLifecycleComposeApi::class)

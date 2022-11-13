@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.jetexpensesapp.model.RetirementPlan
+import com.example.jetexpensesapp.model.udi.RetirementPlan
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

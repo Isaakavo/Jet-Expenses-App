@@ -1,4 +1,4 @@
-package com.example.jetexpensesapp.model
+package com.example.jetexpensesapp.model.udi
 
 import com.google.gson.annotations.SerializedName
 

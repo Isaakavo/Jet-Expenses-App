@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetexpensesapp.R
 import com.example.jetexpensesapp.data.Result
-import com.example.jetexpensesapp.model.RetirementPlan
-import com.example.jetexpensesapp.model.UdiItem
+import com.example.jetexpensesapp.model.udi.RetirementPlan
+import com.example.jetexpensesapp.model.udi.UdiItem
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs
 import com.example.jetexpensesapp.repository.UdiRepository
 import com.example.jetexpensesapp.utils.Constants

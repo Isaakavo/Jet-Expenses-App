@@ -2,8 +2,8 @@ package com.example.jetexpensesapp.repository
 
 import com.example.jetexpensesapp.data.Result
 import com.example.jetexpensesapp.data.UdiDatabaseDao
-import com.example.jetexpensesapp.model.RetirementPlan
-import com.example.jetexpensesapp.model.UdiItem
+import com.example.jetexpensesapp.model.udi.RetirementPlan
+import com.example.jetexpensesapp.model.udi.UdiItem
 import com.example.jetexpensesapp.network.UdiApi
 import com.example.jetexpensesapp.utils.formatDateForRequest
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +24,7 @@ class UdiRepository @Inject constructor(
             val resultFromRequest = api.getUdiForToday(formatted, formatted).bmx.series[0].datos[0]
             return@withContext Result.Success(resultFromRequest)
         } catch (e: Exception) {
-            return@withContext Result.Error(e)
+            return@withContext Result.Error(e.localizedMessage)
         }
     }
 
@@ -47,10 +47,10 @@ class UdiRepository @Inject constructor(
             if (udi != null) {
                 return@withContext Result.Success(udi)
             } else {
-                return@withContext Result.Error(Exception("udi not found"))
+                return@withContext Result.Error(Exception("udi not found").localizedMessage)
             }
         } catch (e: Exception) {
-            return@withContext Result.Error(e)
+            return@withContext Result.Error(e.localizedMessage)
         }
     }
 

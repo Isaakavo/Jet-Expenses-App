@@ -30,12 +30,13 @@ import com.example.jetexpensesapp.components.UdiHomeScreen
 import com.example.jetexpensesapp.components.shared.Button
 import com.example.jetexpensesapp.components.shared.ButtonVariants
 import com.example.jetexpensesapp.data.UdiGlobalDetails
-import com.example.jetexpensesapp.model.RetirementPlan
+import com.example.jetexpensesapp.model.udi.RetirementPlan
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.DELETE_ARG
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.GLOBAL_VALUES
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.TITLE_ARG
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.UDI_ID_ARG
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.USER_MESSAGE_ARG
+import com.example.jetexpensesapp.screen.login.LoginScreen
 import com.example.jetexpensesapp.screen.udis.AddRetirementEntryScreen
 import com.example.jetexpensesapp.screen.udis.UdiGlobalDetailsScreen
 import com.google.gson.Gson
@@ -53,7 +54,7 @@ fun ExpensesNavGraph(
     showModalSheet: MutableState<Boolean> = rememberSaveable {
         mutableStateOf(false)
     },
-    startDestination: String = UdisDestination.UDI_HOMESCREEN_ROUTE,
+    startDestination: String = UdisDestination.LOGIN_SCREEN_ROUTE,
     navActions: UdiNavigationActions = remember(navController) {
         UdiNavigationActions(navController)
     }
@@ -66,6 +67,13 @@ fun ExpensesNavGraph(
         startDestination = startDestination,
         modifier = modifier
     ) {
+
+        composable(
+            UdisDestination.LOGIN_SCREEN_ROUTE
+        ) {
+            LoginScreen()
+        }
+
         composable(
             UdisDestination.UDI_HOMESCREEN_ROUTE,
             arguments = listOf(

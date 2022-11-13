@@ -8,8 +8,8 @@ import com.example.jetexpensesapp.R
 import com.example.jetexpensesapp.data.Result
 import com.example.jetexpensesapp.data.Result.Success
 import com.example.jetexpensesapp.data.UdiGlobalDetails
-import com.example.jetexpensesapp.model.RetirementPlan
-import com.example.jetexpensesapp.model.UdiItem
+import com.example.jetexpensesapp.model.udi.RetirementPlan
+import com.example.jetexpensesapp.model.udi.UdiItem
 import com.example.jetexpensesapp.navigation.ADD_EDIT_RESULT_OK
 import com.example.jetexpensesapp.navigation.DELETE_RESULT_OK
 import com.example.jetexpensesapp.navigation.EDIT_RESULT_OK

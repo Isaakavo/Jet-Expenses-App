@@ -3,7 +3,7 @@ package com.example.jetexpensesapp.data
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.jetexpensesapp.model.RetirementPlan
+import com.example.jetexpensesapp.model.udi.RetirementPlan
 import com.example.jetexpensesapp.utils.DateConverter
 
 

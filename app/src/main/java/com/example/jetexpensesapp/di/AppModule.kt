@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.jetexpensesapp.data.UdiDatabase
 import com.example.jetexpensesapp.data.UdiDatabaseDao
+import com.example.jetexpensesapp.network.AwsCognito
 import com.example.jetexpensesapp.network.UdiApi
 import com.example.jetexpensesapp.utils.Constants
 import dagger.Module
@@ -37,5 +38,14 @@ object AppModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(UdiApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideAwsApi(): AwsCognito {
+        return Retrofit.Builder()
+            .baseUrl("https://cognito-idp.us-east-2.amazonaws.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build().create(AwsCognito::class.java)
     }
 }

@@ -1,9 +1,7 @@
 package com.example.jetexpensesapp.data
 
-import com.example.jetexpensesapp.model.RetirementPlan
+import com.example.jetexpensesapp.model.udi.RetirementPlan
 import java.time.LocalDateTime
-import java.util.*
-import kotlin.collections.ArrayList
 
 class RetirementData {
     fun load(): ArrayList<RetirementPlan> {

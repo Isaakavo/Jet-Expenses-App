@@ -26,6 +26,7 @@ object UdiDestinationArgs {
 }
 
 object UdisDestination {
+    const val LOGIN_SCREEN_ROUTE = "login"
     const val UDI_HOMESCREEN_ROUTE = "$UDI_HOME_SCREEN?$USER_MESSAGE_ARG={$USER_MESSAGE_ARG}"
     const val ADD_EDIT_TASK_ROUTE = "$ADD_EDIT_UDI_SCREEN/{$TITLE_ARG}?$UDI_ID_ARG={$UDI_ID_ARG}&$DELETE_ARG={$DELETE_ARG}"
     const val UDI_GLOBAL_DETAIL = "$UDI_GLOBAL_DETAIL_SCREEN?{$GLOBAL_VALUES}"
