@@ -3,6 +3,7 @@ package com.example.jetexpensesapp.screen.login.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.jetexpensesapp.data.Result
 import com.example.jetexpensesapp.model.jwt.Auth
 import com.example.jetexpensesapp.model.jwt.AuthParameters
 import com.example.jetexpensesapp.repository.LoginRepository
@@ -38,16 +39,23 @@ class LoginViewmodel @Inject constructor(
         }
     }
 
-    fun attemptLogin() {
+    fun attemptLogin(): Boolean {
         val auth = Auth(
             AuthParameters = AuthParameters(
                 PASSWORD = uiState.value.password,
                 USERNAME = uiState.value.username
             )
         )
-        viewModelScope.launch {
+        val scope = viewModelScope.launch {
             val result = repository.login(auth)
-            Log.d("JWT", "Value $result")
+            if (result is Result.Success) {
+                repository.setAuthJwtToken("AUTH_KEY", result.data)
+                Log.d("JWT", "Value $result")
+            } else {
+                Log.d("JWT", "Error")
+            }
         }
+        if (scope.isCompleted) return true
+        return false
     }
 }

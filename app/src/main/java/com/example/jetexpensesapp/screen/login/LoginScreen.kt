@@ -11,6 +11,7 @@ import com.example.jetexpensesapp.screen.login.viewmodels.LoginViewmodel
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun LoginScreen(
+    navigate: (Boolean) -> Unit,
     viewmodel: LoginViewmodel = hiltViewModel()
 ) {
     val uiState by viewmodel.uiState.collectAsStateWithLifecycle()
@@ -21,6 +22,6 @@ fun LoginScreen(
         onUsernameChange = viewmodel::updateUsername,
         onPasswordChange = viewmodel::updatePassword
     ) {
-        viewmodel.attemptLogin()
+        navigate(viewmodel.attemptLogin())
     }
 }

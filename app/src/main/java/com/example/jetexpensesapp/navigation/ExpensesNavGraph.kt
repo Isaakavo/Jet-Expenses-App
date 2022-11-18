@@ -71,7 +71,9 @@ fun ExpensesNavGraph(
         composable(
             UdisDestination.LOGIN_SCREEN_ROUTE
         ) {
-            LoginScreen()
+            LoginScreen(
+                navigate = { navActions.navigateToHome() }
+            )
         }
 
         composable(
