@@ -16,6 +16,7 @@ fun LoginScreen(
 ) {
     val uiState by viewmodel.uiState.collectAsStateWithLifecycle()
 
+    //TODO add logic to handle loading ui animation when login and improve the ui
     Login(
         username = uiState.username,
         password = uiState.password,

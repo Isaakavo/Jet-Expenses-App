@@ -44,6 +44,8 @@ class LoginViewmodel @Inject constructor(
         it.copy(shouldNav = newValue)
     }
 
+    //TODO make a logic in the server to extract the username and email to
+    //place it in the profile section
     fun attemptLogin() {
         val auth = Auth(
             AuthParameters = AuthParameters(
