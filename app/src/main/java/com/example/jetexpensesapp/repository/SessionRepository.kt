@@ -12,27 +12,32 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class LoginRepository @Inject constructor(
+class SessionRepository @Inject constructor(
     @ApplicationContext
     private val context: Context,
     private val api: AwsCognito
 ) {
 
+    companion object {
+        const val AUTH_KEY = "AUTH_KEY"
+    }
+
     private val pref: SharedPreferences = context.getSharedPreferences("auth", Context.MODE_PRIVATE)
     private val editor = pref.edit()
 
-    fun setLoggedIn(key: String, isLoggedIn: Boolean) {
-        editor.putBoolean(key, isLoggedIn)
-        editor.commit()
-    }
-
-    fun setAuthJwtToken(key: String, jwt: String): Boolean {
-        editor.putString(key, jwt)
+    private fun String.put(string: String): Boolean {
+        editor.putString(this, string)
         return editor.commit()
     }
 
-    fun getAuthJwtToken(key: String): String? {
-        return pref.getString(key, "")
+    private fun String.getString() = pref.getString(this, "")
+
+    fun setAuthJwtToken(jwt: String): Boolean {
+        return AUTH_KEY.put(jwt)
+    }
+
+    fun getAuthJwtToken(): String? {
+        return AUTH_KEY.getString()
     }
 
     suspend fun login(auth: Auth): Result<String> = withContext(Dispatchers.IO) {

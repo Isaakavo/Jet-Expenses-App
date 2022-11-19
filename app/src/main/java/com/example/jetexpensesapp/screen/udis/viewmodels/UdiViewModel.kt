@@ -13,7 +13,7 @@ import com.example.jetexpensesapp.model.udi.UdiItem
 import com.example.jetexpensesapp.navigation.ADD_EDIT_RESULT_OK
 import com.example.jetexpensesapp.navigation.DELETE_RESULT_OK
 import com.example.jetexpensesapp.navigation.EDIT_RESULT_OK
-import com.example.jetexpensesapp.repository.LoginRepository
+import com.example.jetexpensesapp.repository.SessionRepository
 import com.example.jetexpensesapp.repository.UdiRepository
 import com.example.jetexpensesapp.utils.Async
 import com.example.jetexpensesapp.utils.WhileUiSubscribed
@@ -34,7 +34,7 @@ data class UdiHomeUiState(
 @HiltViewModel
 class UdiViewModel @Inject constructor(
     private val repository: UdiRepository,
-    private val loginRepository: LoginRepository,
+    private val sessionRepository: SessionRepository,
     private val savesStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -70,7 +70,7 @@ class UdiViewModel @Inject constructor(
                     val udiFromApi = getUdiForTodayAsync(LocalDateTime.now())
                     if (udiFromApi is Success) {
                         savesStateHandle[UDI_VALUE_FROM_API] = udiFromApi.data.udiValue
-                        Log.d("LOGIN", loginRepository.getAuthJwtToken("AUTH_KEY")!!)
+                        Log.d("LOGIN", sessionRepository.getAuthJwtToken()!!)
                         UdiHomeUiState(
                             udis = taskAsync.data,
                             globalTotals = calculateTotals(taskAsync.data, udiFromApi.data.udiValue),

@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.jetexpensesapp.data.Result
 import com.example.jetexpensesapp.model.jwt.Auth
 import com.example.jetexpensesapp.model.jwt.AuthParameters
-import com.example.jetexpensesapp.repository.LoginRepository
+import com.example.jetexpensesapp.repository.SessionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +23,7 @@ data class LoginUiState(
 
 @HiltViewModel
 class LoginViewmodel @Inject constructor(
-    private val repository: LoginRepository
+    private val repository: SessionRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
@@ -56,7 +56,7 @@ class LoginViewmodel @Inject constructor(
         viewModelScope.launch {
             val result = repository.login(auth)
             if (result is Result.Success) {
-                val isCompleted = repository.setAuthJwtToken("AUTH_KEY", result.data)
+                val isCompleted = repository.setAuthJwtToken(result.data)
                 updateShouldNav(isCompleted)
                 Log.d("JWT", "Value $result")
             } else {
