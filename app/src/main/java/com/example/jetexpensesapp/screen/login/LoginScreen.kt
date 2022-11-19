@@ -22,6 +22,7 @@ fun LoginScreen(
         onUsernameChange = viewmodel::updateUsername,
         onPasswordChange = viewmodel::updatePassword
     ) {
-        navigate(viewmodel.attemptLogin())
+        viewmodel.attemptLogin()
+        navigate(uiState.shouldNav)
     }
 }

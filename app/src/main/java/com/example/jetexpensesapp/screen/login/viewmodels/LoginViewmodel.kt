@@ -17,7 +17,8 @@ import javax.inject.Inject
 
 data class LoginUiState(
     val username: String = "isaakhaas96@gmail.com",
-    val password: String = "Weisses9622!"
+    val password: String = "Weisses9622!",
+    val shouldNav: Boolean = false
 )
 
 @HiltViewModel
@@ -39,23 +40,26 @@ class LoginViewmodel @Inject constructor(
         }
     }
 
-    fun attemptLogin(): Boolean {
+    private fun updateShouldNav(newValue: Boolean) = _uiState.update {
+        it.copy(shouldNav = newValue)
+    }
+
+    fun attemptLogin() {
         val auth = Auth(
             AuthParameters = AuthParameters(
                 PASSWORD = uiState.value.password,
                 USERNAME = uiState.value.username
             )
         )
-        val scope = viewModelScope.launch {
+        viewModelScope.launch {
             val result = repository.login(auth)
             if (result is Result.Success) {
-                repository.setAuthJwtToken("AUTH_KEY", result.data)
+                val isCompleted = repository.setAuthJwtToken("AUTH_KEY", result.data)
+                updateShouldNav(isCompleted)
                 Log.d("JWT", "Value $result")
             } else {
                 Log.d("JWT", "Error")
             }
         }
-        if (scope.isCompleted) return true
-        return false
     }
 }

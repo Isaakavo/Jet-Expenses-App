@@ -26,9 +26,9 @@ class LoginRepository @Inject constructor(
         editor.commit()
     }
 
-    fun setAuthJwtToken(key: String, jwt: String) {
+    fun setAuthJwtToken(key: String, jwt: String): Boolean {
         editor.putString(key, jwt)
-        editor.commit()
+        return editor.commit()
     }
 
     fun getAuthJwtToken(key: String): String? {
