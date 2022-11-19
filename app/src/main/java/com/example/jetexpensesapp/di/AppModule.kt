@@ -5,13 +5,16 @@ import androidx.room.Room
 import com.example.jetexpensesapp.data.UdiDatabase
 import com.example.jetexpensesapp.data.UdiDatabaseDao
 import com.example.jetexpensesapp.network.AwsCognito
+import com.example.jetexpensesapp.network.TokenInterceptor
 import com.example.jetexpensesapp.network.UdiApi
+import com.example.jetexpensesapp.network.UdiEndpoint
 import com.example.jetexpensesapp.utils.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -47,5 +50,16 @@ object AppModule {
             .baseUrl("https://cognito-idp.us-east-2.amazonaws.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(AwsCognito::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideUdiEndpoint(tokenInterceptor: TokenInterceptor): UdiEndpoint {
+        val udiEndpointClient = OkHttpClient.Builder().addInterceptor(tokenInterceptor).build()
+        return Retrofit.Builder()
+            .client(udiEndpointClient)
+            .baseUrl("http://192.168.100.5:8080")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build().create(UdiEndpoint::class.java)
     }
 }

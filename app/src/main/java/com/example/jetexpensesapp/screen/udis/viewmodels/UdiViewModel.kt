@@ -49,6 +49,7 @@ class UdiViewModel @Inject constructor(
 
     private val _savedUdiValue = savesStateHandle.getStateFlow(UDI_VALUE_FROM_API, "0.0")
 
+    //TODO implement the api call to map the values from server
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
     private val _isLoading = MutableStateFlow(false)
     private val _udisAsync = combine(repository.getAllUdis(), _savedFilterType) { udis, type ->
@@ -70,10 +71,16 @@ class UdiViewModel @Inject constructor(
                     val udiFromApi = getUdiForTodayAsync(LocalDateTime.now())
                     if (udiFromApi is Success) {
                         savesStateHandle[UDI_VALUE_FROM_API] = udiFromApi.data.udiValue
-                        Log.d("LOGIN", sessionRepository.getAuthJwtToken()!!)
+                        repository.getAllUdisFromEndpoint()
+                        val api = repository.getAllUdisFromEndpoint()
+                        Log.d("LOGIN", "$api")
+
                         UdiHomeUiState(
                             udis = taskAsync.data,
-                            globalTotals = calculateTotals(taskAsync.data, udiFromApi.data.udiValue),
+                            globalTotals = calculateTotals(
+                                taskAsync.data,
+                                udiFromApi.data.udiValue
+                            ),
                             udiValueToday = udiFromApi.data.udiValue,
                             isLoading = isLoading,
                             userMessage = userMessage

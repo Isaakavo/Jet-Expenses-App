@@ -3,8 +3,10 @@ package com.example.jetexpensesapp.repository
 import com.example.jetexpensesapp.data.Result
 import com.example.jetexpensesapp.data.UdiDatabaseDao
 import com.example.jetexpensesapp.model.udi.RetirementPlan
+import com.example.jetexpensesapp.model.udi.ServerResponse
 import com.example.jetexpensesapp.model.udi.UdiItem
 import com.example.jetexpensesapp.network.UdiApi
+import com.example.jetexpensesapp.network.UdiEndpoint
 import com.example.jetexpensesapp.utils.formatDateForRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -15,6 +17,7 @@ import javax.inject.Inject
 
 class UdiRepository @Inject constructor(
     private val api: UdiApi,
+    private val udiEndpoint: UdiEndpoint,
     private val udiDatabaseDao: UdiDatabaseDao
 ) {
 
@@ -29,13 +32,21 @@ class UdiRepository @Inject constructor(
     }
 
 
-
     suspend fun addUdi(retirementPlan: RetirementPlan) = udiDatabaseDao.insert(retirementPlan)
 
     fun getAllUdis(): Flow<Result<List<RetirementPlan>>> =
         udiDatabaseDao.getUdis().map {
             Result.Success(it)
         }
+
+    suspend fun getAllUdisFromEndpoint(): ServerResponse {
+//        return flow<Result<List<ResponseRetirementRecord>>> {
+//            udiEndpoint.getAllUdis().map {
+//                Result.Success(it)
+//            }
+//        }.flowOn(Dispatchers.IO)
+        return udiEndpoint.getAllUdis()
+    }
 
     suspend fun updateUdiValue(retirementPlan: RetirementPlan) {
         udiDatabaseDao.updateUdi(retirementPlan)

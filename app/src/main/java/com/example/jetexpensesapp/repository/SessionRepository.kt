@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import com.example.jetexpensesapp.data.Result
 import com.example.jetexpensesapp.model.jwt.Auth
 import com.example.jetexpensesapp.network.AwsCognito
+import com.example.jetexpensesapp.network.TokenInterceptor
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -15,7 +16,8 @@ import javax.inject.Singleton
 class SessionRepository @Inject constructor(
     @ApplicationContext
     private val context: Context,
-    private val api: AwsCognito
+    private val api: AwsCognito,
+    private val tokenInterceptor: TokenInterceptor
 ) {
 
     companion object {
@@ -46,6 +48,7 @@ class SessionRepository @Inject constructor(
                 "https://cognito-idp.us-east-2.amazonaws.com/",
                 auth
             ).AuthenticationResult.AccessToken
+            tokenInterceptor.sessionToken = result
             return@withContext Result.Success(result)
         } catch (e: Exception) {
             return@withContext Result.Error(e.message)
