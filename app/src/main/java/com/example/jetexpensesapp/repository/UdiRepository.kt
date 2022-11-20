@@ -10,6 +10,7 @@ import com.example.jetexpensesapp.network.UdiEndpoint
 import com.example.jetexpensesapp.utils.formatDateForRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
@@ -39,13 +40,12 @@ class UdiRepository @Inject constructor(
             Result.Success(it)
         }
 
-    suspend fun getAllUdisFromEndpoint(): ServerResponse {
-//        return flow<Result<List<ResponseRetirementRecord>>> {
-//            udiEndpoint.getAllUdis().map {
-//                Result.Success(it)
-//            }
-//        }.flowOn(Dispatchers.IO)
-        return udiEndpoint.getAllUdis()
+    fun getAllUdisFromEndpoint(): Flow<Result<ServerResponse>> {
+        return flow {
+            emit(udiEndpoint.getAllUdis())
+        }.map {
+            Result.Success(it)
+        }
     }
 
     suspend fun updateUdiValue(retirementPlan: RetirementPlan) {
