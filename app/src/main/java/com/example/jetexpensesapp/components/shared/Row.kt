@@ -21,23 +21,23 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.jetexpensesapp.model.udi.RetirementPlan
+import com.example.jetexpensesapp.model.udi.Data
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun GenericRow(
-    retirementPlan: RetirementPlan? = null,
+    data: Data? = null,
     modifier: Modifier = Modifier.fillMaxWidth(),
     shape: Shape = RectangleShape,
     elevation: Dp = 0.dp,
-    onUdiClick: (RetirementPlan) -> Unit
+    onUdiClick: (Data) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     Surface(
         modifier
             .clickable {
-                if (retirementPlan != null) {
-                    onUdiClick(retirementPlan)
+                if (data != null) {
+                    onUdiClick(data)
                 }
             },
         shape,
@@ -57,14 +57,14 @@ fun GenericRow(
                     .align(alignment = CenterVertically)
             )
             Text(
-                text = "Cobro $${retirementPlan?.purchaseTotal}",
+                text = "Cobro $${data?.retirementRecord?.purchaseTotal}",
                 Modifier
                     .weight(0.25f)
                     .align(alignment = CenterVertically),
                 textAlign = TextAlign.Left
             )
             Text(
-                text = "Valor UDI ${retirementPlan?.udiValue}",
+                text = "Valor UDI ${data?.retirementRecord?.udiValue}",
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .weight(0.25f)

@@ -21,10 +21,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.jetexpensesapp.components.RetirementInputText
-import com.example.jetexpensesapp.components.UdiEntryDetails
 import com.example.jetexpensesapp.components.shared.LoadingContent
 import com.example.jetexpensesapp.components.shared.TopBar
-import com.example.jetexpensesapp.model.udi.RetirementPlan
 import com.example.jetexpensesapp.utils.formatStringToDate
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
@@ -135,25 +133,25 @@ fun AddEditContent(
                     )
                 }
             }
-            UdiEntryDetails(
-                retirementPlan = RetirementPlan(
-                    dateOfPurchase = formatStringToDate(retirementData?.date!!).atStartOfDay(),
-                    purchaseTotal = if (retirementData.amount.isNotEmpty()) {
-                        amount.toDouble()
-                    } else {
-                        0.0
-                    },
-                    udiValue = retirementData.udiValue.toDouble(),
-                    udiValueInMoney = retirementData.udiValueInMoney,
-                    udiValueInMoneyCommission = retirementData.udiValueInMoneyCommission,
-                    totalOfUdi = retirementData.totalOfUdi,
-                    udiCommission = retirementData.udiComission,
-                    mineUdi = retirementData.mineUdi
-                ),
-                modifier = Modifier
-                    .padding(top = 15.dp)
-                    .fillMaxHeight()
-            )
+//            UdiEntryDetails(
+//                data = RetirementPlan(
+//                    dateOfPurchase = formatStringToDate(retirementData?.date!!).atStartOfDay(),
+//                    purchaseTotal = if (retirementData.amount.isNotEmpty()) {
+//                        amount.toDouble()
+//                    } else {
+//                        0.0
+//                    },
+//                    udiValue = retirementData.udiValue.toDouble(),
+//                    udiValueInMoney = retirementData.udiValueInMoney,
+//                    udiValueInMoneyCommission = retirementData.udiValueInMoneyCommission,
+//                    totalOfUdi = retirementData.totalOfUdi,
+//                    udiCommission = retirementData.udiComission,
+//                    mineUdi = retirementData.mineUdi
+//                ),
+//                modifier = Modifier
+//                    .padding(top = 15.dp)
+//                    .fillMaxHeight()
+//            )
         }
     }
 }

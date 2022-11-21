@@ -35,7 +35,7 @@ data class ResponseRetirementRecord(
 
 data class ServerResponse(
     val body: Body,
-    val status: String
+    val status: String = "NOT_FETCHED"
 )
 
 data class Body(
@@ -46,9 +46,10 @@ data class Body(
 )
 
 data class Data(
-    val retirementRecord: RetirementRecord,
-    val udiCommission: UdiCommission,
-    val udiConversions: UdiConversions
+    val id: Int = 1,
+    val retirementRecord: RetirementRecord? = null,
+    val udiCommission: UdiCommission? = null,
+    val udiConversions: UdiConversions? = null
 )
 
 data class RetirementRecord(

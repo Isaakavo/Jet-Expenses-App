@@ -14,13 +14,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.jetexpensesapp.model.udi.RetirementPlan
-import com.example.jetexpensesapp.utils.formatDateFullMonth
+import com.example.jetexpensesapp.model.udi.Data
+import com.example.jetexpensesapp.utils.formatDateFromServer
 import com.example.jetexpensesapp.utils.formatMoney
 
 @Composable
 fun UdiEntryDetails(
-    retirementPlan: RetirementPlan,
+    data: Data,
     modifier: Modifier = Modifier,
     editOptions: @Composable () -> Unit = {}
 ) {
@@ -35,7 +35,7 @@ fun UdiEntryDetails(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = formatDateFullMonth(retirementPlan.dateOfPurchase),
+                    text = formatDateFromServer(data.retirementRecord?.dateOfPurchase),
                     textAlign = TextAlign.Center,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
@@ -49,31 +49,36 @@ fun UdiEntryDetails(
             )
             UdiRowDetails(
                 title = "Total Comprado",
-                content = formatMoney(retirementPlan.purchaseTotal)
+                content = formatMoney(data.retirementRecord?.purchaseTotal)
             )
             UdiRowDetails(
                 title = "Valor de la UDI",
-                content = "$" + retirementPlan.udiValue
+                content = "$" + data.retirementRecord?.udiValue
             )
             UdiRowDetails(
                 title = "Total de UDIS",
-                content = String.format("%.2f", retirementPlan.totalOfUdi)
+                content = String.format("%.2f",
+                    data.udiCommission?.udiCommssion?.let {
+                        data.udiCommission.userUdis
+                            .times(it)
+                    } ?: 0.0
+                )
             )
             UdiRowDetails(
                 title = "Mis UDIS",
-                content = String.format("%.2f", retirementPlan.mineUdi)
+                content = String.format("%.2f", data.udiCommission?.udiCommssion)
             )
             UdiRowDetails(
                 title = "Comision en UDIS",
-                content = String.format("%.2f", retirementPlan.udiCommission)
+                content = String.format("%.2f", data.udiCommission?.userUdis)
             )
             UdiRowDetails(
                 title = "Conversion",
-                content = formatMoney(retirementPlan.udiValueInMoney)
+                content = formatMoney(data.udiConversions?.udiConversion)
             )
             UdiRowDetails(
                 title = "Conversion de la comision",
-                content = formatMoney(retirementPlan.udiValueInMoneyCommission)
+                content = formatMoney(data.udiConversions?.udiCommissionConversion)
             )
             editOptions()
         }

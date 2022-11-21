@@ -28,10 +28,11 @@ import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.jetexpensesapp.components.shared.*
 import com.example.jetexpensesapp.data.UdiGlobalDetails
-import com.example.jetexpensesapp.model.udi.RetirementPlan
+import com.example.jetexpensesapp.model.udi.Data
+import com.example.jetexpensesapp.model.udi.RetirementRecord
 import com.example.jetexpensesapp.screen.udis.UdiViewModel
 import com.example.jetexpensesapp.screen.udis.UdisDateFilterType
-import com.example.jetexpensesapp.utils.formatDate
+import com.example.jetexpensesapp.utils.formatDateFromServer
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
@@ -39,9 +40,9 @@ fun UdiHomeScreen(
     @StringRes userMessage: Int,
     scaffoldState: ScaffoldState = rememberScaffoldState(),
     onAddEntry: () -> Unit,
-    onEditEntry: (RetirementPlan) -> Unit,
-    onDeleteEntry: (RetirementPlan) -> Unit,
-    onUdiClick: (RetirementPlan) -> Unit,
+    onEditEntry: (RetirementRecord) -> Unit,
+    onDeleteEntry: (RetirementRecord) -> Unit,
+    onUdiClick: (Data) -> Unit,
     onDetailsClick: (UdiGlobalDetails) -> Unit,
     onUserMessageDisplayed: () -> Unit,
     viewModel: UdiViewModel = hiltViewModel()
@@ -75,7 +76,7 @@ fun UdiHomeScreen(
                         .padding(end = 10.dp),
                     style = MaterialTheme.typography.body1,
                     fontWeight = FontWeight.Bold
-                    )
+                )
             }
             UdiGlobalDetail(
                 udisGlobalDetails = uiState.globalTotals,
@@ -114,10 +115,10 @@ fun UdiHomeScreen(
 @Composable
 fun UdisContent(
     loading: Boolean,
-    udis: List<RetirementPlan>,
-    onUdiClick: (RetirementPlan) -> Unit,
-    onEditEntry: (RetirementPlan) -> Unit,
-    onDeleteEntry: (RetirementPlan) -> Unit,
+    udis: List<Data>,
+    onUdiClick: (Data) -> Unit,
+    onEditEntry: (RetirementRecord) -> Unit,
+    onDeleteEntry: (RetirementRecord) -> Unit,
     onAddEntry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -137,15 +138,16 @@ fun UdisContent(
                     val dismissState = rememberDismissState(
                         confirmStateChange = {
                             if (it == DismissValue.DismissedToEnd)
-                                onEditEntry(udiObj)
+                                udiObj.retirementRecord?.let { it1 -> onEditEntry(it1) }
                             else if (it == DismissValue.DismissedToStart) {
-                                onDeleteEntry(udiObj)
+                                udiObj.retirementRecord?.let { it1 -> onDeleteEntry(it1) }
                             }
                             it != DismissValue.DismissedToEnd
                         }
                     )
-                    val formattedDate = formatDate(udiObj.dateOfPurchase)
-                    if (index != 0 && formatDate(udis[index - 1].dateOfPurchase) != formattedDate) {
+                    val formattedDate =
+                        formatDateFromServer(udiObj.retirementRecord?.dateOfPurchase)
+                    if (index != 0 && formatDateFromServer(udis[index - 1].retirementRecord?.dateOfPurchase) != formattedDate) {
                         DateRow(
                             date = formattedDate,
                             modifier = Modifier.padding(end = 6.dp)
@@ -158,9 +160,10 @@ fun UdisContent(
                     }
                     SwipeToEditOrDelete(
                         dismissState = dismissState,
-                        udiObj = udiObj,
+                        retirementRecord = udiObj,
                         onUdiClick = onUdiClick
                     )
+
                 }
             }
 
@@ -170,7 +173,11 @@ fun UdisContent(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SwipeToEditOrDelete(dismissState: DismissState, udiObj: RetirementPlan, onUdiClick: (RetirementPlan) -> Unit) {
+fun SwipeToEditOrDelete(
+    dismissState: DismissState,
+    retirementRecord: Data,
+    onUdiClick: (Data) -> Unit
+) {
     SwipeToDismiss(
         state = dismissState,
         modifier = Modifier.padding(vertical = 4.dp),
@@ -216,7 +223,7 @@ fun SwipeToEditOrDelete(dismissState: DismissState, udiObj: RetirementPlan, onUd
         dismissContent = {
             Column {
                 GenericRow(
-                    retirementPlan = udiObj,
+                    data = retirementRecord,
                     onUdiClick = onUdiClick
                 )
             }

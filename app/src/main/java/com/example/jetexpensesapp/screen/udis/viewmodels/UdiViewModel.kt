@@ -8,9 +8,7 @@ import com.example.jetexpensesapp.R
 import com.example.jetexpensesapp.data.Result
 import com.example.jetexpensesapp.data.Result.Success
 import com.example.jetexpensesapp.data.UdiGlobalDetails
-import com.example.jetexpensesapp.model.udi.RetirementPlan
-import com.example.jetexpensesapp.model.udi.ServerResponse
-import com.example.jetexpensesapp.model.udi.UdiItem
+import com.example.jetexpensesapp.model.udi.*
 import com.example.jetexpensesapp.navigation.ADD_EDIT_RESULT_OK
 import com.example.jetexpensesapp.navigation.DELETE_RESULT_OK
 import com.example.jetexpensesapp.navigation.EDIT_RESULT_OK
@@ -25,7 +23,7 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 
 data class UdiHomeUiState(
-    val udis: List<RetirementPlan> = emptyList(),
+    val udis: List<Data> = emptyList(),
     val globalTotals: UdiGlobalDetails = UdiGlobalDetails(),
     val udiValueToday: String = "0.0",
     val isLoading: Boolean = false,
@@ -53,20 +51,13 @@ class UdiViewModel @Inject constructor(
     //TODO implement the api call to map the values from server
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
     private val _isLoading = MutableStateFlow(false)
-    private val _udisAsync = combine(repository.getAllUdis(), _savedFilterType) { udis, type ->
-        filterUdis(udis, type)
-    }
-        .map { Async.Success(it) }
-        .onStart<Async<List<RetirementPlan>>> { emit(Async.Loading) }
 
-    private val _api =
+    private val _udisAsync =
         combine(repository.getAllUdisFromEndpoint(), _savedFilterType) { udisApi, type ->
-            // Log.d("COMBINE", "udis val: ${udis.toString()} + type val: $type")
-
-            getValue(udisApi)
+            filterUdis(udisApi, type)
         }
             .map { Async.Success(it) }
-            .onStart<Async<ServerResponse?>> { emit(Async.Loading) }
+            .onStart<Async<List<Data>>> { emit(Async.Loading) }
 
     fun getValue(result: Result<ServerResponse>): ServerResponse? {
         return if (result is Success) {
@@ -77,55 +68,36 @@ class UdiViewModel @Inject constructor(
         }
     }
 
-    //TODO map all the UI to need data
+    //TODO implement server side calculation for global values
     val uiState: StateFlow<UdiHomeUiState> = combine(
-        _userMessage, _isLoading, _udisAsync, _api
-    ) { userMessage, isLoading, taskAsync, api ->
-        when (api) {
+        _userMessage, _isLoading, _udisAsync
+    ) { userMessage, isLoading, taskAsync ->
+        when (taskAsync) {
             Async.Loading -> {
                 UdiHomeUiState(isLoading = true)
             }
             is Async.Success -> {
-                Log.d("_API", "Value of data: ${api.data}")
-                UdiHomeUiState(isLoading = false)
+                Log.d("_API", "Value of data: ${taskAsync.data}")
+                if (_savedUdiValue.value == "0.0") {
+                    val udiFromApi = getUdiForTodayAsync(LocalDateTime.now())
+                    if (udiFromApi is Success) {
+                        savesStateHandle[UDI_VALUE_FROM_API] = udiFromApi.data.udiValue
+                        UdiHomeUiState(
+                            udis = taskAsync.data,
+                            udiValueToday = udiFromApi.data.udiValue,
+                            isLoading = false,
+                            userMessage = userMessage
+                        )
+                    } else {
+                        UdiHomeUiState(isLoading = false)
+                    }
+                } else {
+                    UdiHomeUiState(
+                        isLoading = isLoading
+                    )
+                }
             }
         }
-//        when (taskAsync) {
-//            Async.Loading -> {
-//                UdiHomeUiState(isLoading = true)
-//            }
-//            is Async.Success -> {
-//                Log.d(TAG, "value of savedUdiValue ${_savedUdiValue.value}")
-//                if (_savedUdiValue.value == "0.0") {
-//                    val udiFromApi = getUdiForTodayAsync(LocalDateTime.now())
-//                    if (udiFromApi is Success) {
-//                        savesStateHandle[UDI_VALUE_FROM_API] = udiFromApi.data.udiValue
-//                        repository.getAllUdisFromEndpoint()
-//
-//                        UdiHomeUiState(
-//                            udis = taskAsync.data,
-//                            globalTotals = calculateTotals(
-//                                taskAsync.data,
-//                                udiFromApi.data.udiValue
-//                            ),
-//                            udiValueToday = udiFromApi.data.udiValue,
-//                            isLoading = isLoading,
-//                            userMessage = userMessage
-//                        )
-//                    } else {
-//                        UdiHomeUiState(isLoading = false)
-//                    }
-//                } else {
-//                    UdiHomeUiState(
-//                        udis = taskAsync.data,
-//                        globalTotals = calculateTotals(taskAsync.data, _savedUdiValue.value),
-//                        udiValueToday = _savedUdiValue.value,
-//                        isLoading = isLoading,
-//                        userMessage = userMessage
-//                    )
-//                }
-//            }
-//        }
     }
         .stateIn(
             scope = viewModelScope,
@@ -164,50 +136,27 @@ class UdiViewModel @Inject constructor(
     }
 
     private fun filterUdis(
-        udisResult: Result<List<RetirementPlan>>,
+        udisResult: Result<ServerResponse>,
         filteringType: UdisDateFilterType
-    ): List<RetirementPlan> = if (udisResult is Success) {
-        filterItems(udisResult.data, filteringType)
+    ): List<Data> = if (udisResult is Success) {
+        filterItems(udisResult.data.body, filteringType)
     } else {
         showSnackBarMessage(R.string.loading_udis_error)
         emptyList()
     }
 
-//    private fun filterUdisA(
-//        udisResult: Result<ServerResponse>,
-//        filteringType: UdisDateFilterType
-//    ): List<RetirementRecord> = if (udisResult is Success) {
-//        filterItemsA(udisResult.data.body.data, filteringType)
-//    } else {
-//        showSnackBarMessage(R.string.loading_udis_error)
-//        emptyList()
-//    }
-
     private fun filterItems(
-        udis: List<RetirementPlan>,
+        udis: Body,
         filteringType: UdisDateFilterType
-    ): List<RetirementPlan> =
+    ): List<Data> =
         when (filteringType) {
             UdisDateFilterType.NEW_TO_LAST -> {
-                udis.sortedByDescending { it.dateOfPurchase }
+                udis.data.sortedByDescending { it.retirementRecord?.dateOfPurchase }
             }
             UdisDateFilterType.LAST_TO_NEW -> {
-                udis.sortedBy { it.dateOfPurchase }
+                udis.data.sortedBy { it.retirementRecord?.dateOfPurchase }
             }
         }
-
-//    private fun filterItemsA(
-//        udis: Data,
-//        filteringType: UdisDateFilterType
-//    ): List<RetirementRecord> =
-//        when (filteringType) {
-//            UdisDateFilterType.NEW_TO_LAST -> {
-//                udis.retirementRecord.sortedByDescending { it.dateOfPurchase }
-//            }
-//            UdisDateFilterType.LAST_TO_NEW -> {
-//                udis.sortedBy { it.dateOfPurchase }
-//            }
-//        }
 
 
     fun setFiltering(requestType: UdisDateFilterType) {

@@ -37,6 +37,13 @@ fun formatStringToDate(str: String): LocalDate {
     return LocalDate.parse(str, format)
 }
 
+fun formatDateFromServer(date: String?): String {
+    if (date == null) return ""
+    val localDateTime = LocalDateTime.parse(date)
+    val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.getDefault())
+    return formatter.format(localDateTime)
+}
+
 fun checkNegativeNumber(quantity: Double): Double {
     return if (quantity < 0) 0.0 else quantity
 }

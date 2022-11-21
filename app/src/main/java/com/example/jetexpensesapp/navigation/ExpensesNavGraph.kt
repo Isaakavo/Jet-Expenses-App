@@ -30,7 +30,7 @@ import com.example.jetexpensesapp.components.UdiHomeScreen
 import com.example.jetexpensesapp.components.shared.Button
 import com.example.jetexpensesapp.components.shared.ButtonVariants
 import com.example.jetexpensesapp.data.UdiGlobalDetails
-import com.example.jetexpensesapp.model.udi.RetirementPlan
+import com.example.jetexpensesapp.model.udi.Data
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.DELETE_ARG
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.GLOBAL_VALUES
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.TITLE_ARG
@@ -83,7 +83,7 @@ fun ExpensesNavGraph(
             )
         ) { entry ->
 
-            var retirementDataBottomSheet by remember { mutableStateOf(RetirementPlan()) }
+            var data by remember { mutableStateOf(Data()) }
 
             fun hideSheet() {
                 if (bottomSheetState.isVisible) {
@@ -98,7 +98,7 @@ fun ExpensesNavGraph(
                 bottomSheetState = bottomSheetState,
                 sheetContent = {
                     UdiEntryDetails(
-                        retirementPlan = retirementDataBottomSheet,
+                        data = data,
                         modifier = Modifier
                     ) {
                         Row(
@@ -115,7 +115,7 @@ fun ExpensesNavGraph(
                                     hideSheet()
                                     navActions.navigateToDeleteUdiEntry(
                                         R.string.edit_udi,
-                                        retirementDataBottomSheet.id.toString(),
+                                        data.id.toString(),
                                         true
                                     )
                                     //viewModel.deleteUdi(retirementPlan = retirementData.value)
@@ -130,7 +130,7 @@ fun ExpensesNavGraph(
                                     hideSheet()
                                     navActions.navigateToAddEditUdiEntry(
                                         R.string.edit_udi,
-                                        retirementDataBottomSheet.id.toString()
+                                        data.id.toString()
                                     )
                                 })
                         }
@@ -160,7 +160,7 @@ fun ExpensesNavGraph(
                         )
                     },
                     onUdiClick = { udi ->
-                        retirementDataBottomSheet = udi
+                        data = udi
                         coroutineScope.launch {
                             bottomSheetState.show()
                         }
