@@ -21,6 +21,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.jetexpensesapp.components.RetirementInputText
+import com.example.jetexpensesapp.components.UdiEntryDetails
+import com.example.jetexpensesapp.components.shared.DatePicker
 import com.example.jetexpensesapp.components.shared.LoadingContent
 import com.example.jetexpensesapp.components.shared.TopBar
 import com.example.jetexpensesapp.utils.formatStringToDate
@@ -37,7 +39,7 @@ fun AddRetirementEntryScreen(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val datePicker = com.example.jetexpensesapp.components.shared.DatePicker.getDatePicker(
+    val datePicker = DatePicker.getDatePicker(
         context,
         onRequest = {
             viewModel.updateDate(it)
@@ -50,6 +52,7 @@ fun AddRetirementEntryScreen(
         date = uiState.date,
         loading = uiState.isLoading,
         retirementData = uiState,
+        shouldDisplayBottomSheet = uiState.shouldDisplayBottomSheet,
         onBack = onBack,
         onSaveUdi = viewModel::saveUdi,
         onAmountChange = viewModel::updateAmount,
@@ -77,6 +80,7 @@ fun AddEditContent(
     date: String,
     loading: Boolean,
     retirementData: AddEditUdiUiState?,
+    shouldDisplayBottomSheet: Boolean,
     onBack: () -> Unit,
     onSaveUdi: () -> Unit,
     onAmountChange: (String) -> Unit,
@@ -133,25 +137,16 @@ fun AddEditContent(
                     )
                 }
             }
-//            UdiEntryDetails(
-//                data = RetirementPlan(
-//                    dateOfPurchase = formatStringToDate(retirementData?.date!!).atStartOfDay(),
-//                    purchaseTotal = if (retirementData.amount.isNotEmpty()) {
-//                        amount.toDouble()
-//                    } else {
-//                        0.0
-//                    },
-//                    udiValue = retirementData.udiValue.toDouble(),
-//                    udiValueInMoney = retirementData.udiValueInMoney,
-//                    udiValueInMoneyCommission = retirementData.udiValueInMoneyCommission,
-//                    totalOfUdi = retirementData.totalOfUdi,
-//                    udiCommission = retirementData.udiComission,
-//                    mineUdi = retirementData.mineUdi
-//                ),
-//                modifier = Modifier
-//                    .padding(top = 15.dp)
-//                    .fillMaxHeight()
-//            )
+            if (shouldDisplayBottomSheet) {
+                retirementData?.dataObj?.let {
+                    UdiEntryDetails(
+                        data = it,
+                        modifier = Modifier
+                            .padding(top = 15.dp)
+                            .fillMaxHeight()
+                    )
+                }
+            }
         }
     }
 }

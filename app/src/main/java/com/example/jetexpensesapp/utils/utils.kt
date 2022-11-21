@@ -33,8 +33,8 @@ fun formatDateFullMonth(time: LocalDateTime): String {
 }
 
 fun formatStringToDate(str: String): LocalDate {
-    val format = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.getDefault())
-    return LocalDate.parse(str, format)
+    val localDateTime = LocalDateTime.parse(str)
+    return localDateTime.toLocalDate()
 }
 
 fun formatDateFromServer(date: String?): String {
@@ -57,4 +57,8 @@ fun formatMoney(number: Double?): String {
         maximumFractionDigits = 0
     }
     return if (number != null) format.format(number) else ""
+}
+
+fun String.toLocalDateTime(): LocalDateTime {
+    return LocalDateTime.parse(this)
 }

@@ -6,14 +6,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetexpensesapp.R
 import com.example.jetexpensesapp.data.Result
-import com.example.jetexpensesapp.model.udi.RetirementPlan
+import com.example.jetexpensesapp.model.udi.Data
+import com.example.jetexpensesapp.model.udi.RetirementRecord
 import com.example.jetexpensesapp.model.udi.UdiItem
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs
 import com.example.jetexpensesapp.repository.UdiRepository
 import com.example.jetexpensesapp.utils.Constants
 import com.example.jetexpensesapp.utils.checkNegativeNumber
 import com.example.jetexpensesapp.utils.formatDateForRequest
-import com.example.jetexpensesapp.utils.formatStringToDate
+import com.example.jetexpensesapp.utils.formatDateFromServer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -29,15 +30,17 @@ data class AddEditUdiUiState(
     val amount: String = "0.0",
     val date: String = formatDateForRequest(LocalDateTime.now()),
     val udiValue: String = "0.0",
-    val totalOfUdi: Double = 0.0,
-    val mineUdi: Double = Constants.MINE_UDI,
-    val udiComission: Double = 0.0,
-    val udiValueInMoney: Double = 0.0,
-    val udiValueInMoneyCommission: Double = 0.0,
+    val totalOfUdi: Double? = 0.0,
+    val mineUdi: Double? = Constants.MINE_UDI,
+    val udiComission: Double? = 0.0,
+    val udiValueInMoney: Double? = 0.0,
+    val udiValueInMoneyCommission: Double? = 0.0,
+    val dataObj: Data = Data(),
     val isLoading: Boolean = false,
     val userMessage: Int? = null,
     val isUdiSaved: Boolean = false,
-    val isUdiDeleted: Boolean = false
+    val isUdiDeleted: Boolean = false,
+    val shouldDisplayBottomSheet: Boolean = false
 )
 
 @HiltViewModel
@@ -106,19 +109,21 @@ class AddEditUdiViewmodel @Inject constructor(
     }
 
     private fun createNewUdi() = viewModelScope.launch {
-        val newUdi = RetirementPlan(
-            dateOfPurchase = formatStringToDate(uiState.value.date).atStartOfDay(),
+        val newUdi = RetirementRecord(
+            id = 0,
+            dateOfPurchase = uiState.value.date,
             purchaseTotal = uiState.value.amount.toDouble(),
-            udiValue = uiState.value.udiValue.toDouble(),
-            totalOfUdi = uiState.value.amount.toDouble() / uiState.value.udiValue.toDouble(),//uiState.value.udiValue.toDouble(),
-            mineUdi = Constants.MINE_UDI,
-            udiCommission = uiState.value.udiComission,
-            udiValueInMoney = uiState.value.udiValueInMoney,
-            udiValueInMoneyCommission = uiState.value.udiValueInMoneyCommission
+            udiValue = uiState.value.udiValue.toDouble()
         )
-        repository.addUdi(newUdi)
-        _uiState.update {
-            it.copy(isUdiSaved = true)
+        val newValueAdded = repository.insertUdiToApi(newUdi)
+        if (newValueAdded.status != "SUCCESS") {
+            _uiState.update {
+                it.copy(isUdiSaved = false, userMessage = R.string.error_insert)
+            }
+        } else {
+            _uiState.update {
+                it.copy(isUdiSaved = true)
+            }
         }
     }
 
@@ -127,21 +132,20 @@ class AddEditUdiViewmodel @Inject constructor(
             throw RuntimeException("updateUdi() was called but task is new.")
         }
         viewModelScope.launch {
-            val updatedUdi = RetirementPlan(
-                id = udiId.toLong(),
-                dateOfPurchase = formatStringToDate(uiState.value.date).atStartOfDay(),
+            val updateUdi = RetirementRecord(
+                dateOfPurchase = uiState.value.date,
                 purchaseTotal = uiState.value.amount.toDouble(),
-                udiValue = uiState.value.udiValue.toDouble(),
-                totalOfUdi = uiState.value.amount.toDouble() / uiState.value.udiValue.toDouble(),//uiState.value.udiValue.toDouble(),
-                mineUdi = Constants.MINE_UDI,
-                udiCommission = uiState.value.udiComission,
-                udiValueInMoney = uiState.value.udiValueInMoney,
-                udiValueInMoneyCommission = uiState.value.udiValueInMoneyCommission
+                udiValue = uiState.value.udiValue.toDouble()
             )
-
-            repository.updateUdiValue(updatedUdi)
-            _uiState.update {
-                it.copy(isUdiSaved = true)
+            val response = repository.updateUdiById(udiId.toLong(), updateUdi)
+            if (response.status != "SUCCESS") {
+                _uiState.update {
+                    it.copy(isUdiSaved = false)
+                }
+            } else {
+                _uiState.update {
+                    it.copy(isUdiSaved = true)
+                }
             }
         }
     }
@@ -151,33 +155,21 @@ class AddEditUdiViewmodel @Inject constructor(
             it.copy(isLoading = true)
         }
         viewModelScope.launch {
-            repository.getUdiById(udiId.toLong()).let { result ->
+            repository.getUdiByIdFromApi(udiId.toLong()).let { result ->
                 if (result is Result.Success) {
-                    val udi = result.data
-                    val resultFromApi = getUdiForTodayAsync(udi.dateOfPurchase)
-                    if (resultFromApi is Result.Success){
-                        Log.d(TAG, "Api result with values ${resultFromApi.data}")
-                        val udiValueFromApi = resultFromApi.data.udiValue.toDouble()
-                        val totalOfUdi =
-                            udi.purchaseTotal / udiValueFromApi
-                        val udiComission = checkNegativeNumber(totalOfUdi - Constants.MINE_UDI)
-                        val udiValueInMoney =
-                            checkNegativeNumber(Constants.MINE_UDI * udiValueFromApi)
-                        _uiState.update {
-                            it.copy(
-                                amount = udi.purchaseTotal.toString(),
-                                udiValue = resultFromApi.data.udiValue,
-                                date = formatDateForRequest(udi.dateOfPurchase),
-                                totalOfUdi = totalOfUdi,
-                                udiComission = udiComission,
-                                udiValueInMoney = udiValueInMoney,
-                                isLoading = false,
-                            )
-                        }
-                    } else {
-                        _uiState.update {
-                            it.copy(isLoading = false)
-                        }
+                    val udi = result.data.body.data[0]
+                    _uiState.update {
+                        it.copy(
+                            amount = udi.retirementRecord?.purchaseTotal.toString(),
+                            udiValue = udi.retirementRecord?.udiValue.toString(),
+                            date = formatDateFromServer(udi.retirementRecord?.dateOfPurchase),
+                            totalOfUdi = udi.udiConversions?.udiConversion,
+                            udiComission = udi.udiCommission?.userUdis,
+                            udiValueInMoney = udi.udiConversions?.udiConversion,
+                            isLoading = false,
+                            shouldDisplayBottomSheet = true,
+                            dataObj = udi
+                        )
                     }
                 } else {
                     _uiState.update {
@@ -192,21 +184,16 @@ class AddEditUdiViewmodel @Inject constructor(
         _uiState.update {
             it.copy(isLoading = true)
         }
+
         viewModelScope.launch {
-            repository.getUdiById(udiId.toLong()).let { result ->
-                if (result is Result.Success) {
-                    val udi = result.data
-                    repository.deleteUdi(udi)
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            isUdiDeleted = true
-                        )
-                    }
-                } else {
-                    _uiState.update {
-                        it.copy(isLoading = false)
-                    }
+            val response = repository.deleteUdiFromServer(udiId.toLong())
+            if (response.status == "SUCCESS") {
+                _uiState.update {
+                    it.copy(isLoading = false, isUdiDeleted = true)
+                }
+            } else {
+                _uiState.update {
+                    it.copy(isLoading = false)
                 }
             }
         }
@@ -242,7 +229,7 @@ class AddEditUdiViewmodel @Inject constructor(
     private suspend fun getUdiForTodayAsync(date: LocalDateTime): Result<UdiItem> {
         val result = viewModelScope.async {
             Log.d(TAG, "Calling api... with date $date")
-             repository.getUdiForToday(date)
+            repository.getUdiForToday(date)
         }
         return result.await()
     }

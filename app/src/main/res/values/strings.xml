@@ -9,6 +9,7 @@
     <string name="successfully_edited_task_message">Udi Actualizada</string>
     <string name="successfully_deleted_task_message">Udi Borrada</string>
     <string name="empty_task_message">Campos vacios</string>
+    <string name="error_insert">Error insertando en el servidor</string>
     <string name="loading_udis_error">Error al cargar las udis</string>
     <string name="label_new">Recientes</string>
     <string name="label_old">Viejas</string>

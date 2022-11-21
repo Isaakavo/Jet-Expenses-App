@@ -3,6 +3,7 @@ package com.example.jetexpensesapp.components.shared
 import android.app.DatePickerDialog
 import android.content.Context
 import android.widget.DatePicker
+import java.time.LocalTime
 import java.util.*
 
 
@@ -29,7 +30,8 @@ object DatePicker {
                 if (!dayTemp.matches(Regex("(0[1-9]|[12][0-9]|3[01])"))) {
                     dayTemp = "0$dayTemp"
                 }
-                val requestDate = "$year-${monthTemp}-$dayTemp"
+                val time = LocalTime.now()
+                val requestDate = "$year-${monthTemp}-${dayTemp}T$time"
                 onRequest(requestDate)
             }, mYear, mMonth, mDay
         )

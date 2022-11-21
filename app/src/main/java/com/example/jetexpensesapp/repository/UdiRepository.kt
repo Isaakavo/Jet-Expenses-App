@@ -3,6 +3,7 @@ package com.example.jetexpensesapp.repository
 import com.example.jetexpensesapp.data.Result
 import com.example.jetexpensesapp.data.UdiDatabaseDao
 import com.example.jetexpensesapp.model.udi.RetirementPlan
+import com.example.jetexpensesapp.model.udi.RetirementRecord
 import com.example.jetexpensesapp.model.udi.ServerResponse
 import com.example.jetexpensesapp.model.udi.UdiItem
 import com.example.jetexpensesapp.network.UdiApi
@@ -35,6 +36,9 @@ class UdiRepository @Inject constructor(
 
     suspend fun addUdi(retirementPlan: RetirementPlan) = udiDatabaseDao.insert(retirementPlan)
 
+    suspend fun insertUdiToApi(retirementRecord: RetirementRecord): ServerResponse =
+        udiEndpoint.insertUdi(retirementRecord)
+
     fun getAllUdis(): Flow<Result<List<RetirementPlan>>> =
         udiDatabaseDao.getUdis().map {
             Result.Success(it)
@@ -52,6 +56,9 @@ class UdiRepository @Inject constructor(
         udiDatabaseDao.updateUdi(retirementPlan)
     }
 
+    suspend fun updateUdiById(id: Long, retirementRecord: RetirementRecord) =
+        udiEndpoint.updateUdi(id, retirementRecord)
+
     suspend fun getUdiById(id: Long): Result<RetirementPlan> = withContext(Dispatchers.IO) {
         try {
             val udi = udiDatabaseDao.getUdiByID(id)
@@ -65,7 +72,22 @@ class UdiRepository @Inject constructor(
         }
     }
 
+    suspend fun getUdiByIdFromApi(id: Long): Result<ServerResponse> = withContext(Dispatchers.IO) {
+        try {
+            val udi = udiEndpoint.getUdiById(id)
+            if (udi != null) {
+                return@withContext Result.Success(udi)
+            } else {
+                return@withContext Result.Error(Exception("udi not found").localizedMessage)
+            }
+        } catch (e: Exception) {
+            return@withContext Result.Error(e.localizedMessage)
+        }
+    }
+
     suspend fun deleteUdi(retirementPlan: RetirementPlan) {
         udiDatabaseDao.deleteUdi(retirementPlan)
     }
+
+    suspend fun deleteUdiFromServer(id: Long): ServerResponse = udiEndpoint.deleteUdi(id)
 }

@@ -27,12 +27,6 @@ data class RetirementPlan(
     val udiValueInMoneyCommission: Double = 0.0
 )
 
-data class ResponseRetirementRecord(
-    val retirementRecord: RetirementRecord? = null,
-    val udiCommission: UdiCommission? = null,
-    val udiConversions: UdiConversions? = null
-)
-
 data class ServerResponse(
     val body: Body,
     val status: String = "NOT_FETCHED"
@@ -54,7 +48,7 @@ data class Data(
 
 data class RetirementRecord(
     val dateOfPurchase: String,
-    val id: Int,
+    val id: Int? = null,
     val purchaseTotal: Double,
     val udiValue: Double
 )
