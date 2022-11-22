@@ -59,15 +59,6 @@ class UdiViewModel @Inject constructor(
             .map { Async.Success(it) }
             .onStart<Async<List<Data>>> { emit(Async.Loading) }
 
-    fun getValue(result: Result<ServerResponse>): ServerResponse? {
-        return if (result is Success) {
-            Log.d("IF", result.data.toString())
-            result.data
-        } else {
-            null
-        }
-    }
-
     //TODO implement server side calculation for global values
     val uiState: StateFlow<UdiHomeUiState> = combine(
         _userMessage, _isLoading, _udisAsync
