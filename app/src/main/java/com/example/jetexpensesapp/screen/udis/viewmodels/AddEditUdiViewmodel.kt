@@ -11,10 +11,7 @@ import com.example.jetexpensesapp.model.udi.RetirementRecord
 import com.example.jetexpensesapp.model.udi.UdiItem
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs
 import com.example.jetexpensesapp.repository.UdiRepository
-import com.example.jetexpensesapp.utils.Constants
-import com.example.jetexpensesapp.utils.checkNegativeNumber
-import com.example.jetexpensesapp.utils.formatDateForRequest
-import com.example.jetexpensesapp.utils.formatDateFromServer
+import com.example.jetexpensesapp.utils.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -28,7 +25,8 @@ import javax.inject.Inject
 
 data class AddEditUdiUiState(
     val amount: String = "0.0",
-    val date: String = formatDateForRequest(LocalDateTime.now()),
+    val date: String = formatDateForUi(LocalDateTime.now()),
+    val dateForRequest: LocalDateTime? = LocalDateTime.now(),
     val udiValue: String = "0.0",
     val totalOfUdi: Double? = 0.0,
     val mineUdi: Double? = Constants.MINE_UDI,
@@ -104,14 +102,17 @@ class AddEditUdiViewmodel @Inject constructor(
 
     fun updateDate(newDate: String) {
         _uiState.update {
-            it.copy(date = newDate)
+            it.copy(
+                date = formatDateForUi(newDate.toLocalDateTime()),
+                dateForRequest = newDate.toLocalDateTime()
+            )
         }
     }
 
     private fun createNewUdi() = viewModelScope.launch {
         val newUdi = RetirementRecord(
             id = 0,
-            dateOfPurchase = uiState.value.date,
+            dateOfPurchase = uiState.value.dateForRequest.toString(),
             purchaseTotal = uiState.value.amount.toDouble(),
             udiValue = uiState.value.udiValue.toDouble()
         )
@@ -133,7 +134,7 @@ class AddEditUdiViewmodel @Inject constructor(
         }
         viewModelScope.launch {
             val updateUdi = RetirementRecord(
-                dateOfPurchase = uiState.value.date,
+                dateOfPurchase = uiState.value.dateForRequest.toString(),
                 purchaseTotal = uiState.value.amount.toDouble(),
                 udiValue = uiState.value.udiValue.toDouble()
             )
@@ -163,6 +164,7 @@ class AddEditUdiViewmodel @Inject constructor(
                             amount = udi.retirementRecord?.purchaseTotal.toString(),
                             udiValue = udi.retirementRecord?.udiValue.toString(),
                             date = formatDateFromServer(udi.retirementRecord?.dateOfPurchase),
+                            dateForRequest = udi.retirementRecord?.dateOfPurchase?.toLocalDateTime(),
                             totalOfUdi = udi.udiConversions?.udiConversion,
                             udiComission = udi.udiCommission?.userUdis,
                             udiValueInMoney = udi.udiConversions?.udiConversion,

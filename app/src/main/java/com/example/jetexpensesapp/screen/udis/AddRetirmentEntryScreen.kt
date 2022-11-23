@@ -25,7 +25,7 @@ import com.example.jetexpensesapp.components.UdiEntryDetails
 import com.example.jetexpensesapp.components.shared.DatePicker
 import com.example.jetexpensesapp.components.shared.LoadingContent
 import com.example.jetexpensesapp.components.shared.TopBar
-import com.example.jetexpensesapp.utils.formatStringToDate
+import com.example.jetexpensesapp.utils.toLocalDateTime
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
@@ -43,7 +43,7 @@ fun AddRetirementEntryScreen(
         context,
         onRequest = {
             viewModel.updateDate(it)
-            viewModel.getUdiForToday(formatStringToDate(it).atStartOfDay())
+            viewModel.getUdiForToday(it.toLocalDateTime())
         })
 
     AddEditContent(
