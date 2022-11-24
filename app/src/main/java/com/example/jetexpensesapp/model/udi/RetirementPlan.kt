@@ -42,15 +42,16 @@ data class Body(
 data class Data(
     val id: Int = 1,
     val retirementRecord: RetirementRecord? = null,
-    val udiCommission: UdiCommission? = null,
     val udiConversions: UdiConversions? = null
 )
 
 data class RetirementRecord(
-    val dateOfPurchase: String,
     val id: Int? = null,
     val purchaseTotal: Double,
-    val udiValue: Double
+    val udiValue: Double,
+    val totalOfUdi: Double? = null,
+    val dateOfPurchase: String,
+    val udiCommission: UdiCommission? = null
 )
 
 data class UdiCommission(

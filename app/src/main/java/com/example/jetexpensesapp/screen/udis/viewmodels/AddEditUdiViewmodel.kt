@@ -166,7 +166,7 @@ class AddEditUdiViewmodel @Inject constructor(
                             date = formatDateFromServer(udi.retirementRecord?.dateOfPurchase),
                             dateForRequest = udi.retirementRecord?.dateOfPurchase?.toLocalDateTime(),
                             totalOfUdi = udi.udiConversions?.udiConversion,
-                            udiComission = udi.udiCommission?.userUdis,
+                            udiComission = udi.retirementRecord?.udiCommission?.userUdis,
                             udiValueInMoney = udi.udiConversions?.udiConversion,
                             isLoading = false,
                             shouldDisplayBottomSheet = true,

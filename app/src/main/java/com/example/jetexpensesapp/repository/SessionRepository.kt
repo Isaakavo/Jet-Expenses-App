@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import com.example.jetexpensesapp.data.Result
 import com.example.jetexpensesapp.model.jwt.Auth
 import com.example.jetexpensesapp.network.AwsCognito
-import com.example.jetexpensesapp.network.TokenInterceptor
+import com.example.jetexpensesapp.network.interceptor.TokenInterceptor
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

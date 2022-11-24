@@ -57,20 +57,18 @@ fun UdiEntryDetails(
             )
             UdiRowDetails(
                 title = "Total de UDIS",
-                content = String.format("%.2f",
-                    data.udiCommission?.udiCommssion?.let {
-                        data.udiCommission.userUdis
-                            .times(it)
-                    } ?: 0.0
+                content = String.format(
+                    "%.2f",
+                    data.retirementRecord?.totalOfUdi ?: 0.0
                 )
             )
             UdiRowDetails(
                 title = "Mis UDIS",
-                content = String.format("%.2f", data.udiCommission?.udiCommssion)
+                content = String.format("%.2f", data.retirementRecord?.udiCommission?.udiCommssion)
             )
             UdiRowDetails(
                 title = "Comision en UDIS",
-                content = String.format("%.2f", data.udiCommission?.userUdis)
+                content = String.format("%.2f", data.retirementRecord?.udiCommission?.userUdis)
             )
             UdiRowDetails(
                 title = "Conversion",

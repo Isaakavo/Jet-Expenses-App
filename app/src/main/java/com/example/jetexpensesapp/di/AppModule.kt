@@ -5,9 +5,9 @@ import androidx.room.Room
 import com.example.jetexpensesapp.data.UdiDatabase
 import com.example.jetexpensesapp.data.UdiDatabaseDao
 import com.example.jetexpensesapp.network.AwsCognito
-import com.example.jetexpensesapp.network.TokenInterceptor
 import com.example.jetexpensesapp.network.UdiApi
 import com.example.jetexpensesapp.network.UdiEndpoint
+import com.example.jetexpensesapp.network.interceptor.TokenInterceptor
 import com.example.jetexpensesapp.utils.Constants
 import dagger.Module
 import dagger.Provides

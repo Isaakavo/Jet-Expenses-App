@@ -1,4 +1,4 @@
-package com.example.jetexpensesapp.network
+package com.example.jetexpensesapp.network.interceptor
 
 import android.util.Log
 import okhttp3.Interceptor
