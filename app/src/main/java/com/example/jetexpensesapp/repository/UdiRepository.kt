@@ -52,6 +52,15 @@ class UdiRepository @Inject constructor(
         }
     }
 
+    suspend fun getAllUdisFrom(): Result<ServerResponse> {
+        val data = udiEndpoint.getAllUdis()
+        if (data.status == "SUCCESS") {
+            return Result.Success(data)
+        } else {
+            return Result.Error(data.status)
+        }
+    }
+
     suspend fun updateUdiValue(retirementPlan: RetirementPlan) {
         udiDatabaseDao.updateUdi(retirementPlan)
     }

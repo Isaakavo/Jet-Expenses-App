@@ -44,7 +44,7 @@ fun UdiHomeScreen(
     onUserMessageDisplayed: () -> Unit,
     viewModel: UdiViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
         scaffoldState = scaffoldState,

@@ -1,6 +1,7 @@
 package com.example.jetexpensesapp.network.interceptor
 
 import android.util.Log
+import com.example.jetexpensesapp.repository.SessionRepository
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject
@@ -15,14 +16,12 @@ class TokenInterceptor @Inject constructor() : Interceptor {
         val request = chain.request()
         val requestBuilder = request.newBuilder()
 
-        if (request.header("AUTH_KEY") == null) {
+        if (request.header(SessionRepository.AUTH_KEY) == null) {
             if (sessionToken == null) {
                 Log.d("Interceptor", "The token is null")
             } else {
                 sessionToken.let {
-                    if (it != null) {
-                        requestBuilder.addHeader("Authorization", "Bearer $it")
-                    }
+                    requestBuilder.addHeader("Authorization", "Bearer $it")
                 }
 
             }

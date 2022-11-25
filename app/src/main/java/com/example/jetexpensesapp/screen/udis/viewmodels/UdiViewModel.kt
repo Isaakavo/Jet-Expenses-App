@@ -12,13 +12,15 @@ import com.example.jetexpensesapp.model.udi.*
 import com.example.jetexpensesapp.navigation.ADD_EDIT_RESULT_OK
 import com.example.jetexpensesapp.navigation.DELETE_RESULT_OK
 import com.example.jetexpensesapp.navigation.EDIT_RESULT_OK
-import com.example.jetexpensesapp.repository.SessionRepository
 import com.example.jetexpensesapp.repository.UdiRepository
-import com.example.jetexpensesapp.utils.Async
 import com.example.jetexpensesapp.utils.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -33,7 +35,6 @@ data class UdiHomeUiState(
 @HiltViewModel
 class UdiViewModel @Inject constructor(
     private val repository: UdiRepository,
-    private val sessionRepository: SessionRepository,
     private val savesStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -51,50 +52,79 @@ class UdiViewModel @Inject constructor(
     //TODO implement the api call to map the values from server
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
     private val _isLoading = MutableStateFlow(false)
+    private val _uiData = MutableStateFlow<UdiHomeUiState>(UdiHomeUiState(isLoading = true))
+    val uiState: StateFlow<UdiHomeUiState> = _uiData.stateIn(
+        scope = viewModelScope,
+        started = WhileUiSubscribed,
+        initialValue = UdiHomeUiState(isLoading = true)
+    )
 
-    private val _udisAsync =
-        combine(repository.getAllUdisFromEndpoint(), _savedFilterType) { udisApi, type ->
-            filterUdis(udisApi, type)
-        }
-            .map { Async.Success(it) }
-            .onStart<Async<List<Data>>> { emit(Async.Loading) }
-
-    //TODO implement server side calculation for global values
-    val uiState: StateFlow<UdiHomeUiState> = combine(
-        _userMessage, _isLoading, _udisAsync
-    ) { userMessage, isLoading, taskAsync ->
-        when (taskAsync) {
-            Async.Loading -> {
-                UdiHomeUiState(isLoading = true)
-            }
-            is Async.Success -> {
-                Log.d("_API", "Value of data: ${taskAsync.data}")
-                if (_savedUdiValue.value == "0.0") {
-                    val udiFromApi = getUdiForTodayAsync(LocalDateTime.now())
-                    if (udiFromApi is Success) {
-                        savesStateHandle[UDI_VALUE_FROM_API] = udiFromApi.data.udiValue
-                        UdiHomeUiState(
-                            udis = taskAsync.data,
-                            udiValueToday = udiFromApi.data.udiValue,
-                            isLoading = false,
-                            userMessage = userMessage
-                        )
-                    } else {
-                        UdiHomeUiState(isLoading = false)
-                    }
-                } else {
-                    UdiHomeUiState(
-                        isLoading = isLoading
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            val dataFromEndpoint = repository.getAllUdisFrom()
+            if (dataFromEndpoint is Success) {
+                val udiFromApi = repository.getUdiForToday(LocalDateTime.now())
+                if (udiFromApi is Success) {
+                    savesStateHandle[UDI_VALUE_FROM_API] = udiFromApi.data.udiValue
+                    val udiHomeUiState = UdiHomeUiState(
+                        udis = dataFromEndpoint.data.body.data,
+                        udiValueToday = udiFromApi.data.udiValue,
+                        isLoading = false
                     )
+                    _uiData.value = udiHomeUiState
+                } else {
+                    _uiData.value = UdiHomeUiState(isLoading = false)
                 }
+            } else {
+                _uiData.value = UdiHomeUiState(isLoading = false)
             }
+
         }
     }
-        .stateIn(
-            scope = viewModelScope,
-            started = WhileUiSubscribed,
-            initialValue = UdiHomeUiState(isLoading = true)
-        )
+
+//    private val _udisAsync =
+//        combine(repository.getAllUdisFromEndpoint(), _savedFilterType) { udisApi, type ->
+//            filterUdis(udisApi, type)
+//        }
+//            .map { Async.Success(it) }
+//            .onStart<Async<List<Data>>> { emit(Async.Loading) }
+//
+//    //TODO implement server side calculation for global values
+//    val uiState: StateFlow<UdiHomeUiState> = combine(
+//        _userMessage, _isLoading, _udisAsync
+//    ) { userMessage, isLoading, taskAsync ->
+//        when (taskAsync) {
+//            Async.Loading -> {
+//                UdiHomeUiState(isLoading = true)
+//            }
+//            is Async.Success -> {
+//                Log.d("_API", "Value of data: ${taskAsync.data}")
+//                if (_savedUdiValue.value == "0.0") {
+//                    val udiFromApi = getUdiForTodayAsync(LocalDateTime.now())
+//                    if (udiFromApi is Success) {
+//                        savesStateHandle[UDI_VALUE_FROM_API] = udiFromApi.data.udiValue
+//                        UdiHomeUiState(
+//                            udis = taskAsync.data,
+//                            udiValueToday = udiFromApi.data.udiValue,
+//                            isLoading = false,
+//                            userMessage = userMessage
+//                        )
+//                    } else {
+//                        UdiHomeUiState(isLoading = false)
+//                    }
+//                } else {
+//                    UdiHomeUiState(
+//                        isLoading = isLoading
+//                    )
+//                }
+//            }
+//        }
+//    }
+//        .stateIn(
+//            scope = viewModelScope,
+//            started = WhileUiSubscribed,
+//            initialValue = UdiHomeUiState(isLoading = true)
+//        )
 
     fun snackbarMessageShown() {
         _userMessage.value = null

@@ -8,6 +8,7 @@ import com.example.jetexpensesapp.model.jwt.Auth
 import com.example.jetexpensesapp.model.jwt.AuthParameters
 import com.example.jetexpensesapp.repository.SessionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +19,7 @@ import javax.inject.Inject
 data class LoginUiState(
     val username: String = "isaakhaas96@gmail.com",
     val password: String = "Weisses9622!",
-    val shouldNav: Boolean = false
+    val isLoading: Boolean = false
 )
 
 @HiltViewModel
@@ -27,6 +28,9 @@ class LoginViewmodel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
+
+    private val _shouldNav = MutableStateFlow(false)
+    val shouldNav: StateFlow<Boolean> = _shouldNav.asStateFlow()
 
     fun updateUsername(newValue: String) {
         _uiState.update {
@@ -40,8 +44,8 @@ class LoginViewmodel @Inject constructor(
         }
     }
 
-    private fun updateShouldNav(newValue: Boolean) = _uiState.update {
-        it.copy(shouldNav = newValue)
+    private fun updateShouldNav(newValue: Boolean) {
+        _shouldNav.value = newValue
     }
 
     //TODO make a logic in the server to extract the username and email to
@@ -53,12 +57,14 @@ class LoginViewmodel @Inject constructor(
                 USERNAME = uiState.value.username
             )
         )
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
+            _uiState.update {
+                it.copy(isLoading = true)
+            }
             val result = repository.login(auth)
             if (result is Result.Success) {
                 val isCompleted = repository.setAuthJwtToken(result.data)
                 updateShouldNav(isCompleted)
-                Log.d("JWT", "Value $result")
             } else {
                 Log.d("JWT", "Error")
             }
