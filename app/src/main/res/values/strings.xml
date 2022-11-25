@@ -14,4 +14,5 @@
     <string name="label_new">Recientes</string>
     <string name="label_old">Viejas</string>
     <string name="calculate_error">Error al calcular los valores</string>
+    <string name="api_error">Error al obtener datos desde la red</string>
 </resources>

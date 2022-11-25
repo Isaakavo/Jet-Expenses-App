@@ -12,12 +12,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -91,22 +94,21 @@ fun UdiHomeScreen(
         }
     }
 
-//    uiState.userMessage?.let { message ->
-//        val snackBarText = stringResource(id = message)
-//       // Toast.makeText(LocalContext.current, snackBarText, Toast.LENGTH_SHORT)
-//        LaunchedEffect(scaffoldState.snackbarHostState, viewModel, message, snackBarText) {
-//            scaffoldState.snackbarHostState.showSnackbar(snackBarText)
-//            viewModel.snackbarMessageShown()
-//        }
-//    }
-//
-//    val currentOnUserMessageDisplayed by rememberUpdatedState(newValue = onUserMessageDisplayed)
-//    LaunchedEffect(scaffoldState.snackbarHostState, userMessage) {
-//        if (userMessage != 0) {
-//            viewModel.showEditResultMessage(userMessage)
-//            currentOnUserMessageDisplayed()
-//        }
-//    }
+    uiState.userMessage?.let { message ->
+        val snackBarText = stringResource(id = message)
+        LaunchedEffect(scaffoldState.snackbarHostState, viewModel, message, snackBarText) {
+            scaffoldState.snackbarHostState.showSnackbar(snackBarText)
+            viewModel.snackbarMessageShown()
+        }
+    }
+
+    val currentOnUserMessageDisplayed by rememberUpdatedState(newValue = onUserMessageDisplayed)
+    LaunchedEffect(scaffoldState.snackbarHostState, userMessage) {
+        if (userMessage != 0) {
+            viewModel.showEditResultMessage(userMessage)
+            currentOnUserMessageDisplayed()
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)

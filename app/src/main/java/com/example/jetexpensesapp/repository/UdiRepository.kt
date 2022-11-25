@@ -53,11 +53,20 @@ class UdiRepository @Inject constructor(
     }
 
     suspend fun getAllUdisFrom(): Result<ServerResponse> {
-        val data = udiEndpoint.getAllUdis()
-        if (data.status == "SUCCESS") {
-            return Result.Success(data)
-        } else {
-            return Result.Error(data.status)
+        return try {
+            val data = udiEndpoint.getAllUdis()
+            if (data.status == "SUCCESS") {
+                Result.Success(data)
+            } else {
+                Result.Error(data.status)
+            }
+        } catch (e: Exception) {
+            val error = e.localizedMessage
+            val serverResponse = ServerResponse()
+            if (error != null) {
+                serverResponse.status = error
+            }
+            Result.Error(serverResponse.status)
         }
     }
 

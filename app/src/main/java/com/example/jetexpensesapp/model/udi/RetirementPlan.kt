@@ -28,15 +28,15 @@ data class RetirementPlan(
 )
 
 data class ServerResponse(
-    val body: Body,
-    val status: String = "NOT_FETCHED"
+    val body: Body = Body(),
+    var status: String = "NOT_FETCHED"
 )
 
 data class Body(
-    val `data`: List<Data>,
-    val message: String,
-    val size: Int,
-    val userId: String
+    val `data`: List<Data> = emptyList(),
+    val message: String = "",
+    val size: Int = 0,
+    val userId: String = ""
 )
 
 data class Data(
