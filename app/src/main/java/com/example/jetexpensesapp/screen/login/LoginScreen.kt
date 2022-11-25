@@ -7,7 +7,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.jetexpensesapp.components.Login
-import com.example.jetexpensesapp.components.shared.LoadingContent
 import com.example.jetexpensesapp.screen.login.viewmodels.LoginViewmodel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -22,14 +21,15 @@ fun LoginScreen(
     val uiState by viewmodel.uiState.collectAsStateWithLifecycle()
 
     //TODO add logic to handle loading ui animation when login and improve the ui
-    LoadingContent(
-        loading = uiState.isLoading,
-        empty = false,
-        emptyContent = { /*TODO*/ },
-        onRefresh = { /*TODO*/ }) {
+//    LoadingContent(
+//        loading = uiState.isLoading,
+//        empty = false,
+//        emptyContent = { /*TODO*/ },
+//        onRefresh = { /*TODO*/ }) {
         Login(
             username = uiState.username,
             password = uiState.password,
+            isLoading = uiState.isLoading,
             onUsernameChange = viewmodel::updateUsername,
             onPasswordChange = viewmodel::updatePassword
         ) {
@@ -43,6 +43,6 @@ fun LoginScreen(
                 }
             }
         }
-    }
+    //}
 
 }
