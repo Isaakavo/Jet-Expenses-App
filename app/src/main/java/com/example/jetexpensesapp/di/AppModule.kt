@@ -58,7 +58,7 @@ object AppModule {
         val udiEndpointClient = OkHttpClient.Builder().addInterceptor(tokenInterceptor).build()
         return Retrofit.Builder()
             .client(udiEndpointClient)
-            .baseUrl("http://192.168.100.5:8080")
+            .baseUrl("http://192.168.100.47:8080")
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(UdiEndpoint::class.java)
     }

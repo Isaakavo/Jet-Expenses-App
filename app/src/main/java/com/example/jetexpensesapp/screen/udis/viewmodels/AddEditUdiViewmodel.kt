@@ -119,7 +119,7 @@ class AddEditUdiViewmodel @Inject constructor(
         val newValueAdded = repository.insertUdiToApi(newUdi)
         if (newValueAdded.status != "SUCCESS") {
             _uiState.update {
-                it.copy(isUdiSaved = false, userMessage = R.string.error_insert)
+                it.copy(isUdiSaved = true, userMessage = R.string.error_insert)
             }
         } else {
             _uiState.update {

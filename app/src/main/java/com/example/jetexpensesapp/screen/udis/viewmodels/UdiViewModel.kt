@@ -8,16 +8,15 @@ import com.example.jetexpensesapp.R
 import com.example.jetexpensesapp.data.Result
 import com.example.jetexpensesapp.data.Result.Success
 import com.example.jetexpensesapp.data.UdiGlobalDetails
-import com.example.jetexpensesapp.model.udi.Body
-import com.example.jetexpensesapp.model.udi.Data
-import com.example.jetexpensesapp.model.udi.ServerResponse
-import com.example.jetexpensesapp.model.udi.UdiItem
+import com.example.jetexpensesapp.model.udi.*
 import com.example.jetexpensesapp.navigation.ADD_EDIT_RESULT_OK
 import com.example.jetexpensesapp.navigation.DELETE_RESULT_OK
 import com.example.jetexpensesapp.navigation.EDIT_RESULT_OK
 import com.example.jetexpensesapp.repository.UdiRepository
 import com.example.jetexpensesapp.utils.WhileUiSubscribed
+import dagger.Provides
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +29,7 @@ import javax.inject.Inject
 
 data class UdiHomeUiState(
     val udis: List<Data> = emptyList(),
+    val commission: UdiCommission? = null,
     val globalTotals: UdiGlobalDetails = UdiGlobalDetails(),
     val udiValueToday: String = "0.0",
     val isLoading: Boolean = false,
@@ -55,7 +55,6 @@ class UdiViewModel @Inject constructor(
 
     private val _savedUdiValue = savesStateHandle.getStateFlow(UDI_VALUE_FROM_API, "0.0")
 
-    //TODO implement the api call to map the values from server
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
     private val _isLoading = MutableStateFlow(false)
     private val _uiData = MutableStateFlow<UdiHomeUiState>(UdiHomeUiState(isLoading = true))
@@ -66,6 +65,29 @@ class UdiViewModel @Inject constructor(
     )
 
     init {
+
+        //TODO implement a function to wrap the when for both VM scopes
+        viewModelScope.launch(Dispatchers.IO) {
+            //TODO implement redirection to new screen to add commission when the user doesnt have one
+            when (val commission = repository.getCommission()) {
+                is Success -> {
+                    _uiData.update {
+                        it.copy(commission = commission.data.body.data[0].retirementRecord?.udiCommission)
+                    }
+                }
+                is Result.Error -> {
+                    _uiData.update {
+                        it.copy(
+                            isLoading = false,
+                            isError = true,
+                            userMessage = R.string.api_no_commission_data,
+                            errorMessage = commission.exception!!
+                        )
+                    }
+                    showSnackBarMessage(R.string.api_no_commission_data)
+                }
+            }
+        }
         //TODO implement filter udis by date
         viewModelScope.launch(Dispatchers.IO) {
             when (val dataFromEndpoint = repository.getAllUdisFrom()) {

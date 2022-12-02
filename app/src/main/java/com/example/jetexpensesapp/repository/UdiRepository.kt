@@ -108,4 +108,19 @@ class UdiRepository @Inject constructor(
     }
 
     suspend fun deleteUdiFromServer(id: Long): ServerResponse = udiEndpoint.deleteUdi(id)
+
+    suspend fun getCommission(): Result<ServerResponse> {
+        return try {
+            val commission = udiEndpoint.getCommission()
+            if (commission.status != "SUCCESS") {
+                Result.Error(Exception("No data").localizedMessage)
+            } else {
+                Result.Success(commission)
+            }
+
+        } catch (e: Exception) {
+            Result.Error(e.localizedMessage)
+        }
+
+    }
 }

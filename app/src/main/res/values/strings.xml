@@ -15,4 +15,5 @@
     <string name="label_old">Viejas</string>
     <string name="calculate_error">Error al calcular los valores</string>
     <string name="api_error">Error al obtener datos desde la red</string>
+    <string name="api_no_commission_data">El usuario no tiene comisiones</string>
 </resources>

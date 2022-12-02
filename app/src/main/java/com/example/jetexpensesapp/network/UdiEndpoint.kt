@@ -21,4 +21,7 @@ interface UdiEndpoint {
 
     @DELETE("api/udis/{id}")
     suspend fun deleteUdi(@Path("id") id: Long): ServerResponse
+
+    @GET("api/udis/commission")
+    suspend fun getCommission(): ServerResponse
 }
