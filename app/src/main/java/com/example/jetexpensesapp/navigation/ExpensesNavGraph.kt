@@ -31,8 +31,10 @@ import com.example.jetexpensesapp.components.shared.Button
 import com.example.jetexpensesapp.components.shared.ButtonVariants
 import com.example.jetexpensesapp.data.UdiGlobalDetails
 import com.example.jetexpensesapp.model.udi.Data
+import com.example.jetexpensesapp.navigation.UdiDestinationArgs.COMMISSION_ID_ARG
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.DELETE_ARG
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.GLOBAL_VALUES
+import com.example.jetexpensesapp.navigation.UdiDestinationArgs.IS_INSERT_COMMISSION
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.TITLE_ARG
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.UDI_ID_ARG
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.USER_MESSAGE_ARG
@@ -74,11 +76,15 @@ fun ExpensesNavGraph(
             LoginScreen(
                 navigate = { value ->
                     when (value) {
-                         UdiScreens.UDI_HOME_SCREEN-> {
+                        UdiScreens.UDI_HOME_SCREEN -> {
                             navActions.navigateToHome()
                         }
                         UdiScreens.ADD_EDIT_COMMISSIONS_SCREEN -> {
-
+                            navActions.navigateToAddEditCommissionEntry(
+                                R.string.add_commission,
+                                null,
+                                true
+                            )
                         }
                     }
                 }
@@ -206,6 +212,32 @@ fun ExpensesNavGraph(
                 },
                 onBack = { navController.popBackStack() }
             )
+        }
+
+        composable(
+            UdisDestination.ADD_EDIT_COMMISSION_ROUTE,
+            arguments = listOf(
+                navArgument(TITLE_ARG) { type = NavType.IntType },
+                navArgument(COMMISSION_ID_ARG) { type = NavType.StringType; nullable = true },
+                navArgument(IS_INSERT_COMMISSION) { type = NavType.BoolType}
+            )
+        ) { entry ->
+            val isCommission = entry.arguments?.getBoolean(IS_INSERT_COMMISSION)
+            val commissionId = entry.arguments?.getString(UDI_ID_ARG)
+
+            if (isCommission != null) {
+                AddRetirementEntryScreen(
+                    topBarTitle = entry.arguments?.getInt(TITLE_ARG)!!,
+                    isInsertCommission = isCommission,
+                    onUdiUpdate = {
+
+                    },
+                    onDeleteUdi = {
+
+                    },
+                    onBack = { navController.popBackStack() }
+                )
+            }
         }
 
         composable(UdisDestination.UDI_GLOBAL_DETAIL,

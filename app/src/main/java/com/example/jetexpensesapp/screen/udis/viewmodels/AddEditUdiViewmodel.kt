@@ -28,6 +28,7 @@ data class AddEditUdiUiState(
     val date: String = formatDateForUi(LocalDateTime.now()),
     val dateForRequest: LocalDateTime? = LocalDateTime.now(),
     val udiValue: String = "0.0",
+    val udiCommission: String = "0.0",
     val totalOfUdi: Double? = 0.0,
     val mineUdi: Double? = Constants.MINE_UDI,
     val udiComission: Double? = 0.0,
@@ -66,6 +67,8 @@ class AddEditUdiViewmodel @Inject constructor(
         } else if (udiId == null) {
             getUdiForToday(LocalDateTime.now())
         }
+
+
     }
 
     fun saveUdi() {

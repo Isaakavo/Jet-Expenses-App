@@ -31,6 +31,7 @@ import com.example.jetexpensesapp.utils.toLocalDateTime
 @Composable
 fun AddRetirementEntryScreen(
     @StringRes topBarTitle: Int,
+    isInsertCommission: Boolean = false,
     onUdiUpdate: () -> Unit,
     onBack: () -> Unit,
     onDeleteUdi: () -> Unit,
@@ -48,13 +49,15 @@ fun AddRetirementEntryScreen(
 
     AddEditContent(
         topBarTitle = topBarTitle,
+        isInsertCommission = isInsertCommission,
         amount = uiState.amount,
+        udiCommission = uiState.udiCommission,
         date = uiState.date,
         loading = uiState.isLoading,
         retirementData = uiState,
         shouldDisplayBottomSheet = uiState.shouldDisplayBottomSheet,
         onBack = onBack,
-        onSaveUdi = viewModel::saveUdi,
+        onSave = viewModel::saveUdi,
         onAmountChange = viewModel::updateAmount,
         onDateChange = viewModel::updateDate,
         onShowDatePicker = datePicker::show
@@ -76,13 +79,15 @@ fun AddRetirementEntryScreen(
 @Composable
 fun AddEditContent(
     @StringRes topBarTitle: Int,
+    isInsertCommission: Boolean,
     amount: String,
+    udiCommission: String,
     date: String,
     loading: Boolean,
     retirementData: AddEditUdiUiState?,
     shouldDisplayBottomSheet: Boolean,
     onBack: () -> Unit,
-    onSaveUdi: () -> Unit,
+    onSave: () -> Unit,
     onAmountChange: (String) -> Unit,
     onDateChange: (String) -> Unit,
     onShowDatePicker: () -> Unit
@@ -97,7 +102,7 @@ fun AddEditContent(
                 onBack = onBack,
                 buttonText = stringResource(id = topBarTitle),
                 backgroundColor = Color.Transparent,
-                onClick = (onSaveUdi)
+                onClick = (onSave)
             )
             Surface(
                 modifier = Modifier.padding(top = 15.dp, start = 25.dp, end = 25.dp),
@@ -113,28 +118,38 @@ fun AddEditContent(
                 ) {
                     RetirementInputText(
                         text = amount,
-                        label = "Total comprado",
+                        label = if (isInsertCommission) "Total comprado" else "Total de udis tuyas",
                         keyboardType = KeyboardType.Number,
                         onTextChange = onAmountChange
                     )
-                    RetirementInputText(
-                        text = date,
-                        label = "Fecha del cargo",
-                        modifier = Modifier
-                            .padding(top = 6.dp),
-                        onTextChange = onDateChange,
-                        interactionSource = remember { MutableInteractionSource() }
-                            .also { interactionSource ->
-                                LaunchedEffect(interactionSource) {
-                                    interactionSource.interactions.collect {
-                                        if (it is PressInteraction.Release) {
-                                            // works like onClick
-                                            onShowDatePicker()
+                    if (isInsertCommission) {
+                        RetirementInputText(
+                            text = udiCommission,
+                            label = "Comision",
+                            keyboardType = KeyboardType.Number,
+                            onTextChange = onAmountChange
+                        )
+                    }
+                    if (!isInsertCommission) {
+                        RetirementInputText(
+                            text = date,
+                            label = "Fecha del cargo",
+                            modifier = Modifier
+                                .padding(top = 6.dp),
+                            onTextChange = onDateChange,
+                            interactionSource = remember { MutableInteractionSource() }
+                                .also { interactionSource ->
+                                    LaunchedEffect(interactionSource) {
+                                        interactionSource.interactions.collect {
+                                            if (it is PressInteraction.Release) {
+                                                // works like onClick
+                                                onShowDatePicker()
+                                            }
                                         }
                                     }
                                 }
-                            }
-                    )
+                        )
+                    }
                 }
             }
             if (shouldDisplayBottomSheet) {
