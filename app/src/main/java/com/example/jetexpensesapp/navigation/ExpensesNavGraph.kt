@@ -72,7 +72,16 @@ fun ExpensesNavGraph(
             UdisDestination.LOGIN_SCREEN_ROUTE
         ) {
             LoginScreen(
-                navigate = { navActions.navigateToHome() }
+                navigate = { value ->
+                    when (value) {
+                         UdiScreens.UDI_HOME_SCREEN-> {
+                            navActions.navigateToHome()
+                        }
+                        UdiScreens.ADD_EDIT_COMMISSIONS_SCREEN -> {
+
+                        }
+                    }
+                }
             )
         }
 

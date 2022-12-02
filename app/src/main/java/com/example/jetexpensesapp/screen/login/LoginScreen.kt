@@ -1,5 +1,6 @@
 package com.example.jetexpensesapp.screen.login
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -13,36 +14,28 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
+//TODO make navigate callback capable of receive the commissions object to pass it to the home screen
 fun LoginScreen(
-    navigate: (Boolean) -> Unit,
+    navigate: (String) -> Unit,
     viewmodel: LoginViewmodel = hiltViewModel(),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
 ) {
     val uiState by viewmodel.uiState.collectAsStateWithLifecycle()
 
     //TODO add logic to handle loading ui animation when login and improve the ui
-//    LoadingContent(
-//        loading = uiState.isLoading,
-//        empty = false,
-//        emptyContent = { /*TODO*/ },
-//        onRefresh = { /*TODO*/ }) {
-        Login(
-            username = uiState.username,
-            password = uiState.password,
-            isLoading = uiState.isLoading,
-            onUsernameChange = viewmodel::updateUsername,
-            onPasswordChange = viewmodel::updatePassword
-        ) {
-            viewmodel.attemptLogin()
-            
-            coroutineScope.launch {
-                viewmodel.shouldNav.collect {
-                    if (it) {
-                        navigate(true)
-                    }
-                }
+    Login(
+        username = uiState.username,
+        password = uiState.password,
+        isLoading = uiState.isLoading,
+        onUsernameChange = viewmodel::updateUsername,
+        onPasswordChange = viewmodel::updatePassword
+    ) {
+        viewmodel.attemptLogin()
+
+        coroutineScope.launch {
+            viewmodel.shouldNav.collect {
+                navigate(it)
             }
         }
-    //}
-
+    }
 }

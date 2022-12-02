@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.jetexpensesapp.data.Result
 import com.example.jetexpensesapp.model.jwt.Auth
 import com.example.jetexpensesapp.model.jwt.AuthParameters
+import com.example.jetexpensesapp.navigation.UdiScreens
 import com.example.jetexpensesapp.repository.SessionRepository
+import com.example.jetexpensesapp.repository.UdiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,13 +26,14 @@ data class LoginUiState(
 
 @HiltViewModel
 class LoginViewmodel @Inject constructor(
-    private val repository: SessionRepository
+    private val repository: SessionRepository,
+    private val udiRepository: UdiRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
-    private val _shouldNav = MutableStateFlow(false)
-    val shouldNav: StateFlow<Boolean> = _shouldNav.asStateFlow()
+    private val _shouldNav = MutableStateFlow("")
+    val shouldNav: StateFlow<String> = _shouldNav.asStateFlow()
 
     fun updateUsername(newValue: String) {
         _uiState.update {
@@ -44,7 +47,7 @@ class LoginViewmodel @Inject constructor(
         }
     }
 
-    private fun updateShouldNav(newValue: Boolean) {
+    private fun updateShouldNav(newValue: String) {
         _shouldNav.value = newValue
     }
 
@@ -64,7 +67,19 @@ class LoginViewmodel @Inject constructor(
             val result = repository.login(auth)
             if (result is Result.Success) {
                 val isCompleted = repository.setAuthJwtToken(result.data)
-                updateShouldNav(isCompleted)
+                if (isCompleted) {
+                    when (val commissionResponse = udiRepository.getCommission()) {
+                        is Result.Success -> {
+                            updateShouldNav(UdiScreens.UDI_HOME_SCREEN)
+                        }
+                        is Result.Error -> {
+                            if (commissionResponse.exception == "No data") {
+                                updateShouldNav(UdiScreens.ADD_EDIT_COMMISSIONS_SCREEN)
+                            }
+                        }
+                    }
+                }
+                //updateShouldNav(isCompleted)
             } else {
                 Log.d("JWT", "Error")
             }

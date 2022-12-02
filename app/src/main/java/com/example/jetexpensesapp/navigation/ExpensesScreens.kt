@@ -11,10 +11,11 @@ import com.example.jetexpensesapp.navigation.UdiScreens.ADD_EDIT_UDI_SCREEN
 import com.example.jetexpensesapp.navigation.UdiScreens.UDI_GLOBAL_DETAIL_SCREEN
 import com.example.jetexpensesapp.navigation.UdiScreens.UDI_HOME_SCREEN
 
-private object UdiScreens {
+object UdiScreens {
     const val UDI_HOME_SCREEN = "udis"
     const val UDI_GLOBAL_DETAIL_SCREEN = "udiGlobalDetail"
     const val ADD_EDIT_UDI_SCREEN = "addEditUdi"
+    const val ADD_EDIT_COMMISSIONS_SCREEN = "addEditCommissionsScreen"
 }
 
 object UdiDestinationArgs {
