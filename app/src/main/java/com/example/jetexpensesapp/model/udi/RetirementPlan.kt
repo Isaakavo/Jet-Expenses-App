@@ -59,6 +59,13 @@ data class UdiCommission(
     val userUdis: Double
 )
 
+data class UdiCommissionPost(
+    val id : Int? = null,
+    val userUdis: Double,
+    val udiCommission: Double,
+    val dateAdded: String
+)
+
 data class UdiConversions(
     val udiCommissionConversion: Double,
     val udiConversion: Double

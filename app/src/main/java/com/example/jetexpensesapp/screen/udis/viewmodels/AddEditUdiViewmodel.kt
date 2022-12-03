@@ -6,9 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetexpensesapp.R
 import com.example.jetexpensesapp.data.Result
-import com.example.jetexpensesapp.model.udi.Data
-import com.example.jetexpensesapp.model.udi.RetirementRecord
-import com.example.jetexpensesapp.model.udi.UdiItem
+import com.example.jetexpensesapp.model.udi.*
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs
 import com.example.jetexpensesapp.repository.UdiRepository
 import com.example.jetexpensesapp.utils.*
@@ -31,7 +29,6 @@ data class AddEditUdiUiState(
     val udiCommission: String = "0.0",
     val totalOfUdi: Double? = 0.0,
     val mineUdi: Double? = Constants.MINE_UDI,
-    val udiComission: Double? = 0.0,
     val udiValueInMoney: Double? = 0.0,
     val udiValueInMoneyCommission: Double? = 0.0,
     val dataObj: Data = Data(),
@@ -39,6 +36,7 @@ data class AddEditUdiUiState(
     val userMessage: Int? = null,
     val isUdiSaved: Boolean = false,
     val isUdiDeleted: Boolean = false,
+    val isInsertCommission: Boolean = false,
     val shouldDisplayBottomSheet: Boolean = false
 )
 
@@ -71,7 +69,13 @@ class AddEditUdiViewmodel @Inject constructor(
 
     }
 
-    fun saveUdi() {
+    fun save() {
+
+        if (uiState.value.isInsertCommission) {
+            insertCommission()
+            return
+        }
+
         if (uiState.value.amount.isEmpty() || uiState.value.date.isEmpty()) {
             _uiState.update {
                 it.copy(userMessage = R.string.empty_task_message)
@@ -87,18 +91,17 @@ class AddEditUdiViewmodel @Inject constructor(
     }
 
     fun updateAmount(newAmount: String) {
-        val totalOfUdi =
-            if (newAmount.isEmpty()) 0.0 else newAmount.toDouble() / uiState.value.udiValue.toDouble()
-        val udiComission = checkNegativeNumber(totalOfUdi - Constants.MINE_UDI)
-        val udiValueInMoney =
-            checkNegativeNumber(Constants.MINE_UDI * uiState.value.udiValue.toDouble())
         _uiState.update {
             it.copy(
                 amount = newAmount,
-                totalOfUdi = totalOfUdi,
-                udiComission = udiComission,
-                udiValueInMoney = udiValueInMoney,
-                udiValueInMoneyCommission = udiComission * uiState.value.udiValue.toDouble()
+            )
+        }
+    }
+
+    fun updateCommissionAmount(newAmount: String) {
+        _uiState.update {
+            it.copy(
+                udiCommission = newAmount
             )
         }
     }
@@ -108,6 +111,14 @@ class AddEditUdiViewmodel @Inject constructor(
             it.copy(
                 date = formatDateForUi(newDate.toLocalDateTime()),
                 dateForRequest = newDate.toLocalDateTime()
+            )
+        }
+    }
+
+    fun updateIsCommission(value: Boolean) {
+        _uiState.update {
+            it.copy(
+                isInsertCommission = value
             )
         }
     }
@@ -169,7 +180,7 @@ class AddEditUdiViewmodel @Inject constructor(
                             date = formatDateFromServer(udi.retirementRecord?.dateOfPurchase),
                             dateForRequest = udi.retirementRecord?.dateOfPurchase?.toLocalDateTime(),
                             totalOfUdi = udi.udiConversions?.udiConversion,
-                            udiComission = udi.retirementRecord?.udiCommission?.userUdis,
+                            udiCommission = udi.retirementRecord?.udiCommission?.userUdis.toString(),
                             udiValueInMoney = udi.udiConversions?.udiConversion,
                             isLoading = false,
                             shouldDisplayBottomSheet = true,
@@ -199,6 +210,29 @@ class AddEditUdiViewmodel @Inject constructor(
             } else {
                 _uiState.update {
                     it.copy(isLoading = false)
+                }
+            }
+        }
+    }
+
+    private fun insertCommission() {
+        _uiState.update {
+            it.copy(isLoading = true)
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            val newCommission = UdiCommissionPost(
+                udiCommission = uiState.value.udiCommission.toDouble(),
+                userUdis = uiState.value.amount.toDouble(),
+                dateAdded = LocalDateTime.now().toString()
+            )
+            Log.d("INSERT_COMMISSION", "$newCommission")
+            repository.insertCommission(newCommission).let { result ->
+                if (result is Result.Success) {
+                    Log.d("INSERT_COMMISSION", "$newCommission")
+                } else {
+                    _uiState.update {
+                        it.copy(isLoading = false)
+                    }
                 }
             }
         }

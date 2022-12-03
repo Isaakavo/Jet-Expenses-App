@@ -2,10 +2,7 @@ package com.example.jetexpensesapp.repository
 
 import com.example.jetexpensesapp.data.Result
 import com.example.jetexpensesapp.data.UdiDatabaseDao
-import com.example.jetexpensesapp.model.udi.RetirementPlan
-import com.example.jetexpensesapp.model.udi.RetirementRecord
-import com.example.jetexpensesapp.model.udi.ServerResponse
-import com.example.jetexpensesapp.model.udi.UdiItem
+import com.example.jetexpensesapp.model.udi.*
 import com.example.jetexpensesapp.network.UdiApi
 import com.example.jetexpensesapp.network.UdiEndpoint
 import com.example.jetexpensesapp.utils.formatDateForRequest
@@ -122,5 +119,18 @@ class UdiRepository @Inject constructor(
             Result.Error(e.localizedMessage)
         }
 
+    }
+
+    suspend fun insertCommission(data: UdiCommissionPost): Result<ServerResponse> {
+        return try {
+            val commission = udiEndpoint.insertCommission(data)
+            if (commission.status != "SUCCESS") {
+                Result.Error(Exception("No data").localizedMessage)
+            } else {
+                Result.Success(commission)
+            }
+        } catch (e: Exception) {
+            Result.Error(e.localizedMessage)
+        }
     }
 }

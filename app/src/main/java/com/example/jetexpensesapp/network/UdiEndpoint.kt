@@ -2,6 +2,7 @@ package com.example.jetexpensesapp.network
 
 import com.example.jetexpensesapp.model.udi.RetirementRecord
 import com.example.jetexpensesapp.model.udi.ServerResponse
+import com.example.jetexpensesapp.model.udi.UdiCommissionPost
 import retrofit2.http.*
 import javax.inject.Singleton
 
@@ -24,4 +25,7 @@ interface UdiEndpoint {
 
     @GET("api/udis/commission")
     suspend fun getCommission(): ServerResponse
+
+    @POST("api/udis/commission")
+    suspend fun insertCommission(@Body data: UdiCommissionPost): ServerResponse
 }

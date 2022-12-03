@@ -1,6 +1,7 @@
 package com.example.jetexpensesapp.navigation
 
 import android.app.Activity
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth

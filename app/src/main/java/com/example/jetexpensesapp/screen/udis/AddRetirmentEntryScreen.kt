@@ -47,6 +47,8 @@ fun AddRetirementEntryScreen(
             viewModel.getUdiForToday(it.toLocalDateTime())
         })
 
+    viewModel.updateIsCommission(isInsertCommission)
+
     AddEditContent(
         topBarTitle = topBarTitle,
         isInsertCommission = isInsertCommission,
@@ -57,8 +59,9 @@ fun AddRetirementEntryScreen(
         retirementData = uiState,
         shouldDisplayBottomSheet = uiState.shouldDisplayBottomSheet,
         onBack = onBack,
-        onSave = viewModel::saveUdi,
+        onSave = viewModel::save,
         onAmountChange = viewModel::updateAmount,
+        onCommissionAmountChange= viewModel::updateCommissionAmount,
         onDateChange = viewModel::updateDate,
         onShowDatePicker = datePicker::show
     )
@@ -89,6 +92,7 @@ fun AddEditContent(
     onBack: () -> Unit,
     onSave: () -> Unit,
     onAmountChange: (String) -> Unit,
+    onCommissionAmountChange: (String) -> Unit,
     onDateChange: (String) -> Unit,
     onShowDatePicker: () -> Unit
 ) {
@@ -127,7 +131,7 @@ fun AddEditContent(
                             text = udiCommission,
                             label = "Comision",
                             keyboardType = KeyboardType.Number,
-                            onTextChange = onAmountChange
+                            onTextChange = onCommissionAmountChange
                         )
                     }
                     if (!isInsertCommission) {
