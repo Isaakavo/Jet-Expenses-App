@@ -67,27 +67,27 @@ class UdiViewModel @Inject constructor(
     init {
 
         //TODO implement a function to wrap the when for both VM scopes
-        viewModelScope.launch(Dispatchers.IO) {
-            //TODO implement redirection to new screen to add commission when the user doesnt have one
-            when (val commission = repository.getCommission()) {
-                is Success -> {
-                    _uiData.update {
-                        it.copy(commission = commission.data.body.data[0].retirementRecord?.udiCommission)
-                    }
-                }
-                is Result.Error -> {
-                    _uiData.update {
-                        it.copy(
-                            isLoading = false,
-                            isError = true,
-                            userMessage = R.string.api_no_commission_data,
-                            errorMessage = commission.exception!!
-                        )
-                    }
-                    showSnackBarMessage(R.string.api_no_commission_data)
-                }
-            }
-        }
+//        viewModelScope.launch(Dispatchers.IO) {
+//            //TODO implement redirection to new screen to add commission when the user doesnt have one
+//            when (val commission = repository.getCommission()) {
+//                is Success -> {
+//                    _uiData.update {
+//                        it.copy(commission = commission.data.body.data[0].retirementRecord?.udiCommission)
+//                    }
+//                }
+//                is Result.Error -> {
+//                    _uiData.update {
+//                        it.copy(
+//                            isLoading = false,
+//                            isError = true,
+//                            userMessage = R.string.api_no_commission_data,
+//                            errorMessage = commission.exception!!
+//                        )
+//                    }
+//                    showSnackBarMessage(R.string.api_no_commission_data)
+//                }
+//            }
+//        }
         //TODO implement filter udis by date
         viewModelScope.launch(Dispatchers.IO) {
             when (val dataFromEndpoint = repository.getAllUdisFrom()) {
@@ -124,6 +124,21 @@ class UdiViewModel @Inject constructor(
                     _uiData.update {
                         it.copy(udiValueToday = udiFromApi.data.udiValue)
                     }
+                    val globalDetails = repository.getGlobalDetails(udiFromApi.data.udiValue)
+                    if (globalDetails is Success) {
+                        val data = globalDetails.data.body.data
+                        _uiData.update {
+                            it.copy(
+                                globalTotals = UdiGlobalDetails(
+                                    totalExpend = data[0].totalExpend,
+                                    udisTotal = data[0].udisTotal,
+                                    udisConvertion = data[0].udisConvertion,
+                                    rendimiento = data[0].rendimiento,
+                                    udiValueToday = udiFromApi.data.udiValue
+                                )
+                            )
+                        }
+                    }
                 } else {
                     _uiData.value = UdiHomeUiState(isLoading = false)
                 }
@@ -151,7 +166,7 @@ class UdiViewModel @Inject constructor(
         udisResult: Result<ServerResponse>,
         filteringType: UdisDateFilterType
     ): List<Data> = if (udisResult is Success) {
-        filterItems(udisResult.data.body, filteringType)
+        filterItems(udisResult.data.body as Body, filteringType)
     } else {
         showSnackBarMessage(R.string.loading_udis_error)
         emptyList()

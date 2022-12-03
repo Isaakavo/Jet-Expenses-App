@@ -1,6 +1,7 @@
 package com.example.jetexpensesapp.screen.udis
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,7 +19,7 @@ fun UdiGlobalDetailsScreen(
     onBack: () -> Unit = {},
 ) {
     Surface(
-        modifier = modifier,
+        modifier = modifier.fillMaxHeight(),
         elevation = 0.dp
     ) {
         Column {

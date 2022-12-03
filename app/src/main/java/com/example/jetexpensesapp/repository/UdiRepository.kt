@@ -1,5 +1,6 @@
 package com.example.jetexpensesapp.repository
 
+import com.example.jetexpensesapp.data.GlobalServerResponse
 import com.example.jetexpensesapp.data.Result
 import com.example.jetexpensesapp.data.UdiDatabaseDao
 import com.example.jetexpensesapp.model.udi.*
@@ -128,6 +129,19 @@ class UdiRepository @Inject constructor(
                 Result.Error(Exception("No data").localizedMessage)
             } else {
                 Result.Success(commission)
+            }
+        } catch (e: Exception) {
+            Result.Error(e.localizedMessage)
+        }
+    }
+
+    suspend fun getGlobalDetails(udiValue: String): Result<GlobalServerResponse> {
+        return try {
+            val globalDetails = udiEndpoint.getGlobalDetails(udiValue)
+            if (globalDetails.status != "SUCCESS") {
+                Result.Error(Exception("No data").localizedMessage)
+            } else {
+                Result.Success(globalDetails)
             }
         } catch (e: Exception) {
             Result.Error(e.localizedMessage)

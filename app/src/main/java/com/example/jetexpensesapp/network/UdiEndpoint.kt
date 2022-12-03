@@ -1,5 +1,6 @@
 package com.example.jetexpensesapp.network
 
+import com.example.jetexpensesapp.data.GlobalServerResponse
 import com.example.jetexpensesapp.model.udi.RetirementRecord
 import com.example.jetexpensesapp.model.udi.ServerResponse
 import com.example.jetexpensesapp.model.udi.UdiCommissionPost
@@ -28,4 +29,7 @@ interface UdiEndpoint {
 
     @POST("api/udis/commission")
     suspend fun insertCommission(@Body data: UdiCommissionPost): ServerResponse
+
+    @GET("api/udis/global")
+    suspend fun getGlobalDetails(@Query("udiValue") udiValue: String): GlobalServerResponse
 }
