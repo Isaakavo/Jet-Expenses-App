@@ -220,7 +220,7 @@ fun ExpensesNavGraph(
             arguments = listOf(
                 navArgument(TITLE_ARG) { type = NavType.IntType },
                 navArgument(COMMISSION_ID_ARG) { type = NavType.StringType; nullable = true },
-                navArgument(IS_INSERT_COMMISSION) { type = NavType.BoolType}
+                navArgument(IS_INSERT_COMMISSION) { type = NavType.BoolType }
             )
         ) { entry ->
             val isCommission = entry.arguments?.getBoolean(IS_INSERT_COMMISSION)
@@ -231,7 +231,7 @@ fun ExpensesNavGraph(
                     topBarTitle = entry.arguments?.getInt(TITLE_ARG)!!,
                     isInsertCommission = isCommission,
                     onUdiUpdate = {
-
+                        navActions.navigateToHome()
                     },
                     onDeleteUdi = {
 
@@ -251,66 +251,6 @@ fun ExpensesNavGraph(
             UdiGlobalDetailsScreen(obj, onBack = { navController.popBackStack() })
         }
     }
-
-
-//    Scaffold(
-//        bottomBar = {
-//            BottomNavigation {
-//                val navBackStackEntry by navController.currentBackStackEntryAsState()
-//                val currentDestination = navBackStackEntry?.destination
-//                items.forEach { screen ->
-//                    BottomNavigationItem(
-//                        icon = { screen.icon?.let { Icon(it, contentDescription = null) } },
-//                        label = { Text(text = stringResource(id = screen.resourceId)) },
-//                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-//                        onClick = {
-//                            navController.navigate(screen.route) {
-//                                popUpTo(navController.graph.findStartDestination().id) {
-//                                    saveState = true
-//                                }
-//                                launchSingleTop = true
-//                                restoreState = true
-//                            }
-//                        })
-//                }
-//            }
-//        }
-//    ) { innerPadding ->
-//        val udiViewModel = hiltViewModel<UdiViewModel>()
-//        NavHost(
-//            navController = navController,
-//            startDestination = startDestination,
-//            modifier = Modifier.padding(innerPadding)
-//        ) {
-//
-//            composable(Screen.UdiHomeScreen.route) {
-//                UdiHomeScreen(navController, viewModel = udiViewModel)
-//            }
-//
-//            composable(Screen.AddRetirementEntryScreen.route) {
-//
-//                AddRetirementEntryScreen(navController, viewModel = udiViewModel)
-//            }
-//
-//            composable(Screen.AddRetirementEntryScreen.route + "/{id}") {
-//                val id = it.arguments?.getString("id")
-//                AddRetirementEntryScreen(
-//                    navController = navController,
-//                    viewModel = udiViewModel,
-//                    retirementPlanId = id?.toLong()
-//                )
-//            }
-//
-//            composable(Screen.UdiGlobalDetailsScreen.route) {
-//
-//                UdiGlobalDetailsScreen(
-//                    navController = navController,
-//                    viewModel = udiViewModel
-//                )
-//            }
-//        }
-//    }
-
 }
 
 // Keys for navigation

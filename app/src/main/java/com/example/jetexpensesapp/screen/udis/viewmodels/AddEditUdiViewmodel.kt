@@ -228,7 +228,9 @@ class AddEditUdiViewmodel @Inject constructor(
             Log.d("INSERT_COMMISSION", "$newCommission")
             repository.insertCommission(newCommission).let { result ->
                 if (result is Result.Success) {
-                    Log.d("INSERT_COMMISSION", "$newCommission")
+                    _uiState.update {
+                        it.copy(isUdiSaved = true)
+                    }
                 } else {
                     _uiState.update {
                         it.copy(isLoading = false)
