@@ -51,17 +51,20 @@ data class RetirementRecord(
     val udiValue: Double,
     val totalOfUdi: Double? = null,
     val dateOfPurchase: String,
-    val udiCommission: UdiCommission? = null
+    val udiBonus: UdiBonus? = null
 )
 
-data class UdiCommission(
-    val udiCommssion: Double,
-    val userUdis: Double
+data class UdiBonus(
+    val userId: String?,
+    val monthlyBonus: Double,
+    val udiCommission: Double,
+    val yearlyBonus: Double,
+    var monthlyTotalBonus: Double
 )
 
 data class UdiCommissionPost(
     val id : Int? = null,
-    val userUdis: Double,
+    val monthlyBonus: Double,
     val udiCommission: Double,
     val dateAdded: String
 )

@@ -3,7 +3,7 @@
     <string name="udi_home">UdiHomeScreen</string>
     <string name="add_retirement_entry">AddRetirementEntry</string>
     <string name="global_details">GlobalDetails</string>
-    <string name="add_udi">Agregar</string>
+    <string name="add_udi">Agregar Compra</string>
     <string name="add_commission">Agregar Comision</string>
     <string name="edit_udi">Actualizar</string>
     <string name="successfully_saved_task_message">Udi Guardada</string>

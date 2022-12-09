@@ -64,11 +64,11 @@ fun UdiEntryDetails(
             )
             UdiRowDetails(
                 title = "Mis UDIS",
-                content = String.format("%.2f", data.retirementRecord?.udiCommission?.userUdis)
+                content = String.format("%.2f", data.retirementRecord?.udiBonus?.monthlyBonus)
             )
             UdiRowDetails(
                 title = "Comision en UDIS",
-                content = String.format("%.2f", data.retirementRecord?.udiCommission?.udiCommssion)
+                content = String.format("%.2f", data.retirementRecord?.udiBonus?.udiCommission)
             )
             UdiRowDetails(
                 title = "Conversion",
@@ -82,6 +82,11 @@ fun UdiEntryDetails(
         }
 
     }
+}
+
+@Composable
+fun udiBonusDetails() {
+
 }
 
 @Preview(showBackground = true)

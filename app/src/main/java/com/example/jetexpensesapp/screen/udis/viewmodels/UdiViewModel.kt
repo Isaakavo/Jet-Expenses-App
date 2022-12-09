@@ -14,9 +14,7 @@ import com.example.jetexpensesapp.navigation.DELETE_RESULT_OK
 import com.example.jetexpensesapp.navigation.EDIT_RESULT_OK
 import com.example.jetexpensesapp.repository.UdiRepository
 import com.example.jetexpensesapp.utils.WhileUiSubscribed
-import dagger.Provides
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +27,7 @@ import javax.inject.Inject
 
 data class UdiHomeUiState(
     val udis: List<Data> = emptyList(),
-    val commission: UdiCommission? = null,
+    val commission: UdiBonus? = null,
     val globalTotals: UdiGlobalDetails = UdiGlobalDetails(),
     val udiValueToday: String = "0.0",
     val isLoading: Boolean = false,
@@ -127,6 +125,7 @@ class UdiViewModel @Inject constructor(
                     val globalDetails = repository.getGlobalDetails(udiFromApi.data.udiValue)
                     if (globalDetails is Success) {
                         val data = globalDetails.data.body.data
+                        Log.d("TEFSA", "Value $data")
                         _uiData.update {
                             it.copy(
                                 globalTotals = UdiGlobalDetails(
@@ -134,10 +133,13 @@ class UdiViewModel @Inject constructor(
                                     udisTotal = data[0].udisTotal,
                                     udisConvertion = data[0].udisConvertion,
                                     rendimiento = data[0].rendimiento,
-                                    udiValueToday = udiFromApi.data.udiValue
+                                    udiValueToday = udiFromApi.data.udiValue,
+                                    udiBonus = data[0].udiBonus
                                 )
                             )
                         }
+                    } else {
+                        Log.d("ead", "adsd")
                     }
                 } else {
                     _uiData.value = UdiHomeUiState(isLoading = false)

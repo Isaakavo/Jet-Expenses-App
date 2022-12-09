@@ -118,7 +118,8 @@ class AddEditUdiViewmodel @Inject constructor(
     fun updateIsCommission(value: Boolean) {
         _uiState.update {
             it.copy(
-                isInsertCommission = value
+                isInsertCommission = value,
+                //shouldDisplayBottomSheet = value
             )
         }
     }
@@ -180,7 +181,7 @@ class AddEditUdiViewmodel @Inject constructor(
                             date = formatDateFromServer(udi.retirementRecord?.dateOfPurchase),
                             dateForRequest = udi.retirementRecord?.dateOfPurchase?.toLocalDateTime(),
                             totalOfUdi = udi.udiConversions?.udiConversion,
-                            udiCommission = udi.retirementRecord?.udiCommission?.userUdis.toString(),
+                            udiCommission = udi.retirementRecord?.udiBonus?.monthlyBonus.toString(),
                             udiValueInMoney = udi.udiConversions?.udiConversion,
                             isLoading = false,
                             shouldDisplayBottomSheet = true,
@@ -222,7 +223,7 @@ class AddEditUdiViewmodel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val newCommission = UdiCommissionPost(
                 udiCommission = uiState.value.udiCommission.toDouble(),
-                userUdis = uiState.value.amount.toDouble(),
+                monthlyBonus = uiState.value.amount.toDouble(),
                 dateAdded = LocalDateTime.now().toString()
             )
             Log.d("INSERT_COMMISSION", "$newCommission")

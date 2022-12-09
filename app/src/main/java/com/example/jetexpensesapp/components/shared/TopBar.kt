@@ -51,7 +51,8 @@ fun TopBar(
                 title,
                 modifier = titleModifier,
                 style = titleStyle,
-                fontWeight = titleWeight
+                fontWeight = titleWeight,
+                color = Color.White
             )
         },
         backgroundColor = backgroundColor,
@@ -60,7 +61,7 @@ fun TopBar(
             if (buttonText.isNotEmpty()) {
                 Button(
                     text = buttonText,
-                    contentColor = MaterialTheme.colors.primary,
+                    contentColor = Color.White,
                     variant = ButtonVariants.TEXT,
                     onClick = onClick
                 )
