@@ -1,7 +1,6 @@
 package com.example.jetexpensesapp.navigation
 
 import android.app.Activity
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -203,6 +202,7 @@ fun ExpensesNavGraph(
             val udiId = entry.arguments?.getString(UDI_ID_ARG)
             AddRetirementEntryScreen(
                 topBarTitle = entry.arguments?.getInt(TITLE_ARG)!!,
+                isInsertCommission = false,
                 onUdiUpdate = {
                     navActions.navigateToHome(
                         if (udiId == null) ADD_EDIT_RESULT_OK else EDIT_RESULT_OK

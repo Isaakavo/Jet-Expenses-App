@@ -12,7 +12,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -61,7 +60,7 @@ fun AddRetirementEntryScreen(
         onBack = onBack,
         onSave = viewModel::save,
         onAmountChange = viewModel::updateAmount,
-        onCommissionAmountChange= viewModel::updateCommissionAmount,
+        onCommissionAmountChange = viewModel::updateCommissionAmount,
         onDateChange = viewModel::updateDate,
         onShowDatePicker = datePicker::show
     )
@@ -101,12 +100,11 @@ fun AddEditContent(
         empty = retirementData == null && !loading,
         emptyContent = { /*TODO*/ },
         onRefresh = { /*TODO*/ }) {
-        Column() {
+        Column(Modifier.fillMaxHeight()) {
             TopBar(
                 onBack = onBack,
                 buttonText = stringResource(id = topBarTitle),
-                backgroundColor = Color.Transparent,
-                onClick = (onSave)
+                onClick = onSave
             )
             Surface(
                 modifier = Modifier.padding(top = 15.dp, start = 25.dp, end = 25.dp),
@@ -120,40 +118,39 @@ fun AddEditContent(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
+                    val mutableInteractionSource = remember { MutableInteractionSource() }
+                        .also { interactionSource ->
+                            LaunchedEffect(interactionSource) {
+                                interactionSource.interactions.collect {
+                                    if (it is PressInteraction.Release) {
+                                        // works like onClick
+                                        onShowDatePicker()
+                                    }
+                                }
+                            }
+                        }
                     RetirementInputText(
                         text = amount,
-                        label = if (isInsertCommission) "Total comprado" else "Total de udis tuyas",
+                        label = if (!isInsertCommission) "Total comprado" else "Total de udis tuyas",
                         keyboardType = KeyboardType.Number,
                         onTextChange = onAmountChange
                     )
-                    if (isInsertCommission) {
-                        RetirementInputText(
-                            text = udiCommission,
-                            label = "Comision",
-                            keyboardType = KeyboardType.Number,
-                            onTextChange = onCommissionAmountChange
-                        )
-                    }
-                    if (!isInsertCommission) {
-                        RetirementInputText(
-                            text = date,
-                            label = "Fecha del cargo",
-                            modifier = Modifier
-                                .padding(top = 6.dp),
-                            onTextChange = onDateChange,
-                            interactionSource = remember { MutableInteractionSource() }
-                                .also { interactionSource ->
-                                    LaunchedEffect(interactionSource) {
-                                        interactionSource.interactions.collect {
-                                            if (it is PressInteraction.Release) {
-                                                // works like onClick
-                                                onShowDatePicker()
-                                            }
-                                        }
-                                    }
-                                }
-                        )
-                    }
+//                    if (isInsertCommission) {
+//                        RetirementInputText(
+//                            text = udiCommission,
+//                            label = "Comision",
+//                            keyboardType = KeyboardType.Number,
+//                            onTextChange = onCommissionAmountChange
+//                        )
+//                    }
+                    RetirementInputText(
+                        text = if (!isInsertCommission) date else udiCommission,
+                        label = if (!isInsertCommission) "Fecha del cargo" else "Comision",
+                        modifier = Modifier
+                            .padding(top = 6.dp),
+                        onTextChange = if (!isInsertCommission) onDateChange else onCommissionAmountChange,
+                        interactionSource = if (!isInsertCommission) mutableInteractionSource else MutableInteractionSource()
+                    )
                 }
             }
             if (shouldDisplayBottomSheet) {

@@ -1,5 +1,7 @@
 package com.example.jetexpensesapp.data
 
+import com.example.jetexpensesapp.model.udi.UdiBonus
+
 data class GlobalServerResponse(
     val body: GlobalBody = GlobalBody(),
     var status: String = "NOT_FETCHED"
@@ -20,5 +22,6 @@ data class UdiGlobalDetails(
     var startDate: Long? = null,
     var endDate: Long? = null,
     var paymentDeadLine: Int? = null,
-    var udiValueToday: String = ""
+    var udiValueToday: String = "",
+    val udiBonus: List<UdiBonus> = emptyList()
 )

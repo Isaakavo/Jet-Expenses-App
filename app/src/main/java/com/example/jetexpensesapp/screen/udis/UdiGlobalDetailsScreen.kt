@@ -60,6 +60,12 @@ fun UdiGlobalDetailsScreen(
                 title = "Plazo de pago",
                 content = "20 años"
             )
+            if (udiGlobalDetails.udiBonus.isNotEmpty()) {
+                UdiRowDetails(
+                    title = "Udi Prima",
+                    content = udiGlobalDetails.udiBonus[0].monthlyTotalBonus.toString()
+                )
+            }
         }
     }
 }
