@@ -1,10 +1,12 @@
 package com.example.jetexpensesapp.model.jwt
 
+import com.example.jetexpensesapp.utils.Constants
+
 
 data class Auth(
     val AuthFlow: String = "USER_PASSWORD_AUTH",
     val AuthParameters: AuthParameters,
-    val ClientId: String = "25oksgjnl258639r4cvp4nl0v2"
+    val ClientId: String = Constants.CLIENT_ID
 )
 
 data class AuthParameters(

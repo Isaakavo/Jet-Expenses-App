@@ -22,11 +22,39 @@ android {
     }
 
     buildTypes {
+        Properties localProperties = getLocalProperties()
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField("String", "UDI_ENDPOINT", localProperties["UDI_API_PROD"])
+            buildConfigField("String", "AWS_PROVIDER", localProperties["AWS_PROVIDER_SECRET"])
+            buildConfigField("String", "BMX_TOKEN", localProperties["BMX_TOKEN"])
+            buildConfigField("String", "COGNITO_URL", localProperties["COGNITO_URL"])
+            buildConfigField("String", "CLIENT_ID", localProperties["CLIENT_ID"])
+        }
+
+        preProd {
+            applicationIdSuffix ".preProd"
+            buildConfigField("String", "UDI_ENDPOINT", localProperties["UDI_API_PROD"])
+            buildConfigField("String", "AWS_PROVIDER", localProperties["AWS_PROVIDER_SECRET"])
+            buildConfigField("String", "BMX_TOKEN", localProperties["BMX_TOKEN"])
+            buildConfigField("String", "COGNITO_URL", localProperties["COGNITO_URL"])
+            buildConfigField("String", "CLIENT_ID", localProperties["CLIENT_ID"])
+            debuggable true
+        }
+
+        dev {
+            applicationIdSuffix ".dev"
+            debuggable true
+            buildConfigField("String", "UDI_ENDPOINT", "\"http://192.168.100.47:8080\"")
+            buildConfigField("String", "AWS_PROVIDER", localProperties["AWS_PROVIDER_SECRET"])
+            buildConfigField("String", "BMX_TOKEN", localProperties["BMX_TOKEN"])
+            buildConfigField("String", "COGNITO_URL", localProperties["COGNITO_URL"])
+            buildConfigField("String", "CLIENT_ID", localProperties["CLIENT_ID"])
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -99,4 +127,12 @@ dependencies {
 
     // AWS
     implementation "aws.sdk.kotlin:cognitoidentity:0.17.11-beta"
+}
+
+def getLocalProperties() {
+    Properties props = new Properties()
+    if (file('../local.properties').exists()) {
+        props.load(new FileInputStream(file('../local.properties')))
+    }
+    return props
 }

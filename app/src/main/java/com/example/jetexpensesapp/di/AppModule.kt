@@ -47,7 +47,7 @@ object AppModule {
     @Provides
     fun provideAwsApi(): AwsCognito {
         return Retrofit.Builder()
-            .baseUrl("https://cognito-idp.us-east-2.amazonaws.com/")
+            .baseUrl(Constants.AWS_PROVIDER)
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(AwsCognito::class.java)
     }
@@ -58,7 +58,7 @@ object AppModule {
         val udiEndpointClient = OkHttpClient.Builder().addInterceptor(tokenInterceptor).build()
         return Retrofit.Builder()
             .client(udiEndpointClient)
-            .baseUrl("http://192.168.100.47:8080")
+            .baseUrl(Constants.UDI_ENDPOINT)
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(UdiEndpoint::class.java)
     }

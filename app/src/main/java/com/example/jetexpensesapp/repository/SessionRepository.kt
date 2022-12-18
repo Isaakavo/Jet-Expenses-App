@@ -6,6 +6,7 @@ import com.example.jetexpensesapp.data.Result
 import com.example.jetexpensesapp.model.jwt.Auth
 import com.example.jetexpensesapp.network.AwsCognito
 import com.example.jetexpensesapp.network.interceptor.TokenInterceptor
+import com.example.jetexpensesapp.utils.Constants
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -45,7 +46,7 @@ class SessionRepository @Inject constructor(
     suspend fun login(auth: Auth): Result<String> = withContext(Dispatchers.IO) {
         try {
             val result = api.getJwtToken(
-                "https://cognito-idp.us-east-2.amazonaws.com/",
+                Constants.COGNITO_URL,
                 auth
             ).AuthenticationResult.AccessToken
             tokenInterceptor.sessionToken = result
