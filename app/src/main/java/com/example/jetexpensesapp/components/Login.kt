@@ -1,8 +1,6 @@
 package com.example.jetexpensesapp.components
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
@@ -15,6 +13,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.jetexpensesapp.components.shared.Button
 import kotlinx.coroutines.launch
 
@@ -29,17 +28,27 @@ fun Login(
     onPasswordChange: (String) -> Unit,
     onLogin: () -> Unit,
 ) {
+    val modifier = Modifier
+        .fillMaxWidth()
+        .padding(start = 10.dp, end = 10.dp)
+
     Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier
+            .padding(top = 15.dp)
     ) {
-        RetirementInputText(text = username, label = "email", onTextChange = onUsernameChange)
+        RetirementInputText(
+            text = username,
+            label = "email",
+            onTextChange = onUsernameChange,
+            modifier = modifier
+        )
         RetirementInputText(text = password,
             label = "password",
             onTextChange = onPasswordChange,
             keyboardType = KeyboardType.Password,
-            visualTransformation = if (shouldShowPassword) VisualTransformation.None else PasswordVisualTransformation(),
+            modifier = modifier,
+            visualTransformation =
+            if (shouldShowPassword) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 val icon = if (shouldShowPassword) Icons.Filled.Visibility
                 else Icons.Filled.VisibilityOff
@@ -51,6 +60,13 @@ fun Login(
                 }
             })
 
-        Button(onClick = onLogin, text = "Login", isLoading = isLoading)
+        Button(
+            onClick = onLogin,
+            text = "Login",
+            isLoading = isLoading,
+            modifier = modifier
+        )
     }
+
+
 }

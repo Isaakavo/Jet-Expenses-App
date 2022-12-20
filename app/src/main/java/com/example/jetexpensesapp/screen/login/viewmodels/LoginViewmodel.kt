@@ -78,6 +78,7 @@ class LoginViewmodel @Inject constructor(
                             updateShouldNav(UdiScreens.UDI_HOME_SCREEN)
                         }
                         is Result.Error -> {
+                            // TODO Handle cant connect to server error
                             if (commissionResponse.exception == "No data") {
                                 updateShouldNav(UdiScreens.ADD_EDIT_COMMISSIONS_SCREEN)
                             }
