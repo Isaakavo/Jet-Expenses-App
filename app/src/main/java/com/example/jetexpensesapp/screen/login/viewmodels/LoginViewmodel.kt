@@ -21,7 +21,8 @@ import javax.inject.Inject
 data class LoginUiState(
     val username: String = "isaakhaas96@gmail.com",
     val password: String = "Weisses9622!",
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val shouldShowPassword: Boolean = false
 )
 
 @HiltViewModel
@@ -45,6 +46,10 @@ class LoginViewmodel @Inject constructor(
         _uiState.update {
             it.copy(password = newValue)
         }
+    }
+
+    fun updateShouldShowPassword() = _uiState.update {
+        it.copy(shouldShowPassword = !uiState.value.shouldShowPassword)
     }
 
     private fun updateShouldNav(newValue: String) {
@@ -79,7 +84,6 @@ class LoginViewmodel @Inject constructor(
                         }
                     }
                 }
-                //updateShouldNav(isCompleted)
             } else {
                 Log.d("JWT", "Error")
             }

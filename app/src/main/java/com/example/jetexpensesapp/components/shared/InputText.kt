@@ -3,9 +3,9 @@ package com.example.jetexpensesapp.components
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -28,7 +28,8 @@ fun RetirementInputText(
             OffsetMapping.Identity
         )
     },
-    interactionSource: MutableInteractionSource = MutableInteractionSource() ,
+    interactionSource: MutableInteractionSource = MutableInteractionSource(),
+    trailingIcon: @Composable () -> Unit = {},
     onTextChange: (String) -> Unit,
     onImeAction: () -> Unit = {}
 ) {
@@ -52,7 +53,7 @@ fun RetirementInputText(
         },
         modifier = modifier,
         visualTransformation = visualTransformation,
-        interactionSource = interactionSource
-
+        interactionSource = interactionSource,
+        trailingIcon = trailingIcon
     )
 }
