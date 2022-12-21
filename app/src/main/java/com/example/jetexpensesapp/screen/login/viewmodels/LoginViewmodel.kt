@@ -85,7 +85,7 @@ class LoginViewmodel @Inject constructor(
                         is Result.Error -> {
                             when (commissionResponse.exception) {
                                 "No data" -> updateShouldNav(UdiScreens.ADD_EDIT_COMMISSIONS_SCREEN)
-                                "Could not connect to server." -> {
+                                "Could not connect to the server." -> {
                                     _uiState.update {
                                         it.copy(
                                             isLoading = false,
@@ -94,7 +94,6 @@ class LoginViewmodel @Inject constructor(
                                     }
                                 }
                             }
-                            // TODO Handle cant connect to server error
                         }
                     }
                 }

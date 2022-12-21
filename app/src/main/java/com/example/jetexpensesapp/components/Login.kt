@@ -1,6 +1,7 @@
 package com.example.jetexpensesapp.components
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
@@ -64,7 +65,8 @@ fun Login(
             onClick = onLogin,
             text = "Login",
             isLoading = isLoading,
-            modifier = modifier
+            modifier = modifier.padding(top = 5.dp),
+            shape = RoundedCornerShape(6.dp)
         )
     }
 

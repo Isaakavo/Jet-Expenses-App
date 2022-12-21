@@ -56,7 +56,9 @@ fun Button(
         }
         ButtonVariants.CONTAINED -> {
             Button(
-                onClick = onClick, shape = shape, colors = ButtonDefaults.buttonColors(
+                onClick = onClick,
+                shape = shape,
+                colors = ButtonDefaults.buttonColors(
                     backgroundColor = backgroundColor,
                     contentColor = contentColor,
                     disabledBackgroundColor = Color.LightGray,
