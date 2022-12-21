@@ -117,7 +117,11 @@ class UdiRepository @Inject constructor(
             }
 
         } catch (e: Exception) {
-            Result.Error(e.localizedMessage)
+            val errorMsg = e.localizedMessage
+            if (errorMsg != null && errorMsg.contains("Failed to connect")) {
+                return Result.Error("Could not connect to the server.")
+            }
+            Result.Error(errorMsg)
         }
 
     }

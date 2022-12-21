@@ -22,7 +22,8 @@ data class LoginUiState(
     val username: String = "isaakhaas96@gmail.com",
     val password: String = "Weisses9622!",
     val isLoading: Boolean = false,
-    val shouldShowPassword: Boolean = false
+    val shouldShowPassword: Boolean = false,
+    var userMessage: String? = null
 )
 
 @HiltViewModel
@@ -56,6 +57,10 @@ class LoginViewmodel @Inject constructor(
         _shouldNav.value = newValue
     }
 
+    fun snackbarMessageShown() {
+        _uiState.value.userMessage = null
+    }
+
     //TODO make a logic in the server to extract the username and email to
     //place it in the profile section
     fun attemptLogin() {
@@ -78,10 +83,18 @@ class LoginViewmodel @Inject constructor(
                             updateShouldNav(UdiScreens.UDI_HOME_SCREEN)
                         }
                         is Result.Error -> {
-                            // TODO Handle cant connect to server error
-                            if (commissionResponse.exception == "No data") {
-                                updateShouldNav(UdiScreens.ADD_EDIT_COMMISSIONS_SCREEN)
+                            when (commissionResponse.exception) {
+                                "No data" -> updateShouldNav(UdiScreens.ADD_EDIT_COMMISSIONS_SCREEN)
+                                "Could not connect to server." -> {
+                                    _uiState.update {
+                                        it.copy(
+                                            isLoading = false,
+                                            userMessage = commissionResponse.exception
+                                        )
+                                    }
+                                }
                             }
+                            // TODO Handle cant connect to server error
                         }
                     }
                 }
