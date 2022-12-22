@@ -23,11 +23,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.jetexpensesapp.components.shared.RetirementInputText
 import com.example.jetexpensesapp.components.UdiEntryDetails
-import com.example.jetexpensesapp.components.shared.DatePicker
-import com.example.jetexpensesapp.components.shared.LoadingContent
-import com.example.jetexpensesapp.components.shared.TopBar
+import com.example.jetexpensesapp.components.shared.*
 import com.example.jetexpensesapp.utils.toLocalDateTime
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
@@ -55,6 +52,7 @@ fun AddRetirementEntryScreen(
     AddEditContent(
         topBarTitle = topBarTitle,
         isInsertCommission = isInsertCommission,
+        udiValue = uiState.udiValue,
         amount = uiState.amount,
         udiCommission = uiState.udiCommission,
         yearlyBonus = uiState.yearlyBonus,
@@ -89,6 +87,7 @@ fun AddRetirementEntryScreen(
 fun AddEditContent(
     @StringRes topBarTitle: Int,
     isInsertCommission: Boolean,
+    udiValue: String,
     amount: String,
     udiCommission: String,
     yearlyBonus: String,
@@ -119,12 +118,16 @@ fun AddEditContent(
             )
         }) {
             Column(Modifier.fillMaxHeight()) {
-                Row() {
-                    Text(
-                        text = "Agrega los cobros que vienen en tu prima dentro de tu contrato",
-                        textAlign = TextAlign.Center,
-                        fontSize = 18.sp
-                    )
+                if (isInsertCommission) {
+                    Row() {
+                        Text(
+                            text = "Agrega los cobros que vienen en tu prima dentro de tu contrato",
+                            textAlign = TextAlign.Center,
+                            fontSize = 18.sp
+                        )
+                    }
+                } else {
+                    UdiValueDisplay(udiValueToday = udiValue)
                 }
                 Surface(
                     modifier = Modifier.padding(top = 15.dp, start = 25.dp, end = 25.dp),
@@ -172,7 +175,8 @@ fun AddEditContent(
                                 text = yearlyBonus,
                                 label = "Prima anual total",
                                 readOnly = true,
-                                onTextChange = onYearlyCommissionChange)
+                                onTextChange = onYearlyCommissionChange
+                            )
 
                             RetirementInputText(
                                 text = monthlyTotalBonus,
@@ -183,6 +187,7 @@ fun AddEditContent(
                         }
                     }
                 }
+
                 if (shouldDisplayBottomSheet) {
                     retirementData?.dataObj?.let {
                         UdiEntryDetails(

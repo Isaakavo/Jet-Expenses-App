@@ -80,6 +80,9 @@ class LoginViewmodel @Inject constructor(
                 if (isCompleted) {
                     when (val commissionResponse = udiRepository.getCommission()) {
                         is Result.Success -> {
+                            _uiState.update {
+                                it.copy(isLoading = false)
+                            }
                             updateShouldNav(UdiScreens.UDI_HOME_SCREEN)
                         }
                         is Result.Error -> {

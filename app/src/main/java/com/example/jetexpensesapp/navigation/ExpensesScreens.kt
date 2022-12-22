@@ -2,7 +2,6 @@ package com.example.jetexpensesapp.navigation
 
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import com.example.jetexpensesapp.navigation.UdiDestinationArgs.COMMISSION_ID_ARG
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.DELETE_ARG
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.GLOBAL_VALUES
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.IS_INSERT_COMMISSION
@@ -43,6 +42,7 @@ object UdisDestination {
 
 class UdiNavigationActions(private val navHostController: NavHostController) {
 
+    //TODO handle logout on back button
     fun navigateToHome(userMessage: Int = 0) {
         val navigateFrom = userMessage == 0
         navHostController.navigate(
@@ -54,7 +54,7 @@ class UdiNavigationActions(private val navHostController: NavHostController) {
                 inclusive = !navigateFrom
                 saveState = navigateFrom
             }
-            launchSingleTop = true
+            launchSingleTop = false
             restoreState = true
         }
     }

@@ -40,7 +40,7 @@ data class Body(
 )
 
 data class Data(
-    val id: Int = 1,
+    val id: Int? = 1,
     val retirementRecord: RetirementRecord? = null,
     val udiConversions: UdiConversions? = null
 )

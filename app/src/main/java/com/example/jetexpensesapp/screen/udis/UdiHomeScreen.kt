@@ -16,7 +16,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
@@ -47,7 +46,7 @@ fun UdiHomeScreen(
     onUserMessageDisplayed: () -> Unit,
     viewModel: UdiViewModel = hiltViewModel()
 ) {
-     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -64,20 +63,7 @@ fun UdiHomeScreen(
         }
     ) {
         Column {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                Text(
-                    text = "Precio de la udi Hoy: $${uiState.udiValueToday}",
-                    modifier = Modifier
-                        .align(alignment = CenterVertically)
-                        .padding(end = 10.dp),
-                    style = MaterialTheme.typography.body1,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            UdiValueDisplay(udiValueToday = uiState.udiValueToday)
             UdiGlobalDetail(
                 udisGlobalDetails = uiState.globalTotals,
                 onAddEntry = onAddEntry,

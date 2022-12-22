@@ -1,21 +1,13 @@
 package com.example.jetexpensesapp.navigation
 
 import android.app.Activity
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -27,8 +19,7 @@ import com.example.jetexpensesapp.R
 import com.example.jetexpensesapp.components.UdiBottomSheet
 import com.example.jetexpensesapp.components.UdiEntryDetails
 import com.example.jetexpensesapp.components.UdiHomeScreen
-import com.example.jetexpensesapp.components.shared.Button
-import com.example.jetexpensesapp.components.shared.ButtonVariants
+import com.example.jetexpensesapp.components.shared.EditOptions
 import com.example.jetexpensesapp.data.UdiGlobalDetails
 import com.example.jetexpensesapp.model.udi.Data
 import com.example.jetexpensesapp.navigation.UdiDestinationArgs.COMMISSION_ID_ARG
@@ -114,41 +105,24 @@ fun ExpensesNavGraph(
                 sheetContent = {
                     UdiEntryDetails(
                         data = data,
-                        modifier = Modifier
+                        modifier = Modifier,
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly
-                        ) {
-                            Button(text = "Borrar",
-                                modifier = Modifier.weight(0.5f),
-                                shape = RectangleShape,
-                                contentColor = colorResource(R.color.error),
-                                icon = Icons.Filled.Delete,
-                                variant = ButtonVariants.TEXT,
-                                onClick = {
-                                    hideSheet()
-                                    navActions.navigateToDeleteUdiEntry(
-                                        R.string.edit_udi,
-                                        data.id.toString(),
-                                        true
-                                    )
-                                    //viewModel.deleteUdi(retirementPlan = retirementData.value)
-                                })
-                            Button(text = "Editar",
-                                modifier = Modifier.weight(0.5f),
-                                shape = RectangleShape,
-                                contentColor = colorResource(R.color.accepted),
-                                icon = Icons.Filled.Edit,
-                                variant = ButtonVariants.TEXT,
-                                onClick = {
-                                    hideSheet()
-                                    navActions.navigateToAddEditUdiEntry(
-                                        R.string.edit_udi,
-                                        data.id.toString()
-                                    )
-                                })
-                        }
+                        EditOptions(
+                            onHideSheet = { hideSheet() },
+                            onDeleteOption = {
+                                navActions.navigateToDeleteUdiEntry(
+                                    R.string.edit_udi,
+                                    data.id.toString(),
+                                    true
+                                )
+                            },
+                            onEditOption = {
+                                navActions.navigateToAddEditUdiEntry(
+                                    R.string.edit_udi,
+                                    data.id.toString()
+                                )
+                            }
+                        )
                     }
                 }
             ) {
@@ -175,7 +149,11 @@ fun ExpensesNavGraph(
                         )
                     },
                     onUdiClick = { udi ->
-                        data = udi
+                        data = Data(
+                            id = udi.retirementRecord?.id,
+                            retirementRecord = udi.retirementRecord,
+                            udiConversions = udi.udiConversions
+                        )
                         coroutineScope.launch {
                             bottomSheetState.show()
                         }

@@ -32,7 +32,7 @@ fun formatNumber(number: Double?): String {
 
 fun formatMoney(number: Double?): String {
     val format = NumberFormat.getCurrencyInstance().apply {
-        maximumFractionDigits = 0
+        maximumFractionDigits = 2
     }
     return if (number != null) format.format(number) else ""
 }
