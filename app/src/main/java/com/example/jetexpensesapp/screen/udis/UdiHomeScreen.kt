@@ -21,7 +21,9 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -72,6 +74,10 @@ fun UdiHomeScreen(
             UdisContent(
                 loading = uiState.isLoading,
                 udis = uiState.udis,
+                isError = uiState.isError,
+                userMessage = uiState.userMessage,
+                errorMessage = uiState.errorMessage,
+                onRefresh = viewModel::getAllUdis,
                 onUdiClick = onUdiClick,
                 onEditEntry = onEditEntry,
                 onDeleteEntry = onDeleteEntry,
@@ -102,17 +108,48 @@ fun UdiHomeScreen(
 fun UdisContent(
     loading: Boolean,
     udis: List<Data>,
+    isError: Boolean,
+    userMessage: Int?,
+    errorMessage: String,
     onUdiClick: (Data) -> Unit,
     onEditEntry: (RetirementRecord) -> Unit,
     onDeleteEntry: (RetirementRecord) -> Unit,
+    onRefresh: () -> Unit,
     onAddEntry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+
+    val screenPadding = Modifier.padding(
+        horizontal = 16.dp,
+        vertical = 16.dp,
+    )
+    val commonModifier = modifier
+        .fillMaxWidth()
+        .then(screenPadding)
+
     LoadingContent(
         loading = loading,
         empty = udis.isEmpty() && !loading,
-        emptyContent = { /*TODO*/ },
-        onRefresh = { /*TODO*/ }) {
+        emptyContent = {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (userMessage != null) {
+                    Text(
+                        text = stringResource(id = userMessage),
+                        modifier = commonModifier,
+                        textAlign = TextAlign.Center,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
+
+        },
+        onRefresh = onRefresh ) {
         Column(
             modifier = Modifier.fillMaxHeight(),
             horizontalAlignment = Alignment.End

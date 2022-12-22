@@ -9,6 +9,8 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
 fun LoadingContent(
@@ -21,18 +23,12 @@ fun LoadingContent(
 ) {
     if (empty) {
         emptyContent()
-    } else if (loading) {
-        Column(
-            modifier = modifier
-                .fillMaxWidth()
-                .fillMaxHeight(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            CircularProgressIndicator()
-        }
-        Log.d("Loading", "loading...")
-    } else  {
-        content()
+    }  else {
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(loading),
+            onRefresh = onRefresh,
+            modifier = modifier,
+            content = content
+        )
     }
 }

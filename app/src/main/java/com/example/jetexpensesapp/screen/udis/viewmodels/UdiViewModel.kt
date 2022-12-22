@@ -1,6 +1,7 @@
 package com.example.jetexpensesapp.screen.udis
 
 import android.util.Log
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,7 +32,7 @@ data class UdiHomeUiState(
     val globalTotals: UdiGlobalDetails = UdiGlobalDetails(),
     val udiValueToday: String = "0.0",
     val isLoading: Boolean = false,
-    val userMessage: Int? = null,
+    var userMessage: Int? = null,
     val isError: Boolean = false,
     val errorMessage: String = ""
 )
@@ -63,55 +64,13 @@ class UdiViewModel @Inject constructor(
     )
 
     init {
-
-        //TODO implement a function to wrap the when for both VM scopes
-//        viewModelScope.launch(Dispatchers.IO) {
-//            //TODO implement redirection to new screen to add commission when the user doesnt have one
-//            when (val commission = repository.getCommission()) {
-//                is Success -> {
-//                    _uiData.update {
-//                        it.copy(commission = commission.data.body.data[0].retirementRecord?.udiCommission)
-//                    }
-//                }
-//                is Result.Error -> {
-//                    _uiData.update {
-//                        it.copy(
-//                            isLoading = false,
-//                            isError = true,
-//                            userMessage = R.string.api_no_commission_data,
-//                            errorMessage = commission.exception!!
-//                        )
-//                    }
-//                    showSnackBarMessage(R.string.api_no_commission_data)
-//                }
-//            }
-//        }
         //TODO implement filter udis by date
-        viewModelScope.launch(Dispatchers.IO) {
-            when (val dataFromEndpoint = repository.getAllUdisFrom()) {
-                is Success -> {
-                    _uiData.update {
-                        it.copy(
-                            udis = dataFromEndpoint.data.body.data,
-                            isLoading = false
-                        )
-                    }
-                }
-                is Result.Error -> {
-                    _uiData.update {
-                        it.copy(
-                            isLoading = false,
-                            isError = true,
-                            userMessage = R.string.api_error,
-                            errorMessage = dataFromEndpoint.exception!!
-                        )
-                    }
-                    showSnackBarMessage(R.string.api_error)
-                }
-            }
-        }
+        /**
+        View model to call udi api to get all the list of udis from DB
+         */
+        getAllUdis()
 
-        /* *
+        /**
         View model to call banxico api to get the value of the day for the day
          */
         viewModelScope.launch(Dispatchers.IO) {
@@ -150,6 +109,9 @@ class UdiViewModel @Inject constructor(
 
     fun snackbarMessageShown() {
         _userMessage.value = null
+        _uiData.update {
+            it.copy(userMessage = null)
+        }
     }
 
     fun showEditResultMessage(result: Int) {
@@ -157,6 +119,58 @@ class UdiViewModel @Inject constructor(
             EDIT_RESULT_OK -> showSnackBarMessage(R.string.successfully_edited_task_message)
             ADD_EDIT_RESULT_OK -> showSnackBarMessage(R.string.successfully_saved_task_message)
             DELETE_RESULT_OK -> showSnackBarMessage(R.string.successfully_deleted_task_message)
+        }
+    }
+
+    fun getAllUdis() {
+        viewModelScope.launch(Dispatchers.IO) {
+            when (val dataFromEndpoint = repository.getAllUdisFrom()) {
+                is Success -> {
+                    val dataReceived = dataFromEndpoint.data.body.data
+                    if (_uiData.value.udis.size != dataReceived.size) {
+                        _uiData.update {
+                            it.copy(
+                                udis = dataReceived,
+                                isLoading = false
+                            )
+                        }
+                    } else {
+                        _uiData.update {
+                            it.copy(
+                                isLoading = false,
+                                userMessage = R.string.api_no_new_data,
+                                isError = false
+                            )
+                        }
+                    }
+
+                }
+                is Result.Error -> {
+                    when(dataFromEndpoint.exception) {
+                        "NO_DATA" -> {
+                            _uiData.update {
+                                it.copy(
+                                    isLoading = false,
+                                    isError = false,
+                                    userMessage = R.string.no_data,
+                                    errorMessage = dataFromEndpoint.exception
+                                )
+                            }
+                        }
+                        else -> {
+                            _uiData.update {
+                                it.copy(
+                                    isLoading = false,
+                                    isError = true,
+                                    userMessage = R.string.api_error,
+                                    errorMessage = dataFromEndpoint.exception!!
+                                )
+                            }
+                            showSnackBarMessage(R.string.api_error)
+                        }
+                    }
+                }
+            }
         }
     }
 

@@ -16,5 +16,7 @@
     <string name="label_old">Viejas</string>
     <string name="calculate_error">Error al calcular los valores</string>
     <string name="api_error">Error al obtener datos desde la red</string>
+    <string name="api_no_new_data">No hay datos nuevos desde la red</string>
+    <string name="no_data">No tienes datos aún, agrega una entrada para verla aquí</string>
     <string name="api_no_commission_data">El usuario no tiene comisiones</string>
 </resources>
