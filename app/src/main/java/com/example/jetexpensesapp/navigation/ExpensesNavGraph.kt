@@ -232,11 +232,7 @@ fun ExpensesNavGraph(
                     isInsertCommission = isCommission,
                     onUdiUpdate = {
                         navActions.navigateToHome()
-                    },
-                    onDeleteUdi = {
-
-                    },
-                    onBack = { navController.popBackStack() }
+                    }
                 )
             }
         }

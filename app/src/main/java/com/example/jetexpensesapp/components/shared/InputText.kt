@@ -1,11 +1,9 @@
-package com.example.jetexpensesapp.components
+package com.example.jetexpensesapp.components.shared
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -19,6 +17,7 @@ fun RetirementInputText(
     modifier: Modifier = Modifier,
     text: String,
     label: String,
+    readOnly: Boolean = false,
     maxLine: Int = 1,
     enabled: Boolean = true,
     keyboardType: KeyboardType = KeyboardType.Text,
@@ -37,12 +36,11 @@ fun RetirementInputText(
     OutlinedTextField(
         value = text,
         onValueChange = onTextChange,
-        colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = Color.Transparent
-        ),
+        modifier = modifier,
         enabled = enabled,
-        maxLines = maxLine,
+        readOnly = readOnly,
         label = { Text(text = label) },
+        maxLines = maxLine,
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = ImeAction.Done,
             keyboardType = keyboardType
@@ -51,9 +49,11 @@ fun RetirementInputText(
             onImeAction()
             keyboardController?.hide()
         },
-        modifier = modifier,
         visualTransformation = visualTransformation,
         interactionSource = interactionSource,
-        trailingIcon = trailingIcon
+        trailingIcon = trailingIcon,
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color.Transparent
+        ),
     )
 }

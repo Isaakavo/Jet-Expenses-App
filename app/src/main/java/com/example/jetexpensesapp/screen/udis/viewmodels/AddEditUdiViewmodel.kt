@@ -31,6 +31,8 @@ data class AddEditUdiUiState(
     val mineUdi: Double? = Constants.MINE_UDI,
     val udiValueInMoney: Double? = 0.0,
     val udiValueInMoneyCommission: Double? = 0.0,
+    val yearlyBonus: String = "0.0",
+    val monthlyTotalBonus: String = "0.0",
     val dataObj: Data = Data(),
     val isLoading: Boolean = false,
     val userMessage: Int? = null,
@@ -91,17 +93,37 @@ class AddEditUdiViewmodel @Inject constructor(
     }
 
     fun updateAmount(newAmount: String) {
+        var amount = newAmount
+        if (amount == "") amount = "0.0"
+        val monthlyTotalBonusCalc = amount.toDouble() + uiState.value.udiCommission.toDouble()
+        val yearlyTotalBonus = monthlyTotalBonusCalc * 12
         _uiState.update {
             it.copy(
                 amount = newAmount,
+                yearlyBonus = formatNumber(yearlyTotalBonus),
+                monthlyTotalBonus = (monthlyTotalBonusCalc).toString()
             )
         }
     }
 
     fun updateCommissionAmount(newAmount: String) {
+        var amount = newAmount
+        if (amount == "") amount = "0.0"
+        val monthlyTotalBonusCalc = amount.toDouble() + uiState.value.amount.toDouble()
+        val yearlyTotalBonus = monthlyTotalBonusCalc * 12
         _uiState.update {
             it.copy(
-                udiCommission = newAmount
+                udiCommission = newAmount,
+                yearlyBonus = formatNumber(yearlyTotalBonus),
+                monthlyTotalBonus = (monthlyTotalBonusCalc).toString()
+            )
+        }
+    }
+
+    fun updateYearlyBonusAmount(newAmount: String) {
+        _uiState.update {
+            it.copy(
+                yearlyBonus = newAmount
             )
         }
     }
@@ -224,9 +246,10 @@ class AddEditUdiViewmodel @Inject constructor(
             val newCommission = UdiCommissionPost(
                 udiCommission = uiState.value.udiCommission.toDouble(),
                 monthlyBonus = uiState.value.amount.toDouble(),
+                yearlyBonus = uiState.value.yearlyBonus.toDouble(),
+                monthlyTotalBonus = uiState.value.monthlyTotalBonus.toDouble(),
                 dateAdded = LocalDateTime.now().toString()
             )
-            Log.d("INSERT_COMMISSION", "$newCommission")
             repository.insertCommission(newCommission).let { result ->
                 if (result is Result.Success) {
                     _uiState.update {

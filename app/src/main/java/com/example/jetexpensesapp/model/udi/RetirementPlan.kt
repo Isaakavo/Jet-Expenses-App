@@ -66,6 +66,8 @@ data class UdiCommissionPost(
     val id : Int? = null,
     val monthlyBonus: Double,
     val udiCommission: Double,
+    val yearlyBonus: Double,
+    var monthlyTotalBonus: Double,
     val dateAdded: String
 )
 
