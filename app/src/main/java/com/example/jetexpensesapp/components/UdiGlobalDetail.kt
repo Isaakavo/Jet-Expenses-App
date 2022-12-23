@@ -29,14 +29,15 @@ fun UdiGlobalDetail(
     onAddEntry: () -> Unit = {},
     onDetailsClick: () -> Unit = {}
 ) {
-    Column(modifier = Modifier.clickable(
-        interactionSource = remember {
-            MutableInteractionSource()
-        },
-        indication = null
-    ) {
-        onDetailsClick()
-    }) {
+    Column(
+        modifier = Modifier.clickable(
+            interactionSource = remember {
+                MutableInteractionSource()
+            },
+            indication = null
+        ) {
+            onDetailsClick()
+        }) {
         Row() {
             Column(
                 modifier = Modifier.padding(20.dp)
@@ -66,8 +67,8 @@ fun UdiGlobalDetail(
                         fontWeight = FontWeight.Medium,
                         style = MaterialTheme.typography.subtitle1,
                         modifier = Modifier
-                            .weight(0.3f)
-                            .padding(start = 4.dp, end = 4.dp)
+                            .weight(0.5f)
+                            .padding( end = 4.dp)
                     )
                     Text(
                         text = "Total de Udis",
@@ -75,8 +76,8 @@ fun UdiGlobalDetail(
                         fontWeight = FontWeight.Medium,
                         style = MaterialTheme.typography.subtitle1,
                         modifier = Modifier
-                            .weight(0.3f)
-                            .padding(start = 4.dp, end = 4.dp)
+                            .weight(0.5f)
+                            .padding( end = 4.dp)
                     )
                 }
                 Row(
@@ -113,8 +114,10 @@ fun UdiGlobalDetail(
                 icon = Icons.Filled.Add,
                 shape = CircleShape,
                 onClick = onAddEntry,
-                modifier = Modifier.size(50.dp).padding(bottom = 5.dp)
-                )
+                modifier = Modifier
+                    .size(50.dp)
+                    .padding(bottom = 5.dp)
+            )
         }
     }
 }

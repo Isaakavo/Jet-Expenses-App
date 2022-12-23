@@ -8,6 +8,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -120,7 +122,7 @@ fun AddEditContent(
                 onBack = onBack,
                 buttonText = stringResource(id = topBarTitle),
                 onClick = onSave,
-                icon = null
+                icon = if (isInsertCommission) null else Icons.Filled.ArrowBack
             )
         }) {
             Column(Modifier.fillMaxHeight()) {

@@ -21,7 +21,7 @@ fun UdiRowDetails(
 ) {
     Column(
         Modifier
-            .padding(top = 10.dp)
+            .padding(top = 10.dp, bottom = 5.dp)
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
