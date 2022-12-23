@@ -291,6 +291,11 @@ class AddEditUdiViewmodel @Inject constructor(
         }
     }
 
+    fun handleDateRequest(date: String) {
+        updateDate(date)
+        getUdiForToday(date.toLocalDateTime())
+    }
+
     private suspend fun getUdiForTodayAsync(date: LocalDateTime): Result<UdiItem> {
         val result = viewModelScope.async {
             Log.d(TAG, "Calling api... with date $date")

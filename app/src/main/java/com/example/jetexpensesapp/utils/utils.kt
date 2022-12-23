@@ -37,6 +37,13 @@ fun formatMoney(number: Double?): String {
     return if (number != null) format.format(number) else ""
 }
 
+fun String.capitalLetterForDate(): String {
+    val arr = this.split(" ")
+    val firstLetter = arr[1][0].uppercase()
+    val newString = arr[1].drop(1)
+    return "${arr[0]} $firstLetter$newString ${arr[2]}"
+}
+
 fun String.toLocalDateTime(): LocalDateTime {
     return LocalDateTime.parse(this)
 }

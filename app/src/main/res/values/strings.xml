@@ -19,4 +19,7 @@
     <string name="api_no_new_data">No hay datos nuevos desde la red</string>
     <string name="no_data">No tienes datos aún, agrega una entrada para verla aquí</string>
     <string name="api_no_commission_data">El usuario no tiene comisiones</string>
+    <string name="accept">Aceptar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="select_date">Selecciona una fecha</string>
 </resources>

@@ -8,13 +8,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -25,7 +21,8 @@ import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.jetexpensesapp.components.UdiEntryDetails
 import com.example.jetexpensesapp.components.shared.*
-import com.example.jetexpensesapp.utils.toLocalDateTime
+import java.time.LocalTime
+import java.util.*
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
@@ -39,13 +36,6 @@ fun AddRetirementEntryScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
-    val datePicker = DatePicker.getDatePicker(
-        context,
-        onRequest = {
-            viewModel.updateDate(it)
-            viewModel.getUdiForToday(it.toLocalDateTime())
-        })
 
     viewModel.updateIsCommission(isInsertCommission)
 
@@ -67,7 +57,7 @@ fun AddRetirementEntryScreen(
         onCommissionAmountChange = viewModel::updateCommissionAmount,
         onYearlyCommissionChange = viewModel::updateYearlyBonusAmount,
         onDateChange = viewModel::updateDate,
-        onShowDatePicker = datePicker::show
+        onHandleDateRequest = viewModel::handleDateRequest
     )
 
     LaunchedEffect(uiState.isUdiSaved) {
@@ -102,8 +92,24 @@ fun AddEditContent(
     onCommissionAmountChange: (String) -> Unit,
     onYearlyCommissionChange: (String) -> Unit,
     onDateChange: (String) -> Unit,
-    onShowDatePicker: () -> Unit
+    onHandleDateRequest: (String) -> Unit
 ) {
+
+    val showDatePicker = remember { mutableStateOf(false) }
+
+    if (showDatePicker.value) {
+        DatePicker(
+            date = date,
+            onDateSelected = { dateRequest ->
+                showDatePicker.value = false
+                val time = LocalTime.now()
+                val dateToVM = "${dateRequest}T$time"
+                onHandleDateRequest(dateToVM)
+            }) {
+            showDatePicker.value = false
+        }
+    }
+
     LoadingContent(
         loading = loading,
         empty = retirementData == null && !loading,
@@ -147,7 +153,7 @@ fun AddEditContent(
                                     interactionSource.interactions.collect {
                                         if (it is PressInteraction.Release) {
                                             // works like onClick
-                                            onShowDatePicker()
+                                            showDatePicker.value = !showDatePicker.value
                                         }
                                     }
                                 }
@@ -202,4 +208,5 @@ fun AddEditContent(
         }
 
     }
+
 }
